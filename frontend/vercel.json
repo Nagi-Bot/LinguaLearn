@@ -2,6 +2,6 @@
   "version": 2,
   "builds": [{ "src": "package.json", "use": "@vercel/next" }],
   "env": {
-    "NEXT_PUBLIC_API_URL": "https://lingualearn-api.up.railway.app/api"
+    "NEXT_PUBLIC_API_URL": "https://lingualearn-copy-production.up.railway.app/api"
   }
 }

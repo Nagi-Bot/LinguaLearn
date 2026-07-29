@@ -6,7 +6,7 @@ const rateLimit = require('express-rate-limit')
 const app = express()
 
 app.use(cors({
-  origin: [process.env.FRONTEND_URL || 'http://localhost:3000', 'https://lingualearn.up.railway.app'],
+  origin: [process.env.FRONTEND_URL || 'http://localhost:3000', 'https://lingualearn.up.railway.app', 'https://lingualearn-copy-production.up.railway.app'],
   credentials: true,
 }))
 app.use(express.json({ limit: '5mb' }))
@@ -30,6 +30,7 @@ app.use('/api/auth', require('./routes/auth'))
 app.use('/api/leaderboard', require('./routes/leaderboard'))
 app.use('/api/profile', require('./routes/profile'))
 
+app.get('/', (req, res) => res.json({ message: 'LinguaLearn API', status: 'running', endpoints: ['/api/health', '/api/auth/*', '/api/leaderboard', '/api/profile/*'] }))
 app.get('/api/health', (req, res) => res.json({ status: 'ok', timestamp: new Date().toISOString() }))
 
 app.use((err, req, res, next) => {
