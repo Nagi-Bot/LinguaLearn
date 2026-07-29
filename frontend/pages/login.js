@@ -25,8 +25,9 @@ export default function LoginPage() {
       localStorage.setItem('lingua_user', JSON.stringify(res.data.user))
       toast.success('Welcome!')
       router.push('/dashboard')
-    } catch {
-      toast.error('Google login failed')
+    } catch (err) {
+      console.error('Google login error:', err.response?.data || err.message)
+      toast.error(err.response?.data?.message || 'Google login failed')
     } finally {
       setLoading(false)
     }

@@ -25,8 +25,9 @@ export default function RegisterPage() {
       localStorage.setItem('lingua_user', JSON.stringify(res.data.user))
       toast.success('Account created with Google!')
       router.push('/dashboard')
-    } catch {
-      toast.error('Google signup failed')
+    } catch (err) {
+      console.error('Google signup error:', err.response?.data || err.message)
+      toast.error(err.response?.data?.message || 'Google signup failed')
     } finally {
       setLoading(false)
     }
