@@ -4,6 +4,7 @@ import { Zap, Clock, Trophy, RotateCcw, Star, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
 import RequireAuth from '../../components/RequireAuth'
+import Celebration from '../../components/Celebration'
 import { useApp } from '../../context/AppContext'
 import { getGrammarBattleQuestions } from '../../lib/questions'
 
@@ -11,7 +12,7 @@ const BATCH_SIZE = 15
 const TIME_LIMIT = 15
 
 export default function GrammarBattlePage() {
-  const { addXp } = useApp()
+  const { addXp, user } = useApp()
   const [questions, setQuestions] = useState(() => getGrammarBattleQuestions(BATCH_SIZE))
   const [gameState, setGameState] = useState('start')
   const [currentQ, setCurrentQ] = useState(0)
@@ -21,6 +22,7 @@ export default function GrammarBattlePage() {
   const [timer, setTimer] = useState(TIME_LIMIT)
   const [selectedAnswer, setSelectedAnswer] = useState(null)
   const [combo, setCombo] = useState(0)
+  const [celebration, setCelebration] = useState({ show: false, xpEarned: 0, oldLevel: 1, newLevel: 1 })
 
   useEffect(() => {
     let interval
@@ -88,9 +90,11 @@ export default function GrammarBattlePage() {
     setQuestions(getGrammarBattleQuestions(BATCH_SIZE))
   }
 
-  const endGame = () => {
-    addXp(score)
+  const endGame = async () => {
+    const oldLevel = user?.level || 1
+    const result = await addXp(score)
     setGameState('done')
+    setTimeout(() => setCelebration({ show: true, xpEarned: score, oldLevel, newLevel: result.newLevel }), 300)
   }
 
   if (gameState === 'start') {
@@ -129,6 +133,13 @@ export default function GrammarBattlePage() {
             </div>
           </motion.div>
         </div>
+        <Celebration
+          show={celebration.show}
+          xpEarned={celebration.xpEarned}
+          oldLevel={celebration.oldLevel}
+          newLevel={celebration.newLevel}
+          onClose={() => setCelebration(p => ({ ...p, show: false }))}
+        />
       </RequireAuth>
     )
   }

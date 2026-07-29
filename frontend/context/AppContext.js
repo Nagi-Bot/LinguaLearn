@@ -128,6 +128,7 @@ export function AppProvider({ children }) {
   }
 
   const addXp = async (amount) => {
+    const oldLevel = user?.level || 1
     const newXp = (user?.xp || 0) + amount
     const newLevel = Math.floor(newXp / 500) + 1
     const newCoins = (user?.coins || 0) + Math.floor(amount / 10)
@@ -149,6 +150,7 @@ export function AppProvider({ children }) {
         await api.post('/profile/xp', { amount })
       }
     } catch {}
+    return { didLevelUp: newLevel > oldLevel, oldLevel, newLevel }
   }
 
   const logout = () => {

@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { useApp } from '../context/AppContext'
+import XPProgressRing from '../components/XPProgressRing'
 import {
   Zap, Flame, Trophy, Award, BookOpen, Target,
   TrendingUp, ChevronRight, Clock, Star, Gem,
@@ -115,23 +116,25 @@ export default function DashboardPage() {
 
           <motion.div variants={itemAnim} className="grid lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
-              <div className="flex items-center justify-between mb-3">
-                <h2 className="font-semibold text-gray-900 dark:text-white">Level Progress</h2>
-                <span className="text-sm text-gray-500">{stats?.xp || 0} / {stats?.nextLevelXp || 1500} XP</span>
+              <div className="flex items-center space-x-8">
+                <XPProgressRing xp={stats.xp} nextLevelXp={stats.nextLevelXp} level={stats.level} />
+                <div className="flex-1">
+                  <h2 className="font-semibold text-gray-900 dark:text-white mb-2">Level Progress</h2>
+                  <div className="w-full h-3 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden mb-2">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${progressPercent}%` }}
+                      transition={{ duration: 0.8, ease: 'easeOut' }}
+                      className="h-full bg-gradient-to-r from-primary-500 to-primary-400 rounded-full"
+                    />
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-500">{stats?.xp || 0} / {stats?.nextLevelXp || 1500} XP</span>
+                    <span className="text-gray-400">{Math.round(progressPercent)}%</span>
+                  </div>
+                </div>
               </div>
-              <div className="w-full h-3 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: `${progressPercent}%` }}
-                  transition={{ duration: 0.8, ease: 'easeOut' }}
-                  className="h-full bg-gradient-to-r from-primary-500 to-primary-400 rounded-full"
-                />
-              </div>
-              <div className="flex justify-between mt-1">
-                <span className="text-xs text-gray-400">Level {stats?.level || 1}</span>
-                <span className="text-xs text-gray-400">Level {Math.floor((stats?.level || 1) + 1)}</span>
-              </div>
-              <div className="mt-6">
+              <div className="mt-6 border-t border-gray-100 dark:border-gray-700 pt-4">
                 <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 flex items-center">
                   <BarChart3 className="w-4 h-4 mr-1.5 text-primary-500" /> Weekly XP
                 </h3>
