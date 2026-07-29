@@ -20,11 +20,17 @@ const limiter = rateLimit({
 app.use('/api/', limiter)
 
 const uri = process.env.MONGODB_URI
-console.log('MONGODB_URI length:', uri?.length, 'prefix:', uri?.substring(0, 20))
-if (!uri) { console.error('MONGODB_URI is not set'); process.exit(1) }
-mongoose.connect(uri)
-  .then(() => console.log('MongoDB connected'))
-  .catch(err => { console.error('MongoDB error:', err.message); process.exit(1) })
+console.log('=== ENV DEBUG ===')
+console.log('MONGODB_URI:', JSON.stringify(uri))
+console.log('All MONGODB vars:', Object.keys(process.env).filter(k => k.toUpperCase().includes('MONGO') || k.toUpperCase().includes('MONGODB')).map(k => `${k}=${JSON.stringify(process.env[k])}`).join(', '))
+console.log('=================')
+
+if (!uri) { console.error('MONGODB_URI is not set — server will run without DB'); }
+else {
+  mongoose.connect(uri)
+    .then(() => console.log('MongoDB connected'))
+    .catch(err => { console.error('MongoDB error:', err.message) })
+}
 
 app.use('/api/auth', require('./routes/auth'))
 app.use('/api/leaderboard', require('./routes/leaderboard'))
