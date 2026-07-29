@@ -1,11 +1,14 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
+import { useApp } from '../context/AppContext'
+import XPProgressRing from '../components/XPProgressRing'
 import {
   Sparkles, BookOpen, Gamepad2, Brain, Languages, Award,
   ChevronRight, Star, Shield, Zap, Globe, Users, ArrowRight,
   CheckCircle, GraduationCap, Trophy, Clock, BarChart3,
-  MessageSquare, Headphones, PenTool, Mic, Volume2, Play
+  MessageSquare, Headphones, PenTool, Mic, Volume2, Play,
+  Flame, Gem
 } from 'lucide-react'
 
 const fadeInUp = {
@@ -22,6 +25,7 @@ const stagger = {
 }
 
 export default function HomePage() {
+  const { user } = useApp()
   const [faqOpen, setFaqOpen] = useState(null)
 
   const features = [
@@ -107,14 +111,40 @@ export default function HomePage() {
             className="mt-16 relative"
           >
             <div className="glass-card max-w-4xl mx-auto p-2">
-              <div className="rounded-xl overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 h-[400px] flex items-center justify-center">
-                <div className="text-center">
-                  <div className="w-20 h-20 mx-auto mb-4 gradient-bg rounded-2xl flex items-center justify-center animate-float">
-                    <Play className="w-10 h-10 text-white ml-1" />
+              <div className="rounded-xl overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 p-8">
+                {user ? (
+                  <div className="flex flex-col md:flex-row items-center justify-center gap-8">
+                    <XPProgressRing xp={user.xp || 0} nextLevelXp={((user.level || 1)) * 500} level={user.level || 1} />
+                    <div className="text-center md:text-left">
+                      <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2">{user.name}'s Progress</h3>
+                      <div className="flex flex-wrap justify-center md:justify-start gap-3">
+                        <div className="flex items-center space-x-1 px-3 py-1.5 rounded-lg bg-primary-100 dark:bg-primary-900/30">
+                          <Zap className="w-4 h-4 text-primary-500" />
+                          <span className="font-semibold text-sm text-primary-700 dark:text-primary-300">{user.xp || 0} XP</span>
+                        </div>
+                        <div className="flex items-center space-x-1 px-3 py-1.5 rounded-lg bg-accent-100 dark:bg-accent-900/30">
+                          <Flame className="w-4 h-4 text-accent-500" />
+                          <span className="font-semibold text-sm text-accent-700 dark:text-accent-300">{user.streak || 0} day streak</span>
+                        </div>
+                        <div className="flex items-center space-x-1 px-3 py-1.5 rounded-lg bg-purple-100 dark:bg-purple-900/30">
+                          <Gem className="w-4 h-4 text-purple-500" />
+                          <span className="font-semibold text-sm text-purple-700 dark:text-purple-300">{user.coins || 0} coins</span>
+                        </div>
+                      </div>
+                      <Link href="/dashboard" className="mt-4 inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-xl font-medium hover:shadow-lg transition-shadow text-sm">
+                        Go to Dashboard <ArrowRight className="w-4 h-4 ml-2" />
+                      </Link>
+                    </div>
                   </div>
-                  <p className="text-lg font-semibold text-gray-600 dark:text-gray-400">Start Learning Today</p>
-                  <p className="text-sm text-gray-500 dark:text-gray-500">Track your progress, earn XP, and unlock achievements</p>
-                </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <div className="w-20 h-20 mx-auto mb-4 gradient-bg rounded-2xl flex items-center justify-center animate-float">
+                      <Play className="w-10 h-10 text-white ml-1" />
+                    </div>
+                    <p className="text-lg font-semibold text-gray-600 dark:text-gray-400">Start Learning Today</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-500">Track your progress, earn XP, and unlock achievements</p>
+                  </div>
+                )}
               </div>
             </div>
           </motion.div>
