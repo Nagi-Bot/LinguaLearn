@@ -19,12 +19,30 @@ export function AppProvider({ children }) {
       setTheme('dark')
       document.documentElement.classList.add('dark')
     }
-    const savedUser = localStorage.getItem('lingua_user')
-    if (savedUser) {
-      setUser(JSON.parse(savedUser))
+    initUser()
+  }, [])
+
+  const initUser = async () => {
+    const token = Cookies.get('token')
+    if (token) {
+      try {
+        const res = await api.get('/auth/me')
+        setUser(res.data.user)
+        localStorage.setItem('lingua_user', JSON.stringify(res.data.user))
+      } catch {
+        const savedUser = localStorage.getItem('lingua_user')
+        if (savedUser) {
+          setUser(JSON.parse(savedUser))
+        }
+      }
+    } else {
+      const savedUser = localStorage.getItem('lingua_user')
+      if (savedUser) {
+        setUser(JSON.parse(savedUser))
+      }
     }
     setLoading(false)
-  }, [])
+  }
 
   const toggleDarkMode = () => {
     const newMode = !darkMode
@@ -39,63 +57,82 @@ export function AppProvider({ children }) {
   }
 
   const login = async (email, password) => {
-    const savedUser = localStorage.getItem('lingua_user')
-    const parsed = savedUser ? JSON.parse(savedUser) : null
-
-    if (parsed && parsed.email === email) {
-      Cookies.set('token', 'local-token', { expires: 7 })
-      setUser(parsed)
-      return { user: parsed, token: 'local-token' }
+    try {
+      const res = await api.post('/auth/login', { email, password })
+      const { user: userData, token } = res.data
+      Cookies.set('token', token, { expires: 30 })
+      localStorage.setItem('lingua_user', JSON.stringify(userData))
+      setUser(userData)
+      return { user: userData, token }
+    } catch {
+      const savedUser = localStorage.getItem('lingua_user')
+      const parsed = savedUser ? JSON.parse(savedUser) : null
+      if (parsed && parsed.email === email) {
+        const userData = { ...parsed, id: parsed.id || parsed._id || Date.now().toString() }
+        Cookies.set('token', 'local-token', { expires: 7 })
+        setUser(userData)
+        return { user: userData, token: 'local-token' }
+      }
+      const allKeys = Object.keys(localStorage).filter(k => k.startsWith('lingua_user_'))
+      for (const key of allKeys) {
+        try {
+          const su = JSON.parse(localStorage.getItem(key))
+          if (su.email === email) {
+            localStorage.setItem('lingua_user', JSON.stringify(su))
+            Cookies.set('token', 'local-token', { expires: 7 })
+            setUser(su)
+            return { user: su, token: 'local-token' }
+          }
+        } catch {}
+      }
+      throw { response: { data: { message: 'Account not found. Please sign up first.' } } }
     }
-
-    const allKeys = Object.keys(localStorage).filter(k => k.startsWith('lingua_user_'))
-    for (const key of allKeys) {
-      try {
-        const su = JSON.parse(localStorage.getItem(key))
-        if (su.email === email) {
-          localStorage.setItem('lingua_user', JSON.stringify(su))
-          Cookies.set('token', 'local-token', { expires: 7 })
-          setUser(su)
-          return { user: su, token: 'local-token' }
-        }
-      } catch {}
-    }
-
-    throw { response: { data: { message: 'Account not found. Please sign up first.' } } }
   }
 
   const register = async (name, email, password) => {
-    const userData = {
-      id: Date.now().toString(),
-      name,
-      email,
-      xp: 0,
-      level: 1,
-      streak: 0,
-      coins: 100,
-      avatar: ''
+    try {
+      const res = await api.post('/auth/register', { name, email, password })
+      const { user: userData, token } = res.data
+      Cookies.set('token', token, { expires: 30 })
+      localStorage.setItem('lingua_user', JSON.stringify(userData))
+      localStorage.setItem('lingua_user_' + name, JSON.stringify(userData))
+      setUser(userData)
+      return { user: userData, token }
+    } catch {
+      const userData = {
+        id: Date.now().toString(),
+        name, email,
+        xp: 0, level: 1, streak: 0, coins: 100, avatar: '', bio: ''
+      }
+      localStorage.setItem('lingua_user', JSON.stringify(userData))
+      localStorage.setItem('lingua_user_' + name, JSON.stringify(userData))
+      Cookies.set('token', 'local-token', { expires: 7 })
+      setUser(userData)
+      return { user: userData, token: 'local-token' }
     }
-    localStorage.setItem('lingua_user', JSON.stringify(userData))
-    localStorage.setItem('lingua_user_' + name, JSON.stringify(userData))
-    Cookies.set('token', 'local-token', { expires: 7 })
-    setUser(userData)
-    return { user: userData, token: 'local-token' }
   }
 
-  const updateUser = (updates) => {
+  const updateUser = async (updates) => {
     const updated = { ...user, ...updates }
     setUser(updated)
     localStorage.setItem('lingua_user', JSON.stringify(updated))
     if (updated.name) {
       localStorage.setItem('lingua_user_' + updated.name, JSON.stringify(updated))
     }
+    try {
+      const token = Cookies.get('token')
+      if (token && token !== 'local-token') {
+        await api.put('/auth/me', updates)
+      }
+    } catch {}
   }
 
-  const addXp = (amount) => {
+  const addXp = async (amount) => {
     const newXp = (user?.xp || 0) + amount
     const newLevel = Math.floor(newXp / 500) + 1
     const newCoins = (user?.coins || 0) + Math.floor(amount / 10)
-    updateUser({ xp: newXp, level: newLevel, coins: newCoins })
+    const updated = { xp: newXp, level: newLevel, coins: newCoins }
+    updateUser(updated)
     const stored = localStorage.getItem('lingua_leaderboard')
     const savedScores = stored ? JSON.parse(stored) : []
     const existing = savedScores.findIndex(s => s.name === user?.name)
@@ -106,6 +143,12 @@ export function AppProvider({ children }) {
       savedScores.push(entry)
     }
     localStorage.setItem('lingua_leaderboard', JSON.stringify(savedScores))
+    try {
+      const token = Cookies.get('token')
+      if (token && token !== 'local-token') {
+        await api.post('/profile/xp', { amount })
+      }
+    } catch {}
   }
 
   const logout = () => {

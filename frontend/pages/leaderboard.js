@@ -3,67 +3,72 @@ import { motion } from 'framer-motion'
 import { Trophy, Zap, Flame, BookOpen, Medal, Award, Crown, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 import { useApp } from '../context/AppContext'
+import api from '../lib/api'
 
 export default function LeaderboardPage() {
   const { user } = useApp()
-  const [refreshKey, setRefreshKey] = useState(0)
+  const [allUsers, setAllUsers] = useState([])
 
   useEffect(() => {
-    const handler = () => setRefreshKey(k => k + 1)
-    window.addEventListener('storage', handler)
-    return () => window.removeEventListener('storage', handler)
-  }, [])
+    loadLeaderboard()
+  }, [user])
 
-  const allUsers = useMemo(() => {
-    const stored = localStorage.getItem('lingua_leaderboard')
-    const savedScores = stored ? JSON.parse(stored) : []
-
-    let storedUsers = []
-    try {
-      const keys = Object.keys(localStorage)
-      for (let i = 0; i < keys.length; i++) {
-        if (keys[i].startsWith('lingua_user_')) {
-          try {
-            const data = JSON.parse(localStorage.getItem(keys[i]))
-            if (data) storedUsers.push(data)
-          } catch {}
-        }
-      }
-    } catch {}
-
+  const loadLeaderboard = async () => {
     let list = []
-
-    if (user) {
-      const userEntry = { name: user.name, xp: user.xp || 0, level: user.level || 1, streak: user.streak || 0, avatar: user.avatar || '', isYou: true, color: 'from-primary-500 to-primary-600' }
-      list.push(userEntry)
-    }
-
-    for (let i = 0; i < storedUsers.length; i++) {
-      const su = storedUsers[i]
-      if (!list.find(u => u.name === su.name)) {
-        list.push({ name: su.name, xp: su.xp || 0, level: su.level || 1, streak: su.streak || 0, avatar: su.avatar || '' })
+    try {
+      const res = await api.get('/leaderboard')
+      list = res.data.map(u => ({
+        name: u.name, xp: u.xp || 0, level: u.level || 1,
+        streak: u.streak || 0, avatar: u.avatar || '',
+        isYou: user?.name === u.name,
+        color: 'from-primary-500 to-primary-600'
+      }))
+    } catch {
+      const stored = localStorage.getItem('lingua_leaderboard')
+      const savedScores = stored ? JSON.parse(stored) : []
+      const storedUsers = []
+      try {
+        const keys = Object.keys(localStorage)
+        for (let i = 0; i < keys.length; i++) {
+          if (keys[i].startsWith('lingua_user_')) {
+            try {
+              const data = JSON.parse(localStorage.getItem(keys[i]))
+              if (data) storedUsers.push(data)
+            } catch {}
+          }
+        }
+      } catch {}
+      if (user) {
+        list.push({ name: user.name, xp: user.xp || 0, level: user.level || 1, streak: user.streak || 0, avatar: user.avatar || '', isYou: true, color: 'from-primary-500 to-primary-600' })
       }
+      storedUsers.forEach(su => { if (!list.find(u => u.name === su.name)) list.push({ name: su.name, xp: su.xp || 0, level: su.level || 1, streak: su.streak || 0, avatar: su.avatar || '' }) })
+      savedScores.forEach(s => {
+        const existing = list.find(u => u.name === s.name)
+        if (existing) { if (s.xp > existing.xp) { existing.xp = s.xp; existing.level = s.level; existing.streak = s.streak || existing.streak } }
+        else { list.push({ name: s.name, xp: s.xp, level: s.level, streak: s.streak || 0 }) }
+      })
     }
-
-    for (let i = 0; i < savedScores.length; i++) {
-      const s = savedScores[i]
-      const existing = list.find(u => u.name === s.name)
-      if (existing) {
-        if (s.xp > existing.xp) { existing.xp = s.xp; existing.level = s.level; existing.streak = s.streak || existing.streak }
-      } else {
-        list.push({ name: s.name, xp: s.xp, level: s.level, streak: s.streak || 0 })
-      }
-    }
-
     list.sort((a, b) => b.xp - a.xp)
-    return list.slice(0, 15)
-  }, [user, refreshKey])
+    setAllUsers(list.slice(0, 15))
+  }
 
   const getRankIcon = (rank) => {
     if (rank === 0) return <Crown className="w-5 h-5 text-yellow-500" />
     if (rank === 1) return <Medal className="w-5 h-5 text-gray-400" />
     if (rank === 2) return <Medal className="w-5 h-5 text-amber-700" />
     return null
+  }
+
+  if (allUsers.length === 0) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <Trophy className="w-16 h-16 mx-auto mb-4 text-gray-300" />
+          <p className="text-gray-500">No players yet. Be the first to play!</p>
+          <Link href="/games/grammar-battle" className="btn-primary mt-4 inline-block">Play Now</Link>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -74,7 +79,7 @@ export default function LeaderboardPage() {
             <Trophy className="w-8 h-8 inline mr-2 text-accent-500" />
             <span className="gradient-text">Leaderboard</span>
           </h1>
-          <p className="text-gray-600 dark:text-gray-400">Top English learners this week</p>
+          <p className="text-gray-600 dark:text-gray-400">Top English learners</p>
         </div>
 
         <div className="flex items-end justify-center gap-4 mb-8">
