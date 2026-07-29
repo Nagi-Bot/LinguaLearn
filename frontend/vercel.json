@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [{ "src": "package.json", "use": "@vercel/next" }],
   "env": {
-    "NEXT_PUBLIC_API_URL": "https://lingualearn.up.railway.app/api",
+    "NEXT_PUBLIC_API_URL": "https://lingualearn-production-7136.up.railway.app/api",
     "NEXT_PUBLIC_GOOGLE_CLIENT_ID": "80811194151-ntfkj7cdomt24h7ctd3juvmh7trjub73.apps.googleusercontent.com"
   }
 }

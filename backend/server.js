@@ -6,7 +6,7 @@ const rateLimit = require('express-rate-limit')
 const app = express()
 
 app.use(cors({
-  origin: [process.env.FRONTEND_URL || 'http://localhost:3000', 'https://lingualearn.up.railway.app'],
+  origin: [process.env.FRONTEND_URL || 'http://localhost:3000', 'https://lingualearn.up.railway.app', 'https://lingualearn-production-7136.up.railway.app'],
   credentials: true,
 }))
 app.use(express.json({ limit: '5mb' }))
