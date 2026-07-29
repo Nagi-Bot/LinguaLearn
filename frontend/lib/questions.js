@@ -327,44 +327,44 @@ function generateAntonymQuestion() {
   return { word: p.word, options, correct: options.indexOf(p.correct) }
 }
 
-export function getGrammarBattleQuestions(count = 100) {
-  return Array.from({ length: count }, () => generateGrammarQuestion())
+export function getGrammarBattleQuestions(count = 10) {
+  const arr = new Array(count)
+  for (let i = 0; i < count; i++) arr[i] = generateGrammarQuestion()
+  return arr
 }
 
-export function getTenseQuestions(count = 100) {
-  return Array.from({ length: count }, () => generateTenseQuestion())
+export function getTenseQuestions(count = 10) {
+  const arr = new Array(count)
+  for (let i = 0; i < count; i++) arr[i] = generateTenseQuestion()
+  return arr
 }
 
-export function getFillBlankQuestions(count = 100) {
-  return Array.from({ length: count }, () => generateFillBlankQuestion())
+export function getFillBlankQuestions(count = 10) {
+  const arr = new Array(count)
+  for (let i = 0; i < count; i++) arr[i] = generateFillBlankQuestion()
+  return arr
 }
 
-export function getSynonymQuestions(count = 100) {
-  return Array.from({ length: count }, () => generateSynonymQuestion())
+export function getSynonymQuestions(count = 10) {
+  const arr = new Array(count)
+  for (let i = 0; i < count; i++) arr[i] = generateSynonymQuestion()
+  return arr
 }
 
-export function getAntonymQuestions(count = 100) {
-  return Array.from({ length: count }, () => generateAntonymQuestion())
+export function getAntonymQuestions(count = 10) {
+  const arr = new Array(count)
+  for (let i = 0; i < count; i++) arr[i] = generateAntonymQuestion()
+  return arr
 }
 
-export function getWordBuilderWords(count = 100) {
-  return Array.from({ length: count }, () => generateWordBuilderWord())
+export function getWordBuilderWords(count = 10) {
+  const arr = new Array(count)
+  for (let i = 0; i < count; i++) arr[i] = generateWordBuilderWord()
+  return arr
 }
 
-export function getSentenceBuilderPuzzles(count = 100) {
-  return Array.from({ length: count }, () => generateSentenceBuilderWords())
-}
-
-// Infinite question generator - call this every time you need more
-export function generateMoreQuestions(gameType, count = 50) {
-  switch (gameType) {
-    case 'grammar-battle': return getGrammarBattleQuestions(count)
-    case 'tense-challenge': return getTenseQuestions(count)
-    case 'fill-blank': return getFillBlankQuestions(count)
-    case 'synonym': return getSynonymQuestions(count)
-    case 'antonym': return getAntonymQuestions(count)
-    case 'word-builder': return getWordBuilderWords(count)
-    case 'sentence-builder': return getSentenceBuilderPuzzles(count)
-    default: return []
-  }
+export function getSentenceBuilderPuzzles(count = 10) {
+  const arr = new Array(count)
+  for (let i = 0; i < count; i++) arr[i] = generateSentenceBuilderWords()
+  return arr
 }

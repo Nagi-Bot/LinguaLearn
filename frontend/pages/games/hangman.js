@@ -7,7 +7,7 @@ import RequireAuth from '../../components/RequireAuth'
 import { useApp } from '../../context/AppContext'
 import { getWordBuilderWords } from '../../lib/questions'
 
-const BATCH_SIZE = 50
+const BATCH_SIZE = 15
 const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
 const maxWrong = 6
 

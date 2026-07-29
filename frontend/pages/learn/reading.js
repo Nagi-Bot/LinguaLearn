@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { ArrowLeft, CheckCircle, ChevronRight, BookOpen, Key, Briefcase, Globe, Landmark, MessageCircle } from 'lucide-react'
+import DynamicIcon from '../../components/DynamicIcon'
 import toast from 'react-hot-toast'
 
 const iconMap = {
@@ -149,7 +150,7 @@ export default function ReadingPage() {
 
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-8 mb-6">
             <div className="flex items-center space-x-2 mb-4">
-              <span className="w-8 h-8 flex items-center justify-center">{(() => { const Icon = iconMap[activeReading.icon]; return Icon ? <Icon className="w-6 h-6 text-primary-500" /> : null })()}</span>
+              <span className="w-8 h-8 flex items-center justify-center"><DynamicIcon iconMap={iconMap} iconKey={activeReading.icon} /></span>
               <div>
                 <h2 className="text-2xl font-display font-bold">{activeReading.title}</h2>
                 <span className="text-sm text-gray-500">{activeReading.level}</span>
@@ -218,7 +219,7 @@ export default function ReadingPage() {
               className={`glass-card cursor-pointer ${completedReadings.includes(reading.id) ? 'border-secondary-500/50' : ''}`}
             >
               <div className="flex items-start justify-between mb-3">
-                <span className="w-8 h-8 flex items-center justify-center">{(() => { const Icon = iconMap[reading.icon]; return Icon ? <Icon className="w-6 h-6 text-primary-500" /> : null })()}</span>
+                <span className="w-8 h-8 flex items-center justify-center"><DynamicIcon iconMap={iconMap} iconKey={reading.icon} /></span>
                 {completedReadings.includes(reading.id) && <CheckCircle className="w-5 h-5 text-secondary-500" />}
               </div>
               <h3 className="text-lg font-display font-semibold mb-1">{reading.title}</h3>

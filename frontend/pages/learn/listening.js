@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { Volume2, Headphones, ArrowLeft, CheckCircle, Play, Pause, Sun, UtensilsCrossed, Plane, Newspaper } from 'lucide-react'
+import DynamicIcon from '../../components/DynamicIcon'
 import toast from 'react-hot-toast'
 
 const iconMap = {
@@ -131,7 +132,7 @@ export default function ListeningPage() {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-6 mb-6">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center space-x-2">
-                <span className="w-8 h-8 flex items-center justify-center">{(() => { const Icon = iconMap[activeExercise.icon]; return Icon ? <Icon className="w-6 h-6 text-primary-500" /> : null })()}</span>
+                <span className="w-8 h-8 flex items-center justify-center"><DynamicIcon iconMap={iconMap} iconKey={activeExercise.icon} /></span>
                 <div>
                   <h2 className="text-xl font-display font-semibold">{activeExercise.title}</h2>
                   <span className="text-sm text-gray-500">{activeExercise.level}</span>
@@ -213,7 +214,7 @@ export default function ListeningPage() {
             >
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center space-x-3">
-                  <span className="w-8 h-8 flex items-center justify-center">{(() => { const Icon = iconMap[ex.icon]; return Icon ? <Icon className="w-6 h-6 text-primary-500" /> : null })()}</span>
+                  <span className="w-8 h-8 flex items-center justify-center"><DynamicIcon iconMap={iconMap} iconKey={ex.icon} /></span>
                   <div>
                     <h3 className="text-lg font-display font-semibold">{ex.title}</h3>
                     <span className="text-xs text-gray-500">{ex.level}</span>

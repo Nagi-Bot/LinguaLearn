@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { Trophy, Zap, Flame, BookOpen, Medal, Award, Crown, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
@@ -6,16 +6,30 @@ import { useApp } from '../context/AppContext'
 
 export default function LeaderboardPage() {
   const { user } = useApp()
-  const [allUsers, setAllUsers] = useState([])
+  const [refreshKey, setRefreshKey] = useState(0)
 
   useEffect(() => {
+    const handler = () => setRefreshKey(k => k + 1)
+    window.addEventListener('storage', handler)
+    return () => window.removeEventListener('storage', handler)
+  }, [])
+
+  const allUsers = useMemo(() => {
     const stored = localStorage.getItem('lingua_leaderboard')
     const savedScores = stored ? JSON.parse(stored) : []
 
-    const storedUsers = Object.keys(localStorage)
-      .filter(k => k.startsWith('lingua_user_'))
-      .map(k => { try { return JSON.parse(localStorage.getItem(k)) } catch { return null } })
-      .filter(Boolean)
+    let storedUsers = []
+    try {
+      const keys = Object.keys(localStorage)
+      for (let i = 0; i < keys.length; i++) {
+        if (keys[i].startsWith('lingua_user_')) {
+          try {
+            const data = JSON.parse(localStorage.getItem(keys[i]))
+            if (data) storedUsers.push(data)
+          } catch {}
+        }
+      }
+    } catch {}
 
     let list = []
 
@@ -24,24 +38,26 @@ export default function LeaderboardPage() {
       list.push(userEntry)
     }
 
-    storedUsers.forEach(su => {
+    for (let i = 0; i < storedUsers.length; i++) {
+      const su = storedUsers[i]
       if (!list.find(u => u.name === su.name)) {
         list.push({ name: su.name, xp: su.xp || 0, level: su.level || 1, streak: su.streak || 0, avatar: su.avatar || '' })
       }
-    })
+    }
 
-    savedScores.forEach(s => {
+    for (let i = 0; i < savedScores.length; i++) {
+      const s = savedScores[i]
       const existing = list.find(u => u.name === s.name)
       if (existing) {
         if (s.xp > existing.xp) { existing.xp = s.xp; existing.level = s.level; existing.streak = s.streak || existing.streak }
       } else {
         list.push({ name: s.name, xp: s.xp, level: s.level, streak: s.streak || 0 })
       }
-    })
+    }
 
     list.sort((a, b) => b.xp - a.xp)
-    setAllUsers(list.slice(0, 15))
-  }, [user])
+    return list.slice(0, 15)
+  }, [user, refreshKey])
 
   const getRankIcon = (rank) => {
     if (rank === 0) return <Crown className="w-5 h-5 text-yellow-500" />

@@ -7,7 +7,7 @@ import RequireAuth from '../../components/RequireAuth'
 import { useApp } from '../../context/AppContext'
 import { getFillBlankQuestions } from '../../lib/questions'
 
-const BATCH_SIZE = 50
+const BATCH_SIZE = 15
 
 export default function FillBlankPage() {
   const { addXp } = useApp()

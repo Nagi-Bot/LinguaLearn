@@ -7,7 +7,7 @@ import RequireAuth from '../../components/RequireAuth'
 import { useApp } from '../../context/AppContext'
 import { getGrammarBattleQuestions } from '../../lib/questions'
 
-const BATCH_SIZE = 50
+const BATCH_SIZE = 15
 const TIME_LIMIT = 15
 
 export default function GrammarBattlePage() {
