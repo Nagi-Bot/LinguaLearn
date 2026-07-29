@@ -4,8 +4,10 @@ import { useRouter } from 'next/router'
 import { motion } from 'framer-motion'
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
+import { GoogleLogin } from '@react-oauth/google'
 import { useApp } from '../context/AppContext'
 import { Mail, Lock, Eye, EyeOff, LogIn, Sparkles } from 'lucide-react'
+import api from '../lib/api'
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
@@ -13,6 +15,22 @@ export default function LoginPage() {
   const { login } = useApp()
   const router = useRouter()
   const { register, handleSubmit, formState: { errors } } = useForm()
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    setLoading(true)
+    try {
+      const res = await api.post('/auth/google', { credential: credentialResponse.credential })
+      const { default: Cookies } = await import('js-cookie')
+      Cookies.set('token', res.data.token, { expires: 30 })
+      localStorage.setItem('lingua_user', JSON.stringify(res.data.user))
+      toast.success('Welcome!')
+      router.push('/dashboard')
+    } catch {
+      toast.error('Google login failed')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const onSubmit = async (data) => {
     setLoading(true)
@@ -95,6 +113,26 @@ export default function LoginPage() {
                 <><LogIn className="w-5 h-5 mr-2" /> Sign In</>
               )}
             </button>
+
+            <div className="relative my-4">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-200 dark:border-gray-700" />
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-3 bg-white dark:bg-gray-800 text-gray-500">or</span>
+              </div>
+            </div>
+
+            <div className="flex justify-center">
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={() => toast.error('Google login failed')}
+                size="large"
+                shape="pill"
+                theme="outline"
+                text="continue_with"
+              />
+            </div>
           </form>
 
           <div className="mt-6 text-center">

@@ -1,7 +1,10 @@
 const router = require('express').Router()
 const jwt = require('jsonwebtoken')
+const { OAuth2Client } = require('google-auth-library')
 const User = require('../models/User')
 const auth = require('../middleware/auth')
+
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID || '')
 
 function generateToken(user) {
   return jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '30d' })
@@ -68,6 +71,37 @@ router.put('/me', auth, async (req, res) => {
   } catch (err) {
     console.error('Update error:', err)
     res.status(500).json({ message: 'Server error' })
+  }
+})
+
+router.post('/google', async (req, res) => {
+  try {
+    const { credential } = req.body
+    if (!credential) return res.status(400).json({ message: 'Google token required' })
+
+    const ticket = await googleClient.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    })
+    const payload = ticket.getPayload()
+    const { email, name, picture } = payload
+
+    let user = await User.findOne({ email: email.toLowerCase() })
+    if (!user) {
+      user = await User.create({
+        name: name || email.split('@')[0],
+        email,
+        password: 'google-auth-' + Math.random().toString(36).slice(2),
+        avatar: picture || '',
+      })
+    }
+    user.lastActive = new Date()
+    await user.save()
+    const token = generateToken(user)
+    res.json({ user: user.toPublicJSON(), token })
+  } catch (err) {
+    console.error('Google auth error:', err)
+    res.status(500).json({ message: 'Google login failed' })
   }
 })
 
