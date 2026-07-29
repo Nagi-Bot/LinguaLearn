@@ -16,6 +16,9 @@ export default function LeaderboardPage() {
   const loadLeaderboard = async () => {
     let list = []
     const localUsers = []
+    if (user?.name && user?.email) {
+      try { await api.post('/auth/sync', { name: user.name, email: user.email, xp: user.xp || 0, level: user.level || 1, streak: user.streak || 0, coins: user.coins || 0, avatar: user.avatar || '', bio: user.bio || '' }) } catch {}
+    }
     const savedScores = []
     try {
       const keys = Object.keys(localStorage)

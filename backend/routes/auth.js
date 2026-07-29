@@ -105,6 +105,30 @@ router.post('/google', async (req, res) => {
   }
 })
 
+router.post('/sync', async (req, res) => {
+  try {
+    const { name, email, xp, level, streak, coins, avatar, bio } = req.body
+    if (!name || !email) return res.status(400).json({ message: 'Name and email required' })
+    let user = await User.findOne({ email: email.toLowerCase() })
+    if (!user) {
+      user = await User.create({ name, email, password: 'sync-' + Math.random().toString(36).slice(2), xp: xp || 0, level: level || 1, streak: streak || 0, coins: coins || 100, avatar: avatar || '', bio: bio || '' })
+    } else {
+      if (xp > user.xp) user.xp = xp
+      if (level > user.level) user.level = level
+      if (streak > user.streak) user.streak = streak
+      if (coins > user.coins) user.coins = coins
+      if (avatar) user.avatar = avatar
+      if (bio) user.bio = bio
+    }
+    user.lastActive = new Date()
+    await user.save()
+    res.json({ user: user.toPublicJSON() })
+  } catch (err) {
+    console.error('Sync error:', err)
+    res.status(500).json({ message: 'Sync failed' })
+  }
+})
+
 router.post('/forgot-password', async (req, res) => {
   res.json({ message: 'Password reset link sent to your email (demo)' })
 })

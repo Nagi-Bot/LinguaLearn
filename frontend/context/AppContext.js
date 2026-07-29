@@ -148,6 +148,8 @@ export function AppProvider({ children }) {
       const token = Cookies.get('token')
       if (token && token !== 'local-token') {
         await api.post('/profile/xp', { amount })
+      } else if (user?.name && user?.email) {
+        await api.post('/auth/sync', { name: user.name, email: user.email, xp: newXp, level: newLevel, streak: user.streak || 0, coins: newCoins, avatar: user.avatar || '', bio: user.bio || '' })
       }
     } catch {}
     return { didLevelUp: newLevel > oldLevel, oldLevel, newLevel }
