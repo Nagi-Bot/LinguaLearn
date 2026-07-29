@@ -1,4 +1,3 @@
-require('dotenv').config()
 const express = require('express')
 const mongoose = require('mongoose')
 const cors = require('cors')
@@ -19,18 +18,13 @@ const limiter = rateLimit({
 })
 app.use('/api/', limiter)
 
-const uri = process.env.MONGODB_URI
-console.log('=== ENV DEBUG ===')
-console.log('MONGODB_URI:', JSON.stringify(uri))
-console.log('All MONGODB vars:', Object.keys(process.env).filter(k => k.toUpperCase().includes('MONGO') || k.toUpperCase().includes('MONGODB')).map(k => `${k}=${JSON.stringify(process.env[k])}`).join(', '))
-console.log('=================')
+process.env.JWT_SECRET = process.env.JWT_SECRET || 'lingualearn_jwt_secret_key_2024_secure'
+const MONGODB_URI = 'mongodb+srv://haanmoorad_db_user:S50lKXAjP6BiCCxJ@cluster0.r5p5u0u.mongodb.net/lingualearn?retryWrites=true&w=majority&appName=Cluster0'
+const uri = process.env.MONGODB_URI || MONGODB_URI
 
-if (!uri) { console.error('MONGODB_URI is not set — server will run without DB'); }
-else {
-  mongoose.connect(uri)
-    .then(() => console.log('MongoDB connected'))
-    .catch(err => { console.error('MongoDB error:', err.message) })
-}
+mongoose.connect(uri)
+  .then(() => console.log('MongoDB connected'))
+  .catch(err => { console.error('MongoDB error:', err.message) })
 
 app.use('/api/auth', require('./routes/auth'))
 app.use('/api/leaderboard', require('./routes/leaderboard'))
