@@ -15,39 +15,45 @@ export default function LeaderboardPage() {
 
   const loadLeaderboard = async () => {
     let list = []
+    const localUsers = []
+    const savedScores = []
+    try {
+      const keys = Object.keys(localStorage)
+      for (let i = 0; i < keys.length; i++) {
+        if (keys[i].startsWith('lingua_user_')) {
+          try {
+            const data = JSON.parse(localStorage.getItem(keys[i]))
+            if (data) localUsers.push(data)
+          } catch {}
+        }
+      }
+      const stored = localStorage.getItem('lingua_leaderboard')
+      if (stored) savedScores.push(...JSON.parse(stored))
+    } catch {}
     try {
       const res = await api.get('/leaderboard')
-      list = res.data.map(u => ({
-        name: u.name, xp: u.xp || 0, level: u.level || 1,
-        streak: u.streak || 0, avatar: u.avatar || '',
-        isYou: user?.name === u.name,
-        color: 'from-primary-500 to-primary-600'
-      }))
-    } catch {
-      const stored = localStorage.getItem('lingua_leaderboard')
-      const savedScores = stored ? JSON.parse(stored) : []
-      const storedUsers = []
-      try {
-        const keys = Object.keys(localStorage)
-        for (let i = 0; i < keys.length; i++) {
-          if (keys[i].startsWith('lingua_user_')) {
-            try {
-              const data = JSON.parse(localStorage.getItem(keys[i]))
-              if (data) storedUsers.push(data)
-            } catch {}
-          }
+      res.data.forEach(u => {
+        if (!list.find(x => x.name === u.name)) {
+          list.push({ name: u.name, xp: u.xp || 0, level: u.level || 1, streak: u.streak || 0, avatar: u.avatar || '', isYou: user?.name === u.name, color: 'from-primary-500 to-primary-600' })
         }
-      } catch {}
-      if (user) {
-        list.push({ name: user.name, xp: user.xp || 0, level: user.level || 1, streak: user.streak || 0, avatar: user.avatar || '', isYou: true, color: 'from-primary-500 to-primary-600' })
-      }
-      storedUsers.forEach(su => { if (!list.find(u => u.name === su.name)) list.push({ name: su.name, xp: su.xp || 0, level: su.level || 1, streak: su.streak || 0, avatar: su.avatar || '' }) })
-      savedScores.forEach(s => {
-        const existing = list.find(u => u.name === s.name)
-        if (existing) { if (s.xp > existing.xp) { existing.xp = s.xp; existing.level = s.level; existing.streak = s.streak || existing.streak } }
-        else { list.push({ name: s.name, xp: s.xp, level: s.level, streak: s.streak || 0 }) }
       })
+    } catch {}
+    if (user && !list.find(u => u.name === user.name)) {
+      list.push({ name: user.name, xp: user.xp || 0, level: user.level || 1, streak: user.streak || 0, avatar: user.avatar || '', isYou: true, color: 'from-primary-500 to-primary-600' })
     }
+    localUsers.forEach(su => {
+      if (!list.find(u => u.name === su.name)) {
+        list.push({ name: su.name, xp: su.xp || 0, level: su.level || 1, streak: su.streak || 0, avatar: su.avatar || '' })
+      }
+    })
+    savedScores.forEach(s => {
+      const existing = list.find(u => u.name === s.name)
+      if (existing) {
+        if (s.xp > existing.xp) { existing.xp = s.xp; existing.level = s.level; existing.streak = s.streak || existing.streak }
+      } else {
+        list.push({ name: s.name, xp: s.xp, level: s.level, streak: s.streak || 0 })
+      }
+    })
     list.sort((a, b) => b.xp - a.xp)
     setAllUsers(list.slice(0, 15))
   }
