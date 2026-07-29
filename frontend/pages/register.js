@@ -3,9 +3,11 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { motion } from 'framer-motion'
 import { useForm } from 'react-hook-form'
+import { GoogleLogin } from '@react-oauth/google'
 import toast from 'react-hot-toast'
 import { useApp } from '../context/AppContext'
 import { Mail, Lock, Eye, EyeOff, User, Sparkles, UserPlus } from 'lucide-react'
+import api from '../lib/api'
 
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false)
@@ -13,6 +15,22 @@ export default function RegisterPage() {
   const { register: registerUser } = useApp()
   const router = useRouter()
   const { register, handleSubmit, formState: { errors } } = useForm()
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    setLoading(true)
+    try {
+      const res = await api.post('/auth/google', { credential: credentialResponse.credential })
+      const { default: Cookies } = await import('js-cookie')
+      Cookies.set('token', res.data.token, { expires: 30 })
+      localStorage.setItem('lingua_user', JSON.stringify(res.data.user))
+      toast.success('Account created with Google!')
+      router.push('/dashboard')
+    } catch {
+      toast.error('Google signup failed')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const onSubmit = async (data) => {
     setLoading(true)
@@ -106,6 +124,26 @@ export default function RegisterPage() {
                 <><UserPlus className="w-5 h-5 mr-2" /> Create Account</>
               )}
             </button>
+
+            <div className="relative my-4">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-200 dark:border-gray-700" />
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-3 bg-white dark:bg-gray-800 text-gray-500">or</span>
+              </div>
+            </div>
+
+            <div className="flex justify-center">
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={() => toast.error('Google signup failed')}
+                size="large"
+                shape="pill"
+                theme="outline"
+                text="signup_with"
+              />
+            </div>
           </form>
 
           <div className="mt-6 text-center">
