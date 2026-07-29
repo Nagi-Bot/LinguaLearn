@@ -19,7 +19,10 @@ const limiter = rateLimit({
 })
 app.use('/api/', limiter)
 
-mongoose.connect(process.env.MONGODB_URI)
+const uri = process.env.MONGODB_URI
+console.log('MONGODB_URI length:', uri?.length, 'prefix:', uri?.substring(0, 20))
+if (!uri) { console.error('MONGODB_URI is not set'); process.exit(1) }
+mongoose.connect(uri)
   .then(() => console.log('MongoDB connected'))
   .catch(err => { console.error('MongoDB error:', err.message); process.exit(1) })
 
