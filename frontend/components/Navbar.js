@@ -167,8 +167,8 @@ export default function Navbar() {
                   href="/profile"
                   className="flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-primary-50 dark:bg-primary-900/20 hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-all"
                 >
-                  <div className="w-7 h-7 gradient-bg rounded-full flex items-center justify-center text-white text-xs font-bold">
-                    {user.name?.charAt(0)?.toUpperCase() || 'U'}
+                  <div className="w-7 h-7 gradient-bg rounded-full flex items-center justify-center text-white text-xs font-bold overflow-hidden">
+                    {user.avatar ? <img src={user.avatar} alt="" className="w-full h-full object-cover" /> : (user.name?.charAt(0)?.toUpperCase() || 'U')}
                   </div>
                   <span className="text-sm font-medium text-primary-700 dark:text-primary-300">{user.name}</span>
                 </Link>
