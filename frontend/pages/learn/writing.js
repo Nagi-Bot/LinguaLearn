@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { PenTool, Send, Sparkles, AlertCircle, CheckCircle, ArrowLeft, RotateCcw } from 'lucide-react'
 import toast from 'react-hot-toast'
+import Link from 'next/link'
+import { useApp } from '../../context/AppContext'
 
 const prompts = [
   { title: 'Describe Your Dream Vacation', type: 'Paragraph', prompt: 'Write a paragraph describing your ideal vacation destination. Include details about the location, activities, and why you want to go there.' },
@@ -13,10 +15,13 @@ const prompts = [
 ]
 
 export default function WritingPage() {
+  const { saveLearnProgress, loseHeart, hasHearts, user } = useApp()
   const [activePrompt, setActivePrompt] = useState(null)
   const [text, setText] = useState('')
   const [feedback, setFeedback] = useState(null)
   const [analyzing, setAnalyzing] = useState(false)
+  const [hearts, setHearts] = useState(3)
+  const [ended, setEnded] = useState(false)
 
   const analyzeWriting = async () => {
     if (!text.trim()) {
@@ -67,6 +72,9 @@ export default function WritingPage() {
         errors, suggestions, improvements, praises,
         score: Math.min(100, 60 + (wordCount > 50 ? 10 : 0) + (sentences > 3 ? 10 : 0) + (errors.length === 0 ? 20 : 0))
       })
+      const finalScore = Math.min(100, 60 + (wordCount > 50 ? 10 : 0) + (sentences > 3 ? 10 : 0) + (errors.length === 0 ? 20 : 0))
+      saveLearnProgress('writing', activePrompt.title, finalScore)
+      toast.success('+2 diamonds earned!', { icon: '💎', duration: 3000 })
       setAnalyzing(false)
     }, 1500)
   }
@@ -78,6 +86,25 @@ export default function WritingPage() {
   }
 
   if (activePrompt) {
+    if (ended) {
+      return (
+        <div className="min-h-screen py-8 px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="glass-card p-12">
+              <div className="w-20 h-20 mx-auto mb-6 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center">
+                <span className="text-4xl">💔</span>
+              </div>
+              <h2 className="text-3xl font-display font-bold mb-2">Out of Hearts!</h2>
+              <p className="text-gray-600 dark:text-gray-400 mb-6">You've run out of hearts. Visit the Store to buy more.</p>
+              <div className="flex items-center justify-center space-x-4">
+                <Link href="/store" className="btn-primary">Visit Store</Link>
+                <button onClick={() => { reset(); setEnded(false); setHearts(3) }} className="btn-secondary">Back to Prompts</button>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      )
+    }
     return (
       <div className="min-h-screen py-8 px-4">
         <div className="max-w-4xl mx-auto">
@@ -103,7 +130,10 @@ export default function WritingPage() {
               className="input-field resize-none mb-4 text-base"
             />
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-500">{text.trim().split(/\s+/).filter(w => w).length} words</span>
+              <div className="flex items-center space-x-3">
+                <span className="text-sm text-gray-500">{text.trim().split(/\s+/).filter(w => w).length} words</span>
+                <span className="text-sm font-semibold">❤️ {hearts}/3</span>
+              </div>
               <div className="flex space-x-3">
                 <button onClick={() => setText('')} className="btn-secondary"><RotateCcw className="w-4 h-4 mr-2 inline" /> Clear</button>
                 <button onClick={analyzeWriting} disabled={analyzing} className="btn-primary">

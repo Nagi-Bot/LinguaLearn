@@ -4,7 +4,7 @@ import { useApp } from '../context/AppContext'
 import XPProgressRing from '../components/XPProgressRing'
 import {
   Zap, Flame, Trophy, Award, BookOpen, Target,
-  TrendingUp, ChevronRight, Clock, Star, Gem,
+  TrendingUp, ChevronRight, Clock, Star,
   Brain, Gamepad2, Sparkles, Calendar, BarChart3,
   CheckCircle, ArrowRight, Medal, Crown,
   Languages, MessageSquare, Diamond
@@ -29,7 +29,6 @@ export default function DashboardPage() {
     level: user?.level || 1,
     streak: user?.streak || 0,
     bestStreak: user?.bestStreak || 0,
-    coins: user?.coins || 0,
     diamonds: user?.diamonds || 0,
     lessonsCompleted: user?.lessonsCompleted || 0,
     gamesPlayed: user?.gamesPlayed || 0,
@@ -123,7 +122,7 @@ export default function DashboardPage() {
               { icon: Trophy, label: 'Level', value: stats.level, color: 'text-accent-500', bg: 'bg-accent-50 dark:bg-accent-900/30' },
               { icon: BookOpen, label: 'Lessons', value: stats.lessonsCompleted, color: 'text-primary-500', bg: 'bg-primary-50 dark:bg-primary-900/30' },
               { icon: Gamepad2, label: 'Games', value: stats.gamesPlayed, color: 'text-secondary-500', bg: 'bg-secondary-50 dark:bg-secondary-900/30' },
-              { icon: Gem, label: 'Coins', value: stats.coins, color: 'text-yellow-500', bg: 'bg-yellow-50 dark:bg-yellow-900/30' },
+              { icon: Diamond, label: 'Diamonds', value: stats.diamonds, color: 'text-cyan-500', bg: 'bg-cyan-50 dark:bg-cyan-900/30' },
               { icon: Award, label: 'Badges', value: stats.badgesCount, color: 'text-purple-500', bg: 'bg-purple-50 dark:bg-purple-900/30' },
             ].map((stat, i) => (
               <div key={i} className={`${stat.bg} rounded-xl p-4 text-center`}>

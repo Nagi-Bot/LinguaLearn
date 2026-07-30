@@ -1,6 +1,7 @@
 import { useState, createElement } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
+import { useApp } from '../../context/AppContext'
 import {
   BookOpen, CheckCircle, ChevronRight, ArrowLeft,
   Sparkles, RotateCcw, Star, Zap, Award,
@@ -101,6 +102,7 @@ const quizQuestions = [
 ]
 
 export default function GrammarPage() {
+  const { saveLearnProgress, loseHeart, hasHearts, user } = useApp()
   const [activeTopic, setActiveTopic] = useState(null)
   const [activeLesson, setActiveLesson] = useState(0)
   const [quizActive, setQuizActive] = useState(false)
@@ -110,6 +112,8 @@ export default function GrammarPage() {
   const [selectedAnswer, setSelectedAnswer] = useState(null)
   const [completedTopics, setCompletedTopics] = useState([])
   const [showQuiz, setShowQuiz] = useState(false)
+  const [hearts, setHearts] = useState(3)
+  const [ended, setEnded] = useState(false)
 
   const startTopic = (topic) => {
     setActiveTopic(topic)
@@ -138,6 +142,14 @@ export default function GrammarPage() {
       toast.success('Correct! 🎉')
     } else {
       toast.error('Incorrect!')
+      const newHearts = hearts - 1
+      setHearts(newHearts)
+      loseHeart()
+      if (newHearts <= 0) {
+        toast.error('No hearts left! Buy more in the Store', { duration: 3000 })
+        setEnded(true)
+        return
+      }
     }
     setTimeout(() => {
       if (currentQuestion < quizQuestions.length - 1) {
@@ -148,7 +160,10 @@ export default function GrammarPage() {
         if (!completedTopics.includes(activeTopic?.id)) {
           setCompletedTopics([...completedTopics, activeTopic?.id])
         }
-        toast.success(`Quiz Complete! Score: ${score + (index === quizQuestions[currentQuestion].correct ? 1 : 0)}/${quizQuestions.length}`)
+        const finalScore = score + (index === quizQuestions[currentQuestion].correct ? 1 : 0)
+        saveLearnProgress('grammar', activeTopic?.id, finalScore * 10)
+        toast.success(`Quiz Complete! Score: ${finalScore}/${quizQuestions.length}`)
+        toast.success('+2 diamonds earned!', { icon: '💎', duration: 3000 })
       }
     }, 1000)
   }
@@ -173,6 +188,28 @@ export default function GrammarPage() {
   }
 
   if (activeTopic && showQuiz) {
+    if (ended) {
+      return (
+        <div className="min-h-screen py-8 px-4">
+          <div className="max-w-3xl mx-auto">
+            <button onClick={goBack} className="flex items-center text-gray-500 hover:text-primary-500 mb-6">
+              <ArrowLeft className="w-4 h-4 mr-1" /> Back to {activeTopic.title}
+            </button>
+            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="glass-card text-center p-12">
+              <div className="w-20 h-20 mx-auto mb-6 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center">
+                <span className="text-4xl">💔</span>
+              </div>
+              <h2 className="text-3xl font-display font-bold mb-2">Out of Hearts!</h2>
+              <p className="text-gray-600 dark:text-gray-400 mb-6">You've run out of hearts. Visit the Store to buy more.</p>
+              <div className="flex items-center justify-center space-x-4">
+                <Link href="/store" className="btn-primary">Visit Store</Link>
+                <button onClick={goBack} className="btn-secondary">Back to Topics</button>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      )
+    }
     return (
       <div className="min-h-screen py-8 px-4">
         <div className="max-w-3xl mx-auto">
@@ -205,7 +242,10 @@ export default function GrammarPage() {
               <div className="mb-6">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm text-gray-500">Question {currentQuestion + 1} of {quizQuestions.length}</span>
-                  <span className="text-sm font-semibold text-primary-500">Score: {score}</span>
+                  <div className="flex items-center space-x-3">
+                    <span className="text-sm font-semibold">❤️ {hearts}/3</span>
+                    <span className="text-sm font-semibold text-primary-500">Score: {score}</span>
+                  </div>
                 </div>
                 <div className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full">
                   <div className="h-full bg-primary-500 rounded-full transition-all" style={{ width: `${((currentQuestion + 1) / quizQuestions.length) * 100}%` }} />

@@ -10,8 +10,10 @@ const userSchema = new mongoose.Schema({
   level: { type: Number, default: 1 },
   streak: { type: Number, default: 0 },
   bestStreak: { type: Number, default: 0 },
-  coins: { type: Number, default: 100 },
   diamonds: { type: Number, default: 100 },
+  hearts: { type: Number, default: 3 },
+  maxHearts: { type: Number, default: 3 },
+  heartRefillAt: { type: Date, default: null },
   avatar: { type: String, default: '' },
   bio: { type: String, default: '' },
   lastActive: { type: Date, default: Date.now },
@@ -25,15 +27,21 @@ const userSchema = new mongoose.Schema({
   weeklyActivity: { type: [Number], default: [0, 0, 0, 0, 0, 0, 0] },
   completedCourses: { type: [String], default: [] },
   badges: { type: [String], default: [] },
-  gameScores: {
-    type: Map, of: Number, default: {}
-  },
+  gameScores: { type: Map, of: Number, default: {} },
   gameHistory: [{
     game: String,
     score: Number,
     xpEarned: Number,
     date: { type: Date, default: Date.now }
   }],
+  learnProgress: {
+    grammar: { completed: [String], score: { type: Number, default: 0 }, totalXp: { type: Number, default: 0 } },
+    vocabulary: { completed: [String], score: { type: Number, default: 0 }, totalXp: { type: Number, default: 0 }, wordsLearned: [String] },
+    reading: { completed: [String], score: { type: Number, default: 0 }, totalXp: { type: Number, default: 0 } },
+    writing: { completed: [String], score: { type: Number, default: 0 }, totalXp: { type: Number, default: 0 } },
+    speaking: { completed: [String], score: { type: Number, default: 0 }, totalXp: { type: Number, default: 0 } },
+    listening: { completed: [String], score: { type: Number, default: 0 }, totalXp: { type: Number, default: 0 } },
+  },
   resetPasswordToken: { type: String, default: undefined },
   resetPasswordExpires: { type: Date, default: undefined },
 }, { timestamps: true })
@@ -58,7 +66,6 @@ userSchema.methods.generateResetToken = function () {
 userSchema.methods.updateStreak = function () {
   const today = new Date().toISOString().split('T')[0]
   if (this.lastLoginDate === today) return false
-
   const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0]
   if (this.lastLoginDate === yesterday) {
     this.streak = (this.streak || 0) + 1
@@ -73,51 +80,48 @@ userSchema.methods.updateStreak = function () {
 userSchema.methods.addXp = function (amount) {
   const oldLevel = Math.floor((this.xp || 0) / 500) + 1
   this.xp = (this.xp || 0) + amount
-  this.coins = (this.coins || 0) + Math.floor(amount / 10)
   const newLevel = Math.floor(this.xp / 500) + 1
   const levelUp = newLevel > oldLevel
   this.level = newLevel
   if (levelUp) {
     this.diamonds = (this.diamonds || 0) + 30
+    this.hearts = Math.min((this.hearts || 0) + 1, this.maxHearts || 3)
   }
   this.lastActive = new Date()
-  return { levelUp, oldLevel, newLevel, diamonds: this.diamonds }
+  return { levelUp, oldLevel, newLevel, diamonds: this.diamonds, hearts: this.hearts }
+}
+
+userSchema.methods.refillHearts = function () {
+  const now = new Date()
+  if (this.heartRefillAt && now >= this.heartRefillAt) {
+    this.hearts = this.maxHearts || 3
+    this.heartRefillAt = null
+    return true
+  }
+  return false
+}
+
+userSchema.methods.loseHeart = function () {
+  if (this.hearts > 0) {
+    this.hearts -= 1
+    if (this.hearts === 0) {
+      this.heartRefillAt = new Date(Date.now() + 30 * 60 * 1000)
+    }
+    return true
+  }
+  return false
 }
 
 userSchema.methods.checkBadges = function () {
   const earned = []
-  if ((this.lessonsCompleted || 0) >= 5 && !this.badges.includes('quick_learner')) {
-    this.badges.push('quick_learner')
-    earned.push('quick_learner')
-  }
-  if ((this.streak || 0) >= 7 && !this.badges.includes('streak_master')) {
-    this.badges.push('streak_master')
-    earned.push('streak_master')
-  }
-  if ((this.gamesPlayed || 0) >= 10 && !this.badges.includes('game_champion')) {
-    this.badges.push('game_champion')
-    earned.push('game_champion')
-  }
-  if ((this.wordsLearned || 0) >= 50 && !this.badges.includes('vocab_star')) {
-    this.badges.push('vocab_star')
-    earned.push('vocab_star')
-  }
-  if ((this.quizzesTaken || 0) >= 10 && !this.badges.includes('quiz_master')) {
-    this.badges.push('quiz_master')
-    earned.push('quiz_master')
-  }
-  if ((this.streak || 0) >= 30 && !this.badges.includes('dedicated')) {
-    this.badges.push('dedicated')
-    earned.push('dedicated')
-  }
-  if ((this.totalGameScore || 0) >= 1000 && !this.badges.includes('high_scorer')) {
-    this.badges.push('high_scorer')
-    earned.push('high_scorer')
-  }
-  if ((this.gamesPlayed || 0) >= 50 && !this.badges.includes('gaming_legend')) {
-    this.badges.push('gaming_legend')
-    earned.push('gaming_legend')
-  }
+  if ((this.lessonsCompleted || 0) >= 5 && !this.badges.includes('quick_learner')) { this.badges.push('quick_learner'); earned.push('quick_learner') }
+  if ((this.streak || 0) >= 7 && !this.badges.includes('streak_master')) { this.badges.push('streak_master'); earned.push('streak_master') }
+  if ((this.gamesPlayed || 0) >= 10 && !this.badges.includes('game_champion')) { this.badges.push('game_champion'); earned.push('game_champion') }
+  if ((this.wordsLearned || 0) >= 50 && !this.badges.includes('vocab_star')) { this.badges.push('vocab_star'); earned.push('vocab_star') }
+  if ((this.quizzesTaken || 0) >= 10 && !this.badges.includes('quiz_master')) { this.badges.push('quiz_master'); earned.push('quiz_master') }
+  if ((this.streak || 0) >= 30 && !this.badges.includes('dedicated')) { this.badges.push('dedicated'); earned.push('dedicated') }
+  if ((this.totalGameScore || 0) >= 1000 && !this.badges.includes('high_scorer')) { this.badges.push('high_scorer'); earned.push('high_scorer') }
+  if ((this.gamesPlayed || 0) >= 50 && !this.badges.includes('gaming_legend')) { this.badges.push('gaming_legend'); earned.push('gaming_legend') }
   return earned
 }
 
@@ -130,8 +134,10 @@ userSchema.methods.toPublicJSON = function () {
     level: this.level,
     streak: this.streak,
     bestStreak: this.bestStreak,
-    coins: this.coins,
     diamonds: this.diamonds,
+    hearts: this.hearts,
+    maxHearts: this.maxHearts,
+    heartRefillAt: this.heartRefillAt,
     avatar: this.avatar,
     bio: this.bio,
     joinDate: this.joinDate,
@@ -145,6 +151,7 @@ userSchema.methods.toPublicJSON = function () {
     badges: this.badges,
     gameScores: this.gameScores ? Object.fromEntries(this.gameScores) : {},
     gameHistory: this.gameHistory || [],
+    learnProgress: this.learnProgress || {},
   }
 }
 

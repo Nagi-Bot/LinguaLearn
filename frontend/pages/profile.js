@@ -5,7 +5,7 @@ import Link from 'next/link'
 import api from '../lib/api'
 import {
   User, Zap, Trophy, Award, BookOpen, Medal,
-  Calendar, Clock, Target, Star, Gem, BarChart3,
+  Calendar, Clock, Target, Star, BarChart3,
   Settings, Camera, Flame, CheckCircle, Gamepad2,
   Diamond, TrendingUp
 } from 'lucide-react'
@@ -59,7 +59,6 @@ export default function ProfilePage() {
     level: user?.level || 1,
     streak: user?.streak || 0,
     bestStreak: user?.bestStreak || 0,
-    coins: user?.coins || 0,
     diamonds: user?.diamonds || 0,
     lessonsCompleted: user?.lessonsCompleted || 0,
     gamesPlayed: user?.gamesPlayed || 0,
@@ -124,10 +123,6 @@ export default function ProfilePage() {
                     <Trophy className="w-3.5 h-3.5 text-secondary-500" />
                     <span className="font-semibold text-sm text-secondary-700 dark:text-secondary-300">Level {stats.level}</span>
                   </div>
-                  <div className="flex items-center space-x-1 px-3 py-1.5 rounded-lg bg-yellow-50 dark:bg-yellow-900/30">
-                    <Gem className="w-3.5 h-3.5 text-yellow-500" />
-                    <span className="font-semibold text-sm text-yellow-700 dark:text-yellow-300">{stats.coins} coins</span>
-                  </div>
                   <div className="flex items-center space-x-1 px-3 py-1.5 rounded-lg bg-cyan-50 dark:bg-cyan-900/30">
                     <Diamond className="w-3.5 h-3.5 text-cyan-500" />
                     <span className="font-semibold text-sm text-cyan-700 dark:text-cyan-300">{stats.diamonds} diamonds</span>
@@ -171,7 +166,6 @@ export default function ProfilePage() {
                     { icon: Gamepad2, label: 'Games Played', value: stats.gamesPlayed, color: 'text-secondary-500' },
                     { icon: Zap, label: 'Total Game Score', value: stats.totalGameScore, color: 'text-accent-500' },
                     { icon: Award, label: 'Badges Earned', value: stats.badges.length, color: 'text-purple-500' },
-                    { icon: Gem, label: 'Coins', value: stats.coins, color: 'text-yellow-500' },
                     { icon: Diamond, label: 'Diamonds', value: stats.diamonds, color: 'text-cyan-500' },
                   ].map((item, i) => (
                     <div key={i} className="flex items-center justify-between">
@@ -297,12 +291,7 @@ export default function ProfilePage() {
 
               <motion.div variants={itemAnim} className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
                 <h2 className="font-semibold text-gray-900 dark:text-white mb-4">Currency</h2>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="text-center p-4 rounded-xl bg-yellow-50 dark:bg-yellow-900/30">
-                    <Gem className="w-8 h-8 mx-auto mb-2 text-yellow-500" />
-                    <div className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">{stats.coins}</div>
-                    <div className="text-xs text-gray-500">Coins</div>
-                  </div>
+                <div className="grid grid-cols-1 gap-4">
                   <div className="text-center p-4 rounded-xl bg-cyan-50 dark:bg-cyan-900/30">
                     <Diamond className="w-8 h-8 mx-auto mb-2 text-cyan-500" />
                     <div className="text-2xl font-bold text-cyan-600 dark:text-cyan-400">{stats.diamonds}</div>

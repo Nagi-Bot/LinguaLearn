@@ -2,6 +2,8 @@ import { useState, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Mic, MicOff, Volume2, ArrowLeft, RotateCcw, Star, CheckCircle } from 'lucide-react'
 import toast from 'react-hot-toast'
+import Link from 'next/link'
+import { useApp } from '../../context/AppContext'
 
 const sentences = [
   'The quick brown fox jumps over the lazy dog.',
@@ -17,12 +19,15 @@ const sentences = [
 ]
 
 export default function SpeakingPage() {
+  const { saveLearnProgress, loseHeart, hasHearts, user } = useApp()
   const [currentSentence, setCurrentSentence] = useState(0)
   const [isListening, setIsListening] = useState(false)
   const [spokenText, setSpokenText] = useState('')
   const [scores, setScores] = useState([])
   const [completed, setCompleted] = useState(false)
   const [result, setResult] = useState(null)
+  const [hearts, setHearts] = useState(3)
+  const [ended, setEnded] = useState(false)
 
   const speakSentence = (text) => {
     if ('speechSynthesis' in window) {
@@ -78,6 +83,17 @@ export default function SpeakingPage() {
       setScores([...scores, newScore])
       setResult(newScore)
 
+      if (overallScore < 50) {
+        const newHearts = hearts - 1
+        setHearts(newHearts)
+        loseHeart()
+        if (newHearts <= 0) {
+          toast.error('No hearts left! Buy more in the Store', { duration: 3000 })
+          setEnded(true)
+          return
+        }
+      }
+
       if (currentSentence < sentences.length - 1) {
         setTimeout(() => {
           setCurrentSentence(currentSentence + 1)
@@ -86,7 +102,10 @@ export default function SpeakingPage() {
         }, 2000)
       } else {
         setCompleted(true)
+        const avgScore = Math.round([...scores, newScore].reduce((a, s) => a + s.overallScore, 0) / (scores.length + 1))
+        saveLearnProgress('speaking', 'practice-session', avgScore)
         toast.success('Speaking practice complete! 🎉')
+        toast.success('+2 diamonds earned!', { icon: '💎', duration: 3000 })
       }
     }
 
@@ -104,6 +123,26 @@ export default function SpeakingPage() {
     setScores([])
     setCompleted(false)
     setResult(null)
+  }
+
+  if (ended) {
+    return (
+      <div className="min-h-screen py-8 px-4">
+        <div className="max-w-2xl mx-auto text-center">
+          <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="glass-card p-12">
+            <div className="w-20 h-20 mx-auto mb-6 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center">
+              <span className="text-4xl">💔</span>
+            </div>
+            <h2 className="text-3xl font-display font-bold mb-2">Out of Hearts!</h2>
+            <p className="text-gray-600 dark:text-gray-400 mb-6">You've run out of hearts. Visit the Store to buy more.</p>
+            <div className="flex items-center justify-center space-x-4">
+              <Link href="/store" className="btn-primary">Visit Store</Link>
+              <button onClick={() => { reset(); setEnded(false); setHearts(3) }} className="btn-secondary">Practice Again</button>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    )
   }
 
   if (completed) {
@@ -160,6 +199,7 @@ export default function SpeakingPage() {
               {i < currentSentence ? <CheckCircle className="w-4 h-4" /> : i + 1}
             </div>
           ))}
+          <span className="ml-2 text-sm font-semibold">❤️ {hearts}/3</span>
         </div>
 
         <motion.div key={currentSentence} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-8 text-center mb-6">

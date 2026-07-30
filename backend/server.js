@@ -30,8 +30,9 @@ app.use('/api/auth', require('./routes/auth'))
 app.use('/api/leaderboard', require('./routes/leaderboard'))
 app.use('/api/profile', require('./routes/profile'))
 app.use('/api/games', require('./routes/games'))
+app.use('/api/learn', require('./routes/learn'))
 
-app.get('/', (req, res) => res.json({ message: 'LinguaLearn API', status: 'running', endpoints: ['/api/health', '/api/auth/*', '/api/leaderboard', '/api/profile/*', '/api/games/*'] }))
+app.get('/', (req, res) => res.json({ message: 'LinguaLearn API', status: 'running', endpoints: ['/api/health', '/api/auth/*', '/api/leaderboard', '/api/profile/*', '/api/games/*', '/api/learn/*'] }))
 app.get('/api/health', (req, res) => res.json({ status: 'ok', timestamp: new Date().toISOString() }))
 
 app.use((err, req, res, next) => {

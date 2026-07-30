@@ -6,7 +6,7 @@ import { useApp } from '../context/AppContext'
 import {
   Menu, X, BookOpen, GraduationCap, LogIn, User,
   Sun, Moon, ChevronDown, Trophy, Gamepad2, Home,
-  LayoutDashboard, Sparkles
+  LayoutDashboard, Sparkles, ShoppingCart
 } from 'lucide-react'
 
 export default function Navbar() {
@@ -20,6 +20,7 @@ export default function Navbar() {
     { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, auth: true },
     { href: '/learn/grammar', label: 'Learn', icon: BookOpen },
     { href: '/leaderboard', label: 'Leaderboard', icon: Trophy },
+    { href: '/store', label: 'Store', icon: ShoppingCart, auth: true },
   ]
 
   const learnDropdown = [

@@ -45,37 +45,26 @@ export function AppProvider({ children }) {
     setDarkMode(newMode)
     setTheme(newMode ? 'dark' : 'light')
     localStorage.setItem('theme', newMode ? 'dark' : 'light')
-    if (newMode) {
-      document.documentElement.classList.add('dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-    }
+    if (newMode) document.documentElement.classList.add('dark')
+    else document.documentElement.classList.remove('dark')
   }
 
   const login = async (email, password) => {
-    try {
-      const res = await api.post('/auth/login', { email, password })
-      const { user: userData, token } = res.data
-      Cookies.set('token', token, { expires: 30 })
-      localStorage.setItem('lingua_user', JSON.stringify(userData))
-      setUser(userData)
-      return { user: userData, token }
-    } catch (err) {
-      throw err
-    }
+    const res = await api.post('/auth/login', { email, password })
+    const { user: userData, token } = res.data
+    Cookies.set('token', token, { expires: 30 })
+    localStorage.setItem('lingua_user', JSON.stringify(userData))
+    setUser(userData)
+    return { user: userData, token }
   }
 
   const register = async (name, email, password) => {
-    try {
-      const res = await api.post('/auth/register', { name, email, password })
-      const { user: userData, token } = res.data
-      Cookies.set('token', token, { expires: 30 })
-      localStorage.setItem('lingua_user', JSON.stringify(userData))
-      setUser(userData)
-      return { user: userData, token }
-    } catch (err) {
-      throw err
-    }
+    const res = await api.post('/auth/register', { name, email, password })
+    const { user: userData, token } = res.data
+    Cookies.set('token', token, { expires: 30 })
+    localStorage.setItem('lingua_user', JSON.stringify(userData))
+    setUser(userData)
+    return { user: userData, token }
   }
 
   const googleAuth = async (credentialResponse) => {
@@ -89,22 +78,12 @@ export function AppProvider({ children }) {
     } catch {
       const decoded = parseJwt(credentialResponse.credential)
       if (!decoded) throw { response: { data: { message: 'Google signup failed' } } }
-      const existingUser = localStorage.getItem('lingua_user')
-      const parsed = existingUser ? JSON.parse(existingUser) : null
-      if (parsed && parsed.email === decoded.email) {
-        const userData = { ...parsed, name: decoded.name || parsed.name, avatar: decoded.picture || parsed.avatar }
-        Cookies.set('token', 'local-token', { expires: 7 })
-        localStorage.setItem('lingua_user', JSON.stringify(userData))
-        setUser(userData)
-        return { user: userData, token: 'local-token' }
-      }
       const userData = {
         id: decoded.sub || Date.now().toString(),
         name: decoded.name || decoded.email.split('@')[0],
-        email: decoded.email,
-        avatar: decoded.picture || '',
-        xp: 0, level: 1, streak: 0, bestStreak: 0, coins: 100, diamonds: 100,
-        badges: [], gameScores: {}, gameHistory: [], bio: '',
+        email: decoded.email, avatar: decoded.picture || '',
+        xp: 0, level: 1, streak: 0, bestStreak: 0, diamonds: 100, hearts: 3, maxHearts: 3,
+        badges: [], gameScores: {}, gameHistory: [], bio: '', learnProgress: {},
         gamesPlayed: 0, lessonsCompleted: 0, wordsLearned: 0, quizzesTaken: 0, totalGameScore: 0,
         weeklyActivity: [0, 0, 0, 0, 0, 0, 0]
       }
@@ -128,63 +107,46 @@ export function AppProvider({ children }) {
     localStorage.setItem('lingua_user', JSON.stringify(updated))
     try {
       const token = Cookies.get('token')
-      if (token && token !== 'local-token') {
-        await api.put('/auth/me', updates)
-      }
+      if (token && token !== 'local-token') await api.put('/auth/me', updates)
     } catch {}
   }
 
-  const addXp = async (amount, gameName = null) => {
-    const token = Cookies.get('token')
-    if (token && token !== 'local-token' && gameName) {
-      try {
-        const res = await api.post('/games/submit', { game: gameName, score: amount, xpEarned: amount })
-        const userData = res.data.user
-        setUser(userData)
-        localStorage.setItem('lingua_user', JSON.stringify(userData))
-        return {
-          didLevelUp: res.data.levelUp,
-          oldLevel: res.data.oldLevel,
-          newLevel: res.data.newLevel,
-          newBadges: res.data.newBadges || []
-        }
-      } catch {
-        return addXpLocal(amount)
-      }
-    } else if (token && token !== 'local-token') {
-      try {
-        const res = await api.post('/profile/xp', { amount })
-        const userData = res.data.user
-        setUser(userData)
-        localStorage.setItem('lingua_user', JSON.stringify(userData))
-        return {
-          didLevelUp: res.data.levelUp,
-          oldLevel: res.data.oldLevel,
-          newLevel: res.data.newLevel,
-          newBadges: res.data.newBadges || []
-        }
-      } catch {
-        return addXpLocal(amount)
-      }
-    }
-    return addXpLocal(amount)
+  const syncUser = (userData) => {
+    setUser(userData)
+    localStorage.setItem('lingua_user', JSON.stringify(userData))
   }
 
-  const addXpLocal = (amount) => {
-    const oldLevel = user?.level || 1
-    const newXp = (user?.xp || 0) + amount
-    const newLevel = Math.floor(newXp / 500) + 1
-    const newCoins = (user?.coins || 0) + Math.floor(amount / 10)
-    const newDiamonds = (user?.diamonds || 0) + (newLevel > oldLevel ? 30 : 0)
-    const updated = {
-      ...user,
-      xp: newXp, level: newLevel, coins: newCoins, diamonds: newDiamonds,
-      gamesPlayed: (user?.gamesPlayed || 0) + 1,
-      totalGameScore: (user?.totalGameScore || 0) + amount
+  const hasHearts = () => {
+    if (!user) return false
+    if (user.hearts > 0) return true
+    if (user.heartRefillAt && new Date() >= new Date(user.heartRefillAt)) {
+      const updated = { ...user, hearts: user.maxHearts || 3, heartRefillAt: null }
+      setUser(updated)
+      localStorage.setItem('lingua_user', JSON.stringify(updated))
+      return true
     }
-    setUser(updated)
-    localStorage.setItem('lingua_user', JSON.stringify(updated))
-    return { didLevelUp: newLevel > oldLevel, oldLevel, newLevel, newBadges: [] }
+    return false
+  }
+
+  const loseHeart = async () => {
+    const token = Cookies.get('token')
+    if (token && token !== 'local-token') {
+      try {
+        const res = await api.post('/learn/lose-heart')
+        const updated = { ...user, hearts: res.data.hearts, heartRefillAt: res.data.heartRefillAt }
+        setUser(updated)
+        localStorage.setItem('lingua_user', JSON.stringify(updated))
+        return res.data.hearts
+      } catch {}
+    }
+    if (user && user.hearts > 0) {
+      const newHearts = user.hearts - 1
+      const updated = { ...user, hearts: newHearts, heartRefillAt: newHearts === 0 ? new Date(Date.now() + 30 * 60 * 1000).toISOString() : user.heartRefillAt }
+      setUser(updated)
+      localStorage.setItem('lingua_user', JSON.stringify(updated))
+      return newHearts
+    }
+    return 0
   }
 
   const submitGameScore = async (game, score) => {
@@ -195,13 +157,7 @@ export function AppProvider({ children }) {
         const userData = res.data.user
         setUser(userData)
         localStorage.setItem('lingua_user', JSON.stringify(userData))
-        return {
-          didLevelUp: res.data.levelUp,
-          oldLevel: res.data.oldLevel,
-          newLevel: res.data.newLevel,
-          newBadges: res.data.newBadges || [],
-          user: userData
-        }
+        return { didLevelUp: res.data.levelUp, oldLevel: res.data.oldLevel, newLevel: res.data.newLevel, newBadges: res.data.newBadges || [], user: userData }
       } catch {
         return { ...addXpLocal(score), user }
       }
@@ -209,20 +165,54 @@ export function AppProvider({ children }) {
     return { ...addXpLocal(score), user }
   }
 
-  const buyXp = async (diamonds) => {
+  const addXpLocal = (amount) => {
+    const oldLevel = user?.level || 1
+    const newXp = (user?.xp || 0) + amount
+    const newLevel = Math.floor(newXp / 500) + 1
+    const newDiamonds = (user?.diamonds || 0) + (newLevel > oldLevel ? 30 : 0)
+    const updated = { ...user, xp: newXp, level: newLevel, diamonds: newDiamonds, gamesPlayed: (user?.gamesPlayed || 0) + 1, totalGameScore: (user?.totalGameScore || 0) + amount }
+    setUser(updated)
+    localStorage.setItem('lingua_user', JSON.stringify(updated))
+    return { didLevelUp: newLevel > oldLevel, oldLevel, newLevel, newBadges: [] }
+  }
+
+  const saveLearnProgress = async (module, itemId, score = 10) => {
     const token = Cookies.get('token')
     if (token && token !== 'local-token') {
       try {
-        const res = await api.post('/games/buy-xp', { diamonds })
+        const res = await api.post('/learn/progress', { module, itemId, score, xpEarned: score })
         const userData = res.data.user
         setUser(userData)
         localStorage.setItem('lingua_user', JSON.stringify(userData))
-        return { success: true, xpAdded: res.data.xpAdded, levelUp: res.data.levelUp }
-      } catch (err) {
-        throw err
-      }
+        return { didLevelUp: res.data.levelUp, newLevel: res.data.newLevel, user: userData }
+      } catch {}
     }
-    throw { response: { data: { message: 'Login required' } } }
+    const oldLevel = user?.level || 1
+    const newXp = (user?.xp || 0) + score
+    const newLevel = Math.floor(newXp / 500) + 1
+    const lp = user?.learnProgress || {}
+    if (!lp[module]) lp[module] = { completed: [], score: 0, totalXp: 0 }
+    if (!lp[module].completed.includes(itemId)) lp[module].completed.push(itemId)
+    lp[module].totalXp = (lp[module].totalXp || 0) + score
+    const updated = { ...user, xp: newXp, level: newLevel, lessonsCompleted: (user?.lessonsCompleted || 0) + 1, learnProgress: lp }
+    setUser(updated)
+    localStorage.setItem('lingua_user', JSON.stringify(updated))
+    return { didLevelUp: newLevel > oldLevel, newLevel, user: updated }
+  }
+
+  const buyHearts = async (amount = 1) => {
+    const res = await api.post('/learn/buy-hearts', { amount })
+    const updated = { ...user, hearts: res.data.hearts, diamonds: res.data.diamonds }
+    setUser(updated)
+    localStorage.setItem('lingua_user', JSON.stringify(updated))
+    return updated
+  }
+
+  const buyXp = async (diamonds) => {
+    const res = await api.post('/learn/buy-xp', { diamonds })
+    setUser(res.data.user)
+    localStorage.setItem('lingua_user', JSON.stringify(res.data.user))
+    return res.data
   }
 
   const logout = () => {
@@ -235,7 +225,8 @@ export function AppProvider({ children }) {
   return (
     <AppContext.Provider value={{
       user, loading, darkMode, theme,
-      login, register, googleAuth, logout, toggleDarkMode, setUser, updateUser, addXp, submitGameScore, buyXp
+      login, register, googleAuth, logout, toggleDarkMode, setUser, updateUser, syncUser,
+      submitGameScore, saveLearnProgress, hasHearts, loseHeart, buyHearts, buyXp
     }}>
       {children}
     </AppContext.Provider>

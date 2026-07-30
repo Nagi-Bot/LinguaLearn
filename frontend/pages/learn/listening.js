@@ -3,6 +3,8 @@ import { motion } from 'framer-motion'
 import { Volume2, Headphones, ArrowLeft, CheckCircle, Play, Pause, Sun, UtensilsCrossed, Plane, Newspaper } from 'lucide-react'
 import DynamicIcon from '../../components/DynamicIcon'
 import toast from 'react-hot-toast'
+import Link from 'next/link'
+import { useApp } from '../../context/AppContext'
 
 const iconMap = {
   weather: Sun, restaurant: UtensilsCrossed, travel: Plane, news: Newspaper
@@ -48,6 +50,7 @@ const exercises = [
 ]
 
 export default function ListeningPage() {
+  const { saveLearnProgress, loseHeart, hasHearts, user } = useApp()
   const [activeExercise, setActiveExercise] = useState(null)
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [score, setScore] = useState(0)
@@ -56,6 +59,8 @@ export default function ListeningPage() {
   const [completedExercises, setCompletedExercises] = useState([])
   const [isPlaying, setIsPlaying] = useState(false)
   const [showTranscript, setShowTranscript] = useState(false)
+  const [hearts, setHearts] = useState(3)
+  const [ended, setEnded] = useState(false)
   const synth = useRef(null)
 
   const speak = (text, callback) => {
@@ -90,6 +95,14 @@ export default function ListeningPage() {
       toast.success('Correct!')
     } else {
       toast.error('Incorrect! Try listening again.')
+      const newHearts = hearts - 1
+      setHearts(newHearts)
+      loseHeart()
+      if (newHearts <= 0) {
+        toast.error('No hearts left! Buy more in the Store', { duration: 3000 })
+        setEnded(true)
+        return
+      }
     }
     setTimeout(() => {
       if (currentQuestion < activeExercise.questions.length - 1) {
@@ -100,11 +113,33 @@ export default function ListeningPage() {
         if (!completedExercises.includes(activeExercise.id)) {
           setCompletedExercises([...completedExercises, activeExercise.id])
         }
+        const finalScore = score + (index === activeExercise.questions[currentQuestion].answer ? 1 : 0)
+        saveLearnProgress('listening', activeExercise.id, finalScore * 10)
+        toast.success('+2 diamonds earned!', { icon: '💎', duration: 3000 })
       }
     }, 1000)
   }
 
   if (activeExercise) {
+    if (ended) {
+      return (
+        <div className="min-h-screen py-8 px-4">
+          <div className="max-w-3xl mx-auto text-center">
+            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="glass-card p-12">
+              <div className="w-20 h-20 mx-auto mb-6 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center">
+                <span className="text-4xl">💔</span>
+              </div>
+              <h2 className="text-3xl font-display font-bold mb-2">Out of Hearts!</h2>
+              <p className="text-gray-600 dark:text-gray-400 mb-6">You've run out of hearts. Visit the Store to buy more.</p>
+              <div className="flex items-center justify-center space-x-4">
+                <Link href="/store" className="btn-primary">Visit Store</Link>
+                <button onClick={() => { setActiveExercise(null); setEnded(false); setHearts(3) }} className="btn-secondary">Back to Exercises</button>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      )
+    }
     if (quizDone) {
       return (
         <div className="min-h-screen py-8 px-4">
@@ -160,7 +195,10 @@ export default function ListeningPage() {
           <motion.div key={currentQuestion} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="glass-card p-6">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-semibold">Question {currentQuestion + 1} of {activeExercise.questions.length}</h3>
-              <span className="text-sm text-primary-500 font-medium">Score: {score}</span>
+              <div className="flex items-center space-x-3">
+                <span className="text-sm font-semibold">❤️ {hearts}/3</span>
+                <span className="text-sm text-primary-500 font-medium">Score: {score}</span>
+              </div>
             </div>
             <p className="text-lg mb-4">{activeExercise.questions[currentQuestion].q}</p>
             <div className="space-y-3">

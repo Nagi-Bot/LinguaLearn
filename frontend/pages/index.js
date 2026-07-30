@@ -1,14 +1,15 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { useApp } from '../context/AppContext'
 import XPProgressRing from '../components/XPProgressRing'
+import api from '../lib/api'
 import {
   Sparkles, BookOpen, Gamepad2, Brain, Languages, Award,
   ChevronRight, Star, Shield, Zap, Globe, Users, ArrowRight,
   CheckCircle, GraduationCap, Trophy, Clock, BarChart3,
   MessageSquare, Headphones, PenTool, Mic, Volume2, Play,
-  Flame, Gem
+  Flame, Diamond
 } from 'lucide-react'
 
 const fadeInUp = {
@@ -27,6 +28,11 @@ const stagger = {
 export default function HomePage() {
   const { user } = useApp()
   const [faqOpen, setFaqOpen] = useState(null)
+  const [siteStats, setSiteStats] = useState({ users: 0, totalXp: 0, totalGames: 0, lessons: 48, games: 10 })
+
+  useEffect(() => {
+    api.get('/learn/stats').then(res => setSiteStats(res.data)).catch(() => {})
+  }, [])
 
   const features = [
     { icon: Brain, title: 'AI Grammar Check', desc: 'Get instant grammar corrections with detailed explanations using advanced AI.', color: 'from-primary-500 to-primary-600' },
@@ -53,10 +59,10 @@ export default function HomePage() {
   ]
 
   const stats = [
-    { icon: Users, value: '50K+', label: 'Active Learners' },
-    { icon: BookOpen, value: '1000+', label: 'Lessons' },
-    { icon: Gamepad2, value: '16', label: 'Interactive Games' },
-    { icon: Award, value: '95%', label: 'Satisfaction Rate' },
+    { icon: Users, value: siteStats.users > 0 ? siteStats.users.toLocaleString() : '0', label: 'Active Learners' },
+    { icon: BookOpen, value: siteStats.lessons || 48, label: 'Lessons' },
+    { icon: Gamepad2, value: siteStats.games || 10, label: 'Interactive Games' },
+    { icon: Zap, value: siteStats.totalXp > 0 ? (siteStats.totalXp / 1000).toFixed(0) + 'K+' : '0', label: 'Total XP Earned' },
   ]
 
   const faqs = [
@@ -127,8 +133,8 @@ export default function HomePage() {
                           <span className="font-semibold text-sm text-accent-700 dark:text-accent-300">{user.streak || 0} day streak</span>
                         </div>
                         <div className="flex items-center space-x-1 px-3 py-1.5 rounded-lg bg-purple-100 dark:bg-purple-900/30">
-                          <Gem className="w-4 h-4 text-purple-500" />
-                          <span className="font-semibold text-sm text-purple-700 dark:text-purple-300">{user.coins || 0} coins</span>
+                          <Diamond className="w-4 h-4 text-cyan-500" />
+                          <span className="font-semibold text-sm text-purple-700 dark:text-purple-300">{user.diamonds || 0} diamonds</span>
                         </div>
                       </div>
                       <Link href="/dashboard" className="mt-4 inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-xl font-medium hover:shadow-lg transition-shadow text-sm">
