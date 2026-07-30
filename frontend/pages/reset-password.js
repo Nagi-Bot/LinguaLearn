@@ -99,7 +99,7 @@ export default function ResetPasswordPage() {
             </form>
           )}
         </div>
-      </motion>
+      </motion.div>
     </div>
   )
 }
