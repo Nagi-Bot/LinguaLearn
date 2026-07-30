@@ -36,12 +36,12 @@ export default function HomePage() {
   }, [])
 
   const features = [
-    { icon: Brain, title: 'AI Grammar Check', desc: 'Get instant grammar corrections with detailed explanations using advanced AI.', color: 'from-primary-500 to-primary-600' },
+    { icon: Brain, title: 'AI English Tutor', desc: 'Chat with AI tutor for instant grammar help, vocabulary lessons, and writing corrections.', color: 'from-primary-500 to-primary-600' },
     { icon: Languages, title: 'Vocabulary Builder', desc: 'Expand your vocabulary with daily words, synonyms, idioms, and flashcards.', color: 'from-secondary-500 to-secondary-600' },
-    { icon: Gamepad2, title: 'Fun Games', desc: 'Learn through exciting games like Grammar Battle, Word Builder, and more.', color: 'from-accent-500 to-accent-600' },
+    { icon: Gamepad2, title: 'Fun Games', desc: 'Learn through 10+ exciting games like Grammar Battle, Daily Challenge, and more.', color: 'from-accent-500 to-accent-600' },
     { icon: Headphones, title: 'Listening Practice', desc: 'Improve listening with audio conversations, podcasts, and dictation exercises.', color: 'from-purple-500 to-purple-600' },
     { icon: Mic, title: 'Speaking & Pronunciation', desc: 'Practice speaking with speech recognition and get instant pronunciation scores.', color: 'from-pink-500 to-pink-600' },
-    { icon: PenTool, title: 'Writing Assistant', desc: 'Get AI-powered writing feedback with grammar, spelling, and style suggestions.', color: 'from-cyan-500 to-cyan-600' },
+    { icon: PenTool, title: 'AI Writing Feedback', desc: 'Paste your writing and get instant AI-powered corrections, scores, and style suggestions.', color: 'from-cyan-500 to-cyan-600' },
   ]
 
   const learningPaths = [

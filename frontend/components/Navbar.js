@@ -6,7 +6,7 @@ import { useApp } from '../context/AppContext'
 import {
   Menu, X, BookOpen, GraduationCap, LogIn, User,
   Sun, Moon, ChevronDown, Trophy, Gamepad2, Home,
-  LayoutDashboard, Sparkles, ShoppingCart
+  LayoutDashboard, Sparkles, ShoppingCart, Bot, PenTool, Zap, Target
 } from 'lucide-react'
 
 export default function Navbar() {
@@ -33,6 +33,7 @@ export default function Navbar() {
   ]
 
   const gameDropdown = [
+    { href: '/games/daily-challenge', label: 'Daily Challenge', icon: Zap },
     { href: '/games/grammar-battle', label: 'Grammar Battle' },
     { href: '/games/word-builder', label: 'Word Builder' },
     { href: '/games/sentence-builder', label: 'Sentence Builder' },
@@ -40,6 +41,15 @@ export default function Navbar() {
     { href: '/games/memory-game', label: 'Memory Cards' },
     { href: '/games/hangman', label: 'Hangman' },
     { href: '/games/word-search', label: 'Word Search' },
+    { href: '/games/fill-blank', label: 'Fill in Blanks' },
+    { href: '/games/synonym-challenge', label: 'Synonym Challenge' },
+    { href: '/games/antonym-challenge', label: 'Antonym Challenge' },
+  ]
+
+  const aiDropdown = [
+    { href: '/ai-tutor', label: 'AI Tutor', icon: Bot },
+    { href: '/writing-feedback', label: 'Writing Feedback', icon: PenTool },
+    { href: '/placement-test', label: 'Placement Test', icon: Target },
   ]
 
   const isActive = (href) => router.pathname === href || router.pathname.startsWith(href + '/')
@@ -152,6 +162,46 @@ export default function Navbar() {
                 )}
               </AnimatePresence>
             </div>
+
+            {/* AI Tools Dropdown */}
+            <div className="relative">
+              <button
+                onClick={() => setDropdown(dropdown === 'ai' ? null : 'ai')}
+                className={`flex items-center space-x-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                  isActive('/ai-tutor') || isActive('/writing-feedback') || isActive('/placement-test')
+                    ? 'text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20'
+                    : 'text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-800/50'
+                }`}
+              >
+                <Bot className="w-4 h-4" />
+                <span>AI Tools</span>
+                <ChevronDown className="w-3 h-3" />
+              </button>
+              <AnimatePresence>
+                {dropdown === 'ai' && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    className="absolute top-full left-0 mt-2 w-48 glass rounded-xl shadow-2xl border border-gray-200/50 dark:border-gray-700/30 overflow-hidden"
+                  >
+                    {aiDropdown.map((item) => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={() => setDropdown(null)}
+                        className={`flex items-center space-x-2 px-4 py-2.5 text-sm hover:bg-primary-50 dark:hover:bg-gray-700/50 ${
+                          isActive(item.href) ? 'text-primary-600 dark:text-primary-400 font-medium' : 'text-gray-700 dark:text-gray-300'
+                        }`}
+                      >
+                        <item.icon className="w-3.5 h-3.5" />
+                        <span>{item.label}</span>
+                      </Link>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
 
           <div className="flex items-center space-x-3">
@@ -252,6 +302,22 @@ export default function Navbar() {
                     }`}
                   >
                     {item.label}
+                  </Link>
+                ))}
+              </div>
+              <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
+                <p className="px-3 py-1 text-xs font-semibold text-gray-400 uppercase tracking-wider">AI Tools</p>
+                {aiDropdown.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setIsOpen(false)}
+                    className={`flex items-center space-x-2 px-3 py-2.5 text-sm rounded-lg ${
+                      isActive(item.href) ? 'text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20' : 'text-gray-600 dark:text-gray-400'
+                    }`}
+                  >
+                    <item.icon className="w-4 h-4" />
+                    <span>{item.label}</span>
                   </Link>
                 ))}
               </div>
