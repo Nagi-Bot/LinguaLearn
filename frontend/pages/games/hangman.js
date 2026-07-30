@@ -19,6 +19,7 @@ export default function HangmanPage() {
   const [wrong, setWrong] = useState(0)
   const [score, setScore] = useState(0)
   const [gameState, setGameState] = useState('playing')
+  const [ending, setEnding] = useState(false)
 
   const loadMore = () => {
     setWords(prev => [...prev, ...getWordBuilderWords(BATCH_SIZE)])
@@ -63,13 +64,15 @@ export default function HangmanPage() {
   }
 
   const endGame = () => {
+    if (ending) return
+    setEnding(true)
     submitGameScore('hangman', score)
     setGameState('done')
   }
 
   const playAgain = () => {
     setWords(getWordBuilderWords(BATCH_SIZE))
-    setCurrentIdx(0); setGuessed([]); setWrong(0); setScore(0)
+    setCurrentIdx(0); setGuessed([]); setWrong(0); setScore(0); setEnding(false)
     setGameState('playing')
   }
 

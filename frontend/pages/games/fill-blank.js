@@ -18,6 +18,7 @@ export default function FillBlankPage() {
   const [gameDone, setGameDone] = useState(false)
   const [selected, setSelected] = useState(null)
   const [streak, setStreak] = useState(0)
+  const [ending, setEnding] = useState(false)
 
   const loadMore = () => {
     setQuestions(prev => [...prev, ...getFillBlankQuestions(BATCH_SIZE)])
@@ -48,10 +49,12 @@ export default function FillBlankPage() {
 
   const playAgain = () => {
     setQuestions(getFillBlankQuestions(BATCH_SIZE))
-    setCurrentQ(0); setScore(0); setSelected(null); setStreak(0); setTotalCorrect(0); setGameDone(false)
+    setCurrentQ(0); setScore(0); setSelected(null); setStreak(0); setTotalCorrect(0); setGameDone(false); setEnding(false)
   }
 
   const endGame = () => {
+    if (ending) return
+    setEnding(true)
     submitGameScore('fill-blank', score)
     setGameDone(true)
   }

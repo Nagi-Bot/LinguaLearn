@@ -18,6 +18,7 @@ export default function TenseChallengePage() {
   const [gameState, setGameState] = useState('playing')
   const [selected, setSelected] = useState(null)
   const [streak, setStreak] = useState(0)
+  const [ending, setEnding] = useState(false)
 
   const loadMore = () => {
     setQuestions(prev => [...prev, ...getTenseQuestions(BATCH_SIZE)])
@@ -52,13 +53,15 @@ export default function TenseChallengePage() {
   }
 
   const endGame = () => {
+    if (ending) return
+    setEnding(true)
     submitGameScore('tense-challenge', score)
     setGameState('done')
   }
 
   const playAgain = () => {
     setQuestions(getTenseQuestions(BATCH_SIZE))
-    setCurrentQ(0); setScore(0); setSelected(null); setStreak(0); setTotalCorrect(0)
+    setCurrentQ(0); setScore(0); setSelected(null); setStreak(0); setTotalCorrect(0); setEnding(false)
     setGameState('playing')
   }
 

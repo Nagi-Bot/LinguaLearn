@@ -35,6 +35,7 @@ export default function MemoryGamePage() {
   const [score, setScore] = useState(0)
   const [gameState, setGameState] = useState('playing')
   const [checking, setChecking] = useState(false)
+  const [ending, setEnding] = useState(false)
 
   const flipCard = (id) => {
     if (checking || flipped.includes(id) || matched.includes(id)) return
@@ -71,6 +72,8 @@ export default function MemoryGamePage() {
   }
 
   const endGame = () => {
+    if (ending) return
+    setEnding(true)
     submitGameScore('memory-game', score)
     setGameState('done')
   }
@@ -81,6 +84,7 @@ export default function MemoryGamePage() {
     setMatched([])
     setMoves(0)
     setScore(0)
+    setEnding(false)
     setGameState('playing')
   }
 

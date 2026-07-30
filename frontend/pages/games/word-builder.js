@@ -28,6 +28,7 @@ export default function WordBuilderPage() {
   const [totalCorrect, setTotalCorrect] = useState(0)
   const [gameState, setGameState] = useState('playing')
   const [streak, setStreak] = useState(0)
+  const [ending, setEnding] = useState(false)
 
   useEffect(() => {
     if (words[currentWordIdx]) resetWord()
@@ -88,13 +89,15 @@ export default function WordBuilderPage() {
   }
 
   const endGame = () => {
+    if (ending) return
+    setEnding(true)
     submitGameScore('word-builder', score)
     setGameState('done')
   }
 
   const playAgain = () => {
     setWords(getWordBuilderWords(BATCH_SIZE))
-    setCurrentWordIdx(0); setScore(0); setStreak(0); setTotalCorrect(0)
+    setCurrentWordIdx(0); setScore(0); setStreak(0); setTotalCorrect(0); setEnding(false)
     setGameState('playing')
   }
 

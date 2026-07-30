@@ -23,6 +23,7 @@ export default function GrammarBattlePage() {
   const [selectedAnswer, setSelectedAnswer] = useState(null)
   const [combo, setCombo] = useState(0)
   const [celebration, setCelebration] = useState({ show: false, xpEarned: 0, oldLevel: 1, newLevel: 1 })
+  const [ending, setEnding] = useState(false)
 
   useEffect(() => {
     let interval
@@ -87,10 +88,13 @@ export default function GrammarBattlePage() {
     setTimer(TIME_LIMIT)
     setSelectedAnswer(null)
     setCombo(0)
+    setEnding(false)
     setQuestions(getGrammarBattleQuestions(BATCH_SIZE))
   }
 
   const endGame = async () => {
+    if (ending) return
+    setEnding(true)
     const oldLevel = user?.level || 1
     const result = await submitGameScore('grammar-battle', score)
     setGameState('done')

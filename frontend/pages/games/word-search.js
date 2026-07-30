@@ -58,6 +58,7 @@ export default function WordSearchPage() {
   const [score, setScore] = useState(0)
   const [gameState, setGameState] = useState('playing')
   const [selectionStart, setSelectionStart] = useState(null)
+  const [ending, setEnding] = useState(false)
 
   const handleCellClick = (row, col) => {
     if (gameState !== 'playing') return
@@ -97,6 +98,8 @@ export default function WordSearchPage() {
   }
 
   const endGame = () => {
+    if (ending) return
+    setEnding(true)
     submitGameScore('word-search', score)
     setGameState('done')
   }
@@ -109,6 +112,7 @@ export default function WordSearchPage() {
     setFoundWords([])
     setScore(0)
     setSelectionStart(null)
+    setEnding(false)
     setGameState('playing')
   }
 

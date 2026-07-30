@@ -29,6 +29,7 @@ export default function SentenceBuilderPage() {
   const [totalCorrect, setTotalCorrect] = useState(0)
   const [gameState, setGameState] = useState('playing')
   const [streak, setStreak] = useState(0)
+  const [ending, setEnding] = useState(false)
 
   useEffect(() => {
     if (puzzles[currentIdx]) startNewPuzzle(currentIdx)
@@ -94,13 +95,15 @@ export default function SentenceBuilderPage() {
   }
 
   const endGame = () => {
+    if (ending) return
+    setEnding(true)
     submitGameScore('sentence-builder', score)
     setGameState('done')
   }
 
   const playAgain = () => {
     setPuzzles(getSentenceBuilderPuzzles(BATCH_SIZE))
-    setCurrentIdx(0); setScore(0); setStreak(0); setTotalCorrect(0)
+    setCurrentIdx(0); setScore(0); setStreak(0); setTotalCorrect(0); setEnding(false)
     setGameState('playing')
     startNewPuzzle(0)
   }
