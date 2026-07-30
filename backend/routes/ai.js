@@ -159,7 +159,7 @@ Return ONLY valid JSON in this exact format (no markdown, no explanation):
     if (!jsonMatch) throw new Error('Invalid quiz format')
     
     const quiz = JSON.parse(jsonMatch[0])
-    res.json({ quiz: quiz.questions })
+    res.json({ questions: quiz.questions || quiz })
   } catch (err) {
     console.error('Daily challenge error:', err.message)
     res.status(500).json({ message: 'Failed to generate challenge. Please try again.' })
