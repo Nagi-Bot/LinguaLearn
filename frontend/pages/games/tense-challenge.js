@@ -10,7 +10,7 @@ import { getTenseQuestions } from '../../lib/questions'
 const BATCH_SIZE = 15
 
 export default function TenseChallengePage() {
-  const { addXp } = useApp()
+  const { submitGameScore } = useApp()
   const [questions, setQuestions] = useState(() => getTenseQuestions(BATCH_SIZE))
   const [currentQ, setCurrentQ] = useState(0)
   const [score, setScore] = useState(0)
@@ -52,7 +52,7 @@ export default function TenseChallengePage() {
   }
 
   const endGame = () => {
-    addXp(score)
+    submitGameScore('tense-challenge', score)
     setGameState('done')
   }
 

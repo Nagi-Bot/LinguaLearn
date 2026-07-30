@@ -12,7 +12,7 @@ const BATCH_SIZE = 15
 const TIME_LIMIT = 15
 
 export default function GrammarBattlePage() {
-  const { addXp, user } = useApp()
+  const { submitGameScore, user } = useApp()
   const [questions, setQuestions] = useState(() => getGrammarBattleQuestions(BATCH_SIZE))
   const [gameState, setGameState] = useState('start')
   const [currentQ, setCurrentQ] = useState(0)
@@ -92,9 +92,9 @@ export default function GrammarBattlePage() {
 
   const endGame = async () => {
     const oldLevel = user?.level || 1
-    const result = await addXp(score)
+    const result = await submitGameScore('grammar-battle', score)
     setGameState('done')
-    setTimeout(() => setCelebration({ show: true, xpEarned: score, oldLevel, newLevel: result.newLevel }), 300)
+    setTimeout(() => setCelebration({ show: true, xpEarned: score, oldLevel, newLevel: result?.newLevel || oldLevel }), 300)
   }
 
   if (gameState === 'start') {

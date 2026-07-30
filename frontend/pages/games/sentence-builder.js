@@ -19,7 +19,7 @@ function shuffleArray(arr) {
 }
 
 export default function SentenceBuilderPage() {
-  const { addXp } = useApp()
+  const { submitGameScore } = useApp()
   const [puzzles, setPuzzles] = useState(() => getSentenceBuilderPuzzles(BATCH_SIZE))
   const [currentIdx, setCurrentIdx] = useState(0)
   const [shuffled, setShuffled] = useState([])
@@ -94,7 +94,7 @@ export default function SentenceBuilderPage() {
   }
 
   const endGame = () => {
-    addXp(score)
+    submitGameScore('sentence-builder', score)
     setGameState('done')
   }
 

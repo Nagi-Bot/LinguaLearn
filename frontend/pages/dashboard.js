@@ -7,8 +7,19 @@ import {
   TrendingUp, ChevronRight, Clock, Star, Gem,
   Brain, Gamepad2, Sparkles, Calendar, BarChart3,
   CheckCircle, ArrowRight, Medal, Crown,
-  Languages, MessageSquare
+  Languages, MessageSquare, Diamond
 } from 'lucide-react'
+
+const BADGE_INFO = {
+  quick_learner: { name: 'Quick Learner', icon: Zap, color: 'text-yellow-500', desc: '5 lessons done' },
+  streak_master: { name: 'Streak Master', icon: Flame, color: 'text-orange-500', desc: '7-day streak' },
+  game_champion: { name: 'Game Champion', icon: Trophy, color: 'text-accent-500', desc: '10 games played' },
+  vocab_star: { name: 'Vocab Star', icon: Star, color: 'text-purple-500', desc: '50 words learned' },
+  quiz_master: { name: 'Quiz Master', icon: Target, color: 'text-primary-500', desc: '10 quizzes taken' },
+  dedicated: { name: 'Dedicated', icon: Medal, color: 'text-cyan-500', desc: '30-day streak' },
+  high_scorer: { name: 'High Scorer', icon: Award, color: 'text-secondary-500', desc: '1000+ total score' },
+  gaming_legend: { name: 'Gaming Legend', icon: Crown, color: 'text-pink-500', desc: '50 games played' },
+}
 
 export default function DashboardPage() {
   const { user } = useApp()
@@ -17,13 +28,17 @@ export default function DashboardPage() {
     xp: user?.xp || 0,
     level: user?.level || 1,
     streak: user?.streak || 0,
+    bestStreak: user?.bestStreak || 0,
     coins: user?.coins || 0,
+    diamonds: user?.diamonds || 0,
     lessonsCompleted: user?.lessonsCompleted || 0,
-    dailyGoal: 0,
-    badges: 0,
+    gamesPlayed: user?.gamesPlayed || 0,
+    totalGameScore: user?.totalGameScore || 0,
+    wordsLearned: user?.wordsLearned || 0,
+    quizzesTaken: user?.quizzesTaken || 0,
+    badgesCount: user?.badges?.length || 0,
     nextLevelXp: ((user?.level || 1)) * 500,
-    accuracy: 0,
-    totalTime: '0h'
+    weeklyActivity: user?.weeklyActivity || [0, 0, 0, 0, 0, 0, 0]
   }
 
   const progressPercent = Math.min(100, (stats.xp / Math.max(1, stats.nextLevelXp)) * 100)
@@ -35,22 +50,17 @@ export default function DashboardPage() {
   ]
 
   const weeklyProgress = [
-    { day: 'Mon', xp: 0 },
-    { day: 'Tue', xp: 0 },
-    { day: 'Wed', xp: 0 },
-    { day: 'Thu', xp: 0 },
-    { day: 'Fri', xp: 0 },
-    { day: 'Sat', xp: 0 },
-    { day: 'Sun', xp: 0 },
+    { day: 'Mon', xp: stats.weeklyActivity[0] || 0 },
+    { day: 'Tue', xp: stats.weeklyActivity[1] || 0 },
+    { day: 'Wed', xp: stats.weeklyActivity[2] || 0 },
+    { day: 'Thu', xp: stats.weeklyActivity[3] || 0 },
+    { day: 'Fri', xp: stats.weeklyActivity[4] || 0 },
+    { day: 'Sat', xp: stats.weeklyActivity[5] || 0 },
+    { day: 'Sun', xp: stats.weeklyActivity[6] || 0 },
   ]
+  const maxWeeklyXp = Math.max(...weeklyProgress.map(d => d.xp), 1)
 
-  const badges = [
-    { name: 'Quick Learner', icon: Zap, color: 'text-yellow-500' },
-    { name: 'Streak Master', icon: Flame, color: 'text-orange-500' },
-    { name: 'Grammar Pro', icon: BookOpen, color: 'text-primary-500' },
-    { name: 'Vocabulary Star', icon: Star, color: 'text-purple-500' },
-    { name: 'Game Champion', icon: Trophy, color: 'text-accent-500' },
-  ]
+  const userBadges = (user?.badges || []).map(b => BADGE_INFO[b]).filter(Boolean)
 
   const container = {
     hidden: { opacity: 0 },
@@ -77,34 +87,44 @@ export default function DashboardPage() {
                   <h1 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
                     Welcome back, {user?.name || 'Learner'}!
                   </h1>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">Let's continue your learning journey</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    {stats.streak > 0 ? `${stats.streak} day streak! Keep going!` : 'Start your learning streak today!'}
+                  </p>
                 </div>
               </div>
               <div className="flex items-center space-x-3">
                 <div className="text-center px-4 py-2 rounded-xl bg-primary-50 dark:bg-primary-900/30">
                   <div className="flex items-center space-x-1 text-primary-600 dark:text-primary-400">
                     <Zap className="w-4 h-4" />
-                    <span className="font-bold">{stats?.xp || 0}</span>
+                    <span className="font-bold">{stats.xp}</span>
                   </div>
                   <span className="text-xs text-gray-400">XP</span>
                 </div>
                 <div className="text-center px-4 py-2 rounded-xl bg-accent-50 dark:bg-accent-900/30">
                   <div className="flex items-center space-x-1 text-accent-600 dark:text-accent-400">
                     <Flame className="w-4 h-4" />
-                    <span className="font-bold">{stats?.streak || 0}</span>
+                    <span className="font-bold">{stats.streak}</span>
                   </div>
                   <span className="text-xs text-gray-400">Streak</span>
+                </div>
+                <div className="text-center px-4 py-2 rounded-xl bg-cyan-50 dark:bg-cyan-900/30">
+                  <div className="flex items-center space-x-1 text-cyan-600 dark:text-cyan-400">
+                    <Diamond className="w-4 h-4" />
+                    <span className="font-bold">{stats.diamonds}</span>
+                  </div>
+                  <span className="text-xs text-gray-400">Diamonds</span>
                 </div>
               </div>
             </div>
           </motion.div>
 
-          <motion.div variants={itemAnim} className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <motion.div variants={itemAnim} className="grid grid-cols-2 md:grid-cols-5 gap-3">
             {[
-              { icon: Trophy, label: 'Level', value: stats?.level || 0, color: 'text-accent-500', bg: 'bg-accent-50 dark:bg-accent-900/30' },
-              { icon: BookOpen, label: 'Lessons', value: stats?.lessonsCompleted || 0, color: 'text-primary-500', bg: 'bg-primary-50 dark:bg-primary-900/30' },
-              { icon: Gem, label: 'Coins', value: stats?.coins || 0, color: 'text-yellow-500', bg: 'bg-yellow-50 dark:bg-yellow-900/30' },
-              { icon: Award, label: 'Badges', value: stats?.badges || 0, color: 'text-purple-500', bg: 'bg-purple-50 dark:bg-purple-900/30' },
+              { icon: Trophy, label: 'Level', value: stats.level, color: 'text-accent-500', bg: 'bg-accent-50 dark:bg-accent-900/30' },
+              { icon: BookOpen, label: 'Lessons', value: stats.lessonsCompleted, color: 'text-primary-500', bg: 'bg-primary-50 dark:bg-primary-900/30' },
+              { icon: Gamepad2, label: 'Games', value: stats.gamesPlayed, color: 'text-secondary-500', bg: 'bg-secondary-50 dark:bg-secondary-900/30' },
+              { icon: Gem, label: 'Coins', value: stats.coins, color: 'text-yellow-500', bg: 'bg-yellow-50 dark:bg-yellow-900/30' },
+              { icon: Award, label: 'Badges', value: stats.badgesCount, color: 'text-purple-500', bg: 'bg-purple-50 dark:bg-purple-900/30' },
             ].map((stat, i) => (
               <div key={i} className={`${stat.bg} rounded-xl p-4 text-center`}>
                 <stat.icon className={`w-5 h-5 mx-auto mb-1 ${stat.color}`} />
@@ -129,8 +149,15 @@ export default function DashboardPage() {
                     />
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-500">{stats?.xp || 0} / {stats?.nextLevelXp || 1500} XP</span>
+                    <span className="text-gray-500">{stats.xp} / {stats.nextLevelXp} XP</span>
                     <span className="text-gray-400">{Math.round(progressPercent)}%</span>
+                  </div>
+                  <div className="mt-2 flex items-center space-x-2 text-sm text-gray-500">
+                    <Diamond className="w-4 h-4 text-cyan-500" />
+                    <span>{stats.diamonds} diamonds</span>
+                    <span className="text-gray-400">|</span>
+                    <Zap className="w-4 h-4 text-yellow-500" />
+                    <span>Best streak: {stats.bestStreak}</span>
                   </div>
                 </div>
               </div>
@@ -141,8 +168,12 @@ export default function DashboardPage() {
                 <div className="flex items-end justify-between h-20 gap-1">
                   {weeklyProgress.map((day, i) => (
                     <div key={i} className="flex-1 flex flex-col items-center">
-                      <div className="w-full bg-gray-100 dark:bg-gray-700 rounded-t-md" style={{ height: '4px' }} />
+                      <div
+                        className="w-full bg-gradient-to-t from-primary-500 to-primary-300 rounded-t-md"
+                        style={{ height: `${Math.max(4, (day.xp / maxWeeklyXp) * 70)}px` }}
+                      />
                       <span className="text-xs text-gray-400 mt-1.5">{day.day}</span>
+                      <span className="text-xs text-gray-500">{day.xp}</span>
                     </div>
                   ))}
                 </div>
@@ -174,38 +205,46 @@ export default function DashboardPage() {
           <motion.div variants={itemAnim} className="grid md:grid-cols-2 gap-6">
             <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
               <h2 className="font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-                <Award className="w-4 h-4 mr-2 text-primary-500" /> Your Badges
+                <Award className="w-4 h-4 mr-2 text-primary-500" /> Your Badges ({userBadges.length})
               </h2>
-              <div className="grid grid-cols-5 gap-3">
-                {badges.map((badge, i) => (
-                  <div key={i} className="text-center">
-                    <div className="w-12 h-12 mx-auto rounded-xl bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
-                      <badge.icon className={`w-5 h-5 text-gray-400`} />
+              {userBadges.length > 0 ? (
+                <div className="grid grid-cols-4 gap-3">
+                  {userBadges.map((badge, i) => (
+                    <div key={i} className="text-center">
+                      <div className="w-12 h-12 mx-auto rounded-xl bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+                        <badge.icon className={`w-5 h-5 ${badge.color}`} />
+                      </div>
+                      <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">{badge.name}</p>
                     </div>
-                    <p className="text-xs text-gray-400 mt-1">{badge.name}</p>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="flex flex-col items-center py-6 text-gray-400">
+                  <Award className="w-10 h-10 mb-2" />
+                  <p className="text-sm">Play games and complete lessons to earn badges!</p>
+                </div>
+              )}
             </div>
 
             <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
               <h2 className="font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-                <Target className="w-4 h-4 mr-2 text-primary-500" /> Daily Goal
+                <Target className="w-4 h-4 mr-2 text-primary-500" /> Game Stats
               </h2>
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-gray-500 dark:text-gray-400">Today's Progress</span>
-                <span className="text-sm font-semibold text-gray-900 dark:text-white">{stats?.dailyGoal || 0}%</span>
-              </div>
-              <div className="w-full h-2.5 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: `${stats?.dailyGoal || 0}%` }}
-                  transition={{ duration: 0.8 }}
-                  className="h-full bg-gradient-to-r from-secondary-500 to-accent-500 rounded-full"
-                />
-              </div>
-              <div className="flex items-center justify-between mt-3 text-xs text-gray-400">
-                <span className="flex items-center"><Clock className="w-3 h-3 mr-1" /> No activity yet today</span>
+              <div className="space-y-3">
+                {[
+                  { label: 'Total Games', value: stats.gamesPlayed, icon: Gamepad2, color: 'text-secondary-500' },
+                  { label: 'Total Score', value: stats.totalGameScore, icon: Zap, color: 'text-primary-500' },
+                  { label: 'Words Learned', value: stats.wordsLearned, icon: BookOpen, color: 'text-accent-500' },
+                  { label: 'Quizzes Taken', value: stats.quizzesTaken, icon: Target, color: 'text-purple-500' },
+                ].map((item, i) => (
+                  <div key={i} className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <item.icon className={`w-4 h-4 ${item.color}`} />
+                      <span className="text-sm text-gray-600 dark:text-gray-400">{item.label}</span>
+                    </div>
+                    <span className="font-semibold text-gray-900 dark:text-white">{item.value}</span>
+                  </div>
+                ))}
               </div>
             </div>
           </motion.div>
@@ -224,7 +263,6 @@ export default function DashboardPage() {
                       <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${item.color} flex items-center justify-center`}>
                         <item.icon className="w-5 h-5 text-white" />
                       </div>
-                      <span className="text-xs font-semibold text-gray-400">0%</span>
                     </div>
                     <h3 className="font-semibold text-sm text-gray-900 dark:text-white">{item.title}</h3>
                     <p className="text-xs text-gray-500 dark:text-gray-400">{item.desc}</p>

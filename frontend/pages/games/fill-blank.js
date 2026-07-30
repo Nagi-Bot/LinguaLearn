@@ -10,7 +10,7 @@ import { getFillBlankQuestions } from '../../lib/questions'
 const BATCH_SIZE = 15
 
 export default function FillBlankPage() {
-  const { addXp } = useApp()
+  const { submitGameScore } = useApp()
   const [questions, setQuestions] = useState(() => getFillBlankQuestions(BATCH_SIZE))
   const [currentQ, setCurrentQ] = useState(0)
   const [score, setScore] = useState(0)
@@ -52,7 +52,7 @@ export default function FillBlankPage() {
   }
 
   const endGame = () => {
-    addXp(score)
+    submitGameScore('fill-blank', score)
     setGameDone(true)
   }
 

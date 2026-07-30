@@ -10,7 +10,7 @@ import { getSynonymQuestions } from '../../lib/questions'
 const BATCH_SIZE = 15
 
 export default function SynonymChallengePage() {
-  const { addXp } = useApp()
+  const { submitGameScore } = useApp()
   const [questions, setQuestions] = useState(() => getSynonymQuestions(BATCH_SIZE))
   const [currentQ, setCurrentQ] = useState(0)
   const [score, setScore] = useState(0)
@@ -41,7 +41,7 @@ export default function SynonymChallengePage() {
   }
 
   const endGame = () => {
-    addXp(score)
+    submitGameScore('synonym-challenge', score)
     setGameDone(true)
   }
 

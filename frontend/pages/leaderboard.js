@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
 import { motion } from 'framer-motion'
-import { Trophy, Zap, Flame, BookOpen, Medal, Award, Crown, ArrowLeft } from 'lucide-react'
+import { Trophy, Zap, Flame, BookOpen, Medal, Award, Crown, ArrowLeft, Diamond } from 'lucide-react'
 import Link from 'next/link'
 import { useApp } from '../context/AppContext'
 import api from '../lib/api'
@@ -17,7 +17,7 @@ export default function LeaderboardPage() {
     let list = []
     const localUsers = []
     if (user?.name && user?.email) {
-      try { await api.post('/auth/sync', { name: user.name, email: user.email, xp: user.xp || 0, level: user.level || 1, streak: user.streak || 0, coins: user.coins || 0, avatar: user.avatar || '', bio: user.bio || '' }) } catch {}
+      try { await api.post('/auth/sync', { name: user.name, email: user.email, xp: user.xp || 0, level: user.level || 1, streak: user.streak || 0, coins: user.coins || 0, diamonds: user.diamonds || 0, avatar: user.avatar || '', bio: user.bio || '', badges: user.badges || [], lessonsCompleted: user.lessonsCompleted || 0, wordsLearned: user.wordsLearned || 0, quizzesTaken: user.quizzesTaken || 0, gamesPlayed: user.gamesPlayed || 0, totalGameScore: user.totalGameScore || 0 }) } catch {}
     }
     const savedScores = []
     try {

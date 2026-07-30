@@ -9,12 +9,14 @@ import api from '../lib/api'
 export default function ForgotPasswordPage() {
   const [loading, setLoading] = useState(false)
   const [sent, setSent] = useState(false)
+  const [resetUrl, setResetUrl] = useState('')
   const { register, handleSubmit, formState: { errors } } = useForm()
 
   const onSubmit = async (data) => {
     setLoading(true)
     try {
-      await api.post('/auth/forgot-password', data)
+      const res = await api.post('/auth/forgot-password', data)
+      if (res.data.resetUrl) setResetUrl(res.data.resetUrl)
       setSent(true)
       toast.success('Reset link sent to your email!')
     } catch (err) {
@@ -45,6 +47,12 @@ export default function ForgotPasswordPage() {
                 </div>
                 <h1 className="text-2xl font-display font-bold">Check Your Email</h1>
                 <p className="text-gray-600 dark:text-gray-400 mt-2">We've sent a password reset link to your email address.</p>
+                {resetUrl && (
+                  <div className="mt-4 p-3 rounded-lg bg-gray-100 dark:bg-gray-800 text-left">
+                    <p className="text-xs text-gray-500 mb-2">Or use this link:</p>
+                    <a href={resetUrl} className="text-xs text-primary-600 dark:text-primary-400 break-all hover:underline">{resetUrl}</a>
+                  </div>
+                )}
                 <Link href="/login" className="inline-flex items-center text-primary-600 dark:text-primary-400 font-medium mt-4 hover:underline">
                   <ArrowLeft className="w-4 h-4 mr-1" /> Back to Login
                 </Link>

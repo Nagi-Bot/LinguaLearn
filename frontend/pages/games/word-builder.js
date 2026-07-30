@@ -19,7 +19,7 @@ function shuffleArray(arr) {
 }
 
 export default function WordBuilderPage() {
-  const { addXp } = useApp()
+  const { submitGameScore } = useApp()
   const [words, setWords] = useState(() => getWordBuilderWords(BATCH_SIZE))
   const [currentWordIdx, setCurrentWordIdx] = useState(0)
   const [shuffled, setShuffled] = useState([])
@@ -88,7 +88,7 @@ export default function WordBuilderPage() {
   }
 
   const endGame = () => {
-    addXp(score)
+    submitGameScore('word-builder', score)
     setGameState('done')
   }
 

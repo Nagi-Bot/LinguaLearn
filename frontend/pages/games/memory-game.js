@@ -27,7 +27,7 @@ function createCards() {
 }
 
 export default function MemoryGamePage() {
-  const { addXp } = useApp()
+  const { submitGameScore } = useApp()
   const [cards, setCards] = useState(createCards)
   const [flipped, setFlipped] = useState([])
   const [matched, setMatched] = useState([])
@@ -57,7 +57,7 @@ export default function MemoryGamePage() {
         if (matched.length + 2 === cards.length) {
           setTimeout(() => {
             const newScore = score + 10
-            addXp(newScore)
+            submitGameScore('memory-game', newScore)
             setGameState('done')
           }, 500)
         }
@@ -71,7 +71,7 @@ export default function MemoryGamePage() {
   }
 
   const endGame = () => {
-    addXp(score)
+    submitGameScore('memory-game', score)
     setGameState('done')
   }
 

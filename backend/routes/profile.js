@@ -30,13 +30,25 @@ router.post('/xp', auth, async (req, res) => {
     if (!amount || amount < 0) {
       return res.status(400).json({ message: 'Valid XP amount required' })
     }
-    req.user.xp = (req.user.xp || 0) + amount
-    req.user.level = Math.floor(req.user.xp / 500) + 1
-    req.user.coins = (req.user.coins || 0) + Math.floor(amount / 10)
+    const result = req.user.addXp(amount)
     req.user.gamesPlayed = (req.user.gamesPlayed || 0) + 1
-    req.user.lastActive = new Date()
+    req.user.totalGameScore = (req.user.totalGameScore || 0) + amount
+
+    const dayOfWeek = new Date().getDay()
+    const adjustedDay = dayOfWeek === 0 ? 6 : dayOfWeek - 1
+    if (!req.user.weeklyActivity) req.user.weeklyActivity = [0, 0, 0, 0, 0, 0, 0]
+    req.user.weeklyActivity[adjustedDay] = (req.user.weeklyActivity[adjustedDay] || 0) + amount
+
+    const newBadges = req.user.checkBadges()
     await req.user.save()
-    res.json({ user: req.user.toPublicJSON() })
+    res.json({
+      user: req.user.toPublicJSON(),
+      levelUp: result.levelUp,
+      oldLevel: result.oldLevel,
+      newLevel: result.newLevel,
+      newBadges,
+      diamonds: result.diamonds
+    })
   } catch (err) {
     console.error('XP add error:', err)
     res.status(500).json({ message: 'Server error' })
@@ -46,7 +58,7 @@ router.post('/xp', auth, async (req, res) => {
 router.get('/leaderboard', async (req, res) => {
   try {
     const users = await User.find({})
-      .select('name xp level streak avatar')
+      .select('name xp level streak bestStreak avatar diamonds badges gamesPlayed')
       .sort({ xp: -1 })
       .limit(50)
     res.json(users)

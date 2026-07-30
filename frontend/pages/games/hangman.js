@@ -12,7 +12,7 @@ const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
 const maxWrong = 6
 
 export default function HangmanPage() {
-  const { addXp } = useApp()
+  const { submitGameScore } = useApp()
   const [words, setWords] = useState(() => getWordBuilderWords(BATCH_SIZE))
   const [currentIdx, setCurrentIdx] = useState(0)
   const [guessed, setGuessed] = useState([])
@@ -63,7 +63,7 @@ export default function HangmanPage() {
   }
 
   const endGame = () => {
-    addXp(score)
+    submitGameScore('hangman', score)
     setGameState('done')
   }
 

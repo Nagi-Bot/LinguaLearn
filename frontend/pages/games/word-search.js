@@ -49,7 +49,7 @@ function generateGrid() {
 }
 
 export default function WordSearchPage() {
-  const { addXp } = useApp()
+  const { submitGameScore } = useApp()
   const [gameData, setGameData] = useState(() => generateGrid())
   const [grid, setGrid] = useState(gameData.grid)
   const [wordList, setWordList] = useState(gameData.words.map(w => ({ word: w, found: false })))
@@ -83,7 +83,7 @@ export default function WordSearchPage() {
         if (foundWords.length + 1 === wordList.length) {
           setScore(newScore)
           setTimeout(() => {
-            addXp(newScore)
+            submitGameScore('word-search', newScore)
             setGameState('done')
           }, 500)
         }
@@ -97,7 +97,7 @@ export default function WordSearchPage() {
   }
 
   const endGame = () => {
-    addXp(score)
+    submitGameScore('word-search', score)
     setGameState('done')
   }
 

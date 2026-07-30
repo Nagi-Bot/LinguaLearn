@@ -10,7 +10,7 @@ import { getAntonymQuestions } from '../../lib/questions'
 const BATCH_SIZE = 15
 
 export default function AntonymChallengePage() {
-  const { addXp } = useApp()
+  const { submitGameScore } = useApp()
   const [questions, setQuestions] = useState(() => getAntonymQuestions(BATCH_SIZE))
   const [currentQ, setCurrentQ] = useState(0)
   const [score, setScore] = useState(0)
@@ -41,7 +41,7 @@ export default function AntonymChallengePage() {
   }
 
   const endGame = () => {
-    addXp(score)
+    submitGameScore('antonym-challenge', score)
     setGameDone(true)
   }
 
