@@ -1,5 +1,5 @@
 import { useState } from 'react'
-export const dynamic = 'force-dynamic'
+export async function getServerSideProps() { return { props: {} } }
 import { motion } from 'framer-motion'
 import { ArrowLeft, CheckCircle, ChevronRight, BookOpen, Key, Briefcase, Globe, Landmark, MessageCircle } from 'lucide-react'
 import DynamicIcon from '../../components/DynamicIcon'

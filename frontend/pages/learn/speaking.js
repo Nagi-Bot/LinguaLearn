@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-export const dynamic = 'force-dynamic'
+export async function getServerSideProps() { return { props: {} } }
 import { motion, AnimatePresence } from 'framer-motion'
 import { Mic, MicOff, Volume2, ArrowLeft, RotateCcw, Star, CheckCircle } from 'lucide-react'
 import toast from 'react-hot-toast'

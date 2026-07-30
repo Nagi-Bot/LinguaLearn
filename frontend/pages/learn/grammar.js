@@ -1,5 +1,5 @@
 import { useState, createElement } from 'react'
-export const dynamic = 'force-dynamic'
+export async function getServerSideProps() { return { props: {} } }
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import { useApp } from '../../context/AppContext'
