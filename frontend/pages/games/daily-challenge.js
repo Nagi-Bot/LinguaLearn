@@ -12,6 +12,19 @@ const TOTAL_QUESTIONS = 10
 const TIME_LIMIT = 30
 const XP_PER_CORRECT = 10
 
+const FALLBACK_QUESTIONS = [
+  { question: "Choose the correct sentence:", options: ["She don't like coffee", "She doesn't like coffee", "She not like coffee", "She no like coffee"], correct: 1, explanation: "Use 'doesn't' (does not) with third-person singular subjects (he, she, it)." },
+  { question: "What is the past tense of 'go'?", options: ["Goed", "Went", "Gone", "Going"], correct: 1, explanation: "'Go' is an irregular verb. Its past tense is 'went'." },
+  { question: "Which word means 'very big'?", options: ["Tiny", "Huge", "Quick", "Cold"], correct: 1, explanation: "'Huge' means extremely large or big." },
+  { question: "Complete: 'I ____ to school yesterday.'", options: ["walk", "walked", "walking", "walks"], correct: 1, explanation: "Use past tense 'walked' for actions completed in the past (yesterday)." },
+  { question: "Which sentence uses correct word order?", options: ["Like I ice cream", "I like ice cream", "Ice cream like I", "Like ice cream I"], correct: 1, explanation: "English follows Subject-Verb-Object order: I (subject) like (verb) ice cream (object)." },
+  { question: "What is an antonym of 'hot'?", options: ["Warm", "Cold", "Cool", "Both B and C"], correct: 3, explanation: "Both 'cold' and 'cool' are antonyms of 'hot', but 'cold' is the most direct opposite." },
+  { question: "Choose the correct article: '___ apple a day keeps the doctor away.'", options: ["A", "An", "The", "No article"], correct: 1, explanation: "Use 'an' before words that start with a vowel sound. 'Apple' begins with a vowel sound." },
+  { question: "'He has been studying for 3 hours.' This is:", options: ["Present simple", "Present continuous", "Present perfect continuous", "Past perfect"], correct: 2, explanation: "'Has been studying' indicates an action that started in the past and continues to the present." },
+  { question: "Which is a synonym of 'happy'?", options: ["Sad", "Angry", "Joyful", "Tired"], correct: 2, explanation: "'Joyful' is a synonym of 'happy', both mean feeling or expressing happiness." },
+  { question: "Complete: 'If I ____ rich, I would travel the world.'", options: ["am", "was", "were", "be"], correct: 2, explanation: "In second conditional (unreal situations), use 'were' for all subjects: 'If I were...'" },
+]
+
 function getTodayKey() {
   return new Date().toISOString().split('T')[0]
 }
@@ -60,11 +73,16 @@ export default function DailyChallengePage() {
   const fetchQuestions = async () => {
     try {
       const res = await api.post('/ai/daily-challenge')
-      setQuestions(res.data.questions || res.data)
-      setGameState('playing')
-    } catch {
-      toast.error('Failed to load daily challenge. Please try again.')
-    }
+      const data = res.data?.questions || res.data
+      if (Array.isArray(data) && data.length > 0) {
+        setQuestions(data)
+        setGameState('playing')
+        return
+      }
+    } catch {}
+    setQuestions(FALLBACK_QUESTIONS)
+    setGameState('playing')
+    toast('Using offline questions', { icon: '📚' })
   }
 
   const handleTimeUp = () => {

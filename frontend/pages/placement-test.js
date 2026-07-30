@@ -9,6 +9,60 @@ import api from '../lib/api'
 
 const TOTAL_QUESTIONS = 15
 
+const FALLBACK_QUESTIONS = {
+  beginner: [
+    { question: "What is the capital of ___ United Kingdom?", options: ["a", "an", "the", "no article"], correct: 2, explanation: "Use 'the' before United Kingdom (a country with a political title)." },
+    { question: "She ___ a teacher.", options: ["am", "is", "are", "be"], correct: 1, explanation: "'She' is third-person singular, so use 'is'." },
+    { question: "I ___ to school every day.", options: ["go", "goes", "going", "went"], correct: 0, explanation: "Use base form 'go' with 'I' in present simple." },
+    { question: "Choose the correct sentence:", options: ["He like pizza", "He likes pizza", "He liking pizza", "He liked pizza"], correct: 1, explanation: "Third-person singular 'he' takes 'likes' in present simple." },
+    { question: "What color is the sky?", options: ["Green", "Blue", "Red", "Yellow"], correct: 1, explanation: "The sky appears blue during a clear day." },
+    { question: "Complete: 'There ___ a book on the table.'", options: ["is", "are", "am", "be"], correct: 0, explanation: "Use 'is' with singular nouns: 'a book'." },
+    { question: "Which word means the same as 'big'?", options: ["Small", "Large", "Tiny", "Short"], correct: 1, explanation: "'Large' is a synonym of 'big'." },
+    { question: "___ you like ice cream?", options: ["Does", "Do", "Is", "Are"], correct: 1, explanation: "Use 'Do' with 'you' in questions." },
+    { question: "The cat is ___ the table.", options: ["in", "on", "at", "under"], correct: 1, explanation: "Use 'on' for something resting on a surface." },
+    { question: "We ___ happy yesterday.", options: ["was", "were", "are", "is"], correct: 1, explanation: "'We' takes 'were' in past tense." },
+    { question: "What time is it? It's ___ o'clock.", options: ["twelve", "twelvth", "twelfth", "twelf"], correct: 0, explanation: "We say 'twelve o'clock' for 12:00." },
+    { question: "She can ___ English well.", options: ["speaks", "spoke", "speak", "speaking"], correct: 2, explanation: "After modal 'can', use base form of verb." },
+    { question: "Which is a fruit?", options: ["Carrot", "Apple", "Bread", "Rice"], correct: 1, explanation: "Apple is a fruit. Carrot is a vegetable." },
+    { question: "My brother is ___ than me.", options: ["tall", "taller", "tallest", "more tall"], correct: 1, explanation: "Use comparative 'taller' when comparing two people." },
+    { question: "I have ___ apple.", options: ["a", "an", "the", "some"], correct: 1, explanation: "Use 'an' before vowel sounds. 'Apple' starts with a vowel." },
+  ],
+  intermediate: [
+    { question: "By the time we arrived, the movie ___.", options: ["already started", "has already started", "had already started", "was already starting"], correct: 2, explanation: "Use past perfect 'had started' for an action completed before another past action." },
+    { question: "He is used ___ early in the morning.", options: ["to wake up", "to waking up", "wake up", "waking up"], correct: 1, explanation: "'Be used to' is followed by a gerund (verb + ing)." },
+    { question: "I wish I ___ more time to study.", options: ["have", "had", "would have", "will have"], correct: 1, explanation: "Use past tense after 'wish' for unreal present situations." },
+    { question: "The book ___ is on the table belongs to me.", options: ["who", "which", "whom", "whose"], correct: 1, explanation: "Use 'which' for things. The book which is on the table..." },
+    { question: "She has been working here ___ 2019.", options: ["since", "for", "from", "in"], correct: 0, explanation: "Use 'since' with a specific point in time (2019)." },
+    { question: "___ the weather was bad, we went for a walk.", options: ["Despite", "Although", "Because", "Since"], correct: 1, explanation: "'Although' introduces a contrasting idea." },
+    { question: "I'd rather you ___ smoke inside.", options: ["don't", "didn't", "won't", "not"], correct: 1, explanation: "After 'I'd rather you', use past tense for present/future reference." },
+    { question: "The company ___ 50 new employees last year.", options: ["took on", "took off", "took up", "took over"], correct: 0, explanation: "'Take on' means to hire or employ." },
+    { question: "She speaks English ___ than before.", options: ["more fluently", "most fluently", "fluently", "fluent"], correct: 0, explanation: "Use 'more + adverb' for comparative forms of longer adverbs." },
+    { question: "If I ___ you, I would accept the offer.", options: ["am", "was", "were", "be"], correct: 2, explanation: "In second conditionals, use 'were' for all subjects: 'If I were you...'" },
+    { question: "The meeting has been postponed ___ next week.", options: ["on", "until", "in", "at"], correct: 1, explanation: "'Until' indicates something will happen at or before that time." },
+    { question: "Not only ___ late, but she also forgot the documents.", options: ["she was", "was she", "she were", "were she"], correct: 1, explanation: "Inversion after 'Not only': auxiliary verb before subject." },
+    { question: "He asked me where ___.", options: ["did I live", "do I live", "I lived", "I live"], correct: 2, explanation: "In reported questions, use statement word order and backshift tense." },
+    { question: "This is the ___ interesting book I've ever read.", options: ["more", "most", "much", "very"], correct: 1, explanation: "Use 'most' for superlative: 'the most interesting'." },
+    { question: "I'm looking forward ___ you at the party.", options: ["to see", "to seeing", "see", "seeing"], correct: 1, explanation: "'Look forward to' is followed by a gerund." },
+  ],
+  advanced: [
+    { question: "Had it not been for her help, we ___ the project on time.", options: ["couldn't finish", "couldn't have finished", "can't finish", "can't have finished"], correct: 1, explanation: "Third conditional inverted: 'Had it not been...' = 'If it hadn't been...' Use 'couldn't have + past participle'." },
+    { question: "The professor's explanation was ___ that everyone understood immediately.", options: ["so clear", "such clear", "so clearly", "such a clear"], correct: 0, explanation: "Use 'so + adjective + that' structure: 'so clear that...'" },
+    { question: "___ the evidence, the jury found him not guilty.", options: ["In spite of", "Nevertheless", "However", "Although"], correct: 0, explanation: "'In spite of' is followed by a noun phrase. 'In spite of the evidence...'" },
+    { question: "She has a tendency ___ things personally.", options: ["take", "to take", "taking", "taken"], correct: 1, explanation: "'Tendency' is followed by 'to + infinitive': 'tendency to take'." },
+    { question: "The data ___ collected over a period of five years.", options: ["was", "were", "has been", "have been"], correct: 1, explanation: "'Data' is the plural of 'datum', so use 'were' (or 'have been')." },
+    { question: "Seldom ___ such a moving performance.", options: ["I have seen", "have I seen", "I saw", "did I see"], correct: 1, explanation: "Negative adverbs like 'seldom' at the beginning require subject-auxiliary inversion." },
+    { question: "Her research paper ___ by her supervisor before submission.", options: ["looked over", "was looked over", "was looking over", "looking over"], correct: 1, explanation: "Passive voice: 'was looked over by...'" },
+    { question: "The implications of the decision ___ still being analyzed.", options: ["is", "are", "has", "have"], correct: 1, explanation: "Subject is 'implications' (plural), so use 'are'." },
+    { question: "Were he to apologize, I ___ him.", options: ["forgive", "would forgive", "will forgive", "forgave"], correct: 1, explanation: "Inverted second conditional: 'Were he to apologize' = 'If he were to apologize'. Use 'would + base verb'." },
+    { question: "The author's latest novel is ___ excellent read.", options: ["a", "an", "the", "no article"], correct: 1, explanation: "'Excellent' starts with a vowel sound, so use 'an'." },
+    { question: "She was ___ the verge of tears after hearing the news.", options: ["on", "at", "in", "by"], correct: 0, explanation: "Collocation: 'on the verge of' means very close to." },
+    { question: "It's high time ___ something about the situation.", options: ["we do", "we did", "we have done", "we will do"], correct: 1, explanation: "'It's high time' is followed by past tense (subjunctive): 'we did'." },
+    { question: "The theory, ___ as groundbreaking, was met with skepticism.", options: ["regarding", "regarded", "to regard", "having regarded"], correct: 1, explanation: "Past participle phrase: 'regarded as groundbreaking' = 'which was regarded as groundbreaking'." },
+    { question: "His speech was peppered ___ references to classical literature.", options: ["by", "with", "in", "from"], correct: 1, explanation: "'Peppered with' means filled or covered with many small things." },
+    { question: "___ the company's financial troubles, the CEO resigned.", options: ["Due to", "Because", "Since", "As a result"], correct: 0, explanation: "'Due to' is followed by a noun phrase: 'Due to the company's financial troubles'." },
+  ],
+}
+
 const LEVELS = [
   {
     id: 'beginner',
@@ -109,15 +163,13 @@ export default function PlacementTestPage() {
       const data = res.data
       if (data.questions && data.questions.length > 0) {
         setQuestions(data.questions.slice(0, TOTAL_QUESTIONS))
-      } else {
-        throw new Error('No questions received')
+        return
       }
-    } catch (err) {
-      toast.error('Failed to load questions. Please try again.')
-      setGameState('level-select')
-    } finally {
-      setLoading(false)
-    }
+    } catch {}
+    const fallback = FALLBACK_QUESTIONS[level] || FALLBACK_QUESTIONS.beginner
+    setQuestions(fallback.slice(0, TOTAL_QUESTIONS))
+    setLoading(false)
+    toast('Using offline questions', { icon: '📚' })
   }, [])
 
   const startTest = useCallback(async (level) => {
