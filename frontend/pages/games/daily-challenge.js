@@ -74,6 +74,18 @@ export default function DailyChallengePage() {
     nextQuestion()
   }
 
+  const endGame = useCallback(async () => {
+    if (ending) return
+    setEnding(true)
+    setGameState('results')
+    const todayKey = `dailyChallenge_${getTodayKey()}`
+    localStorage.setItem(
+      todayKey,
+      JSON.stringify({ score, totalCorrect, totalWrong, bestStreak, hearts })
+    )
+    await submitGameScore('daily-challenge', score)
+  }, [ending, score, totalCorrect, totalWrong, bestStreak, hearts, submitGameScore])
+
   const nextQuestion = useCallback(() => {
     if (currentQ < TOTAL_QUESTIONS - 1) {
       setCurrentQ((p) => p + 1)
@@ -82,9 +94,9 @@ export default function DailyChallengePage() {
     } else {
       endGame()
     }
-  }, [currentQ])
+  }, [currentQ, endGame])
 
-  const handleAnswer = (index) => {
+  const handleAnswer = useCallback((index) => {
     if (selectedAnswer !== null) return
     setSelectedAnswer(index)
     const question = questions[currentQ]
@@ -107,27 +119,12 @@ export default function DailyChallengePage() {
       setTotalWrong((p) => p + 1)
       setHearts((p) => {
         const next = p - 1
-        if (next <= 0) {
-          setTimeout(endGame, 500)
-        }
+        if (next <= 0) setTimeout(endGame, 500)
         return next
       })
     }
-
     setTimeout(nextQuestion, 1000)
-  }, [selectedAnswer, currentQ, questions, streak, bestStreak])
-
-  const endGame = async () => {
-    if (ending) return
-    setEnding(true)
-    setGameState('results')
-    const todayKey = `dailyChallenge_${getTodayKey()}`
-    localStorage.setItem(
-      todayKey,
-      JSON.stringify({ score, totalCorrect, totalWrong, bestStreak, hearts })
-    )
-    await submitGameScore('daily-challenge', score)
-  }
+  }, [selectedAnswer, currentQ, questions, streak, bestStreak, nextQuestion, endGame])
 
   const handleRetry = () => {
     toast('Come back tomorrow for a new challenge!', { icon: '📅' })

@@ -126,6 +126,7 @@ export default function EditProfilePage() {
           </div>
       </motion.div>
     </div>
+    </div>
     </>
   )
 }
