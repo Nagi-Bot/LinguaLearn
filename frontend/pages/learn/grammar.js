@@ -1,4 +1,5 @@
 import { useState, createElement } from 'react'
+export const dynamic = 'force-dynamic'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import { useApp } from '../../context/AppContext'

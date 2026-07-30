@@ -1,4 +1,5 @@
 import { useState, createElement } from 'react'
+export const dynamic = 'force-dynamic'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   BookOpen, ChevronRight, ArrowLeft, Sparkles,
