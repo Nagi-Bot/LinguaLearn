@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Sparkles, BookOpen, Gamepad2, Mail, Globe, MessageCircle } from 'lucide-react'
+import { Sparkles, BookOpen, Gamepad2, Mail, Globe, MessageCircle, Bot, Target, PenTool, Zap } from 'lucide-react'
 
 export default function Footer() {
   const footerLinks = {
@@ -11,7 +11,13 @@ export default function Footer() {
       { href: '/learn/speaking', label: 'Speaking' },
       { href: '/learn/listening', label: 'Listening' },
     ],
+    'AI Tools': [
+      { href: '/ai-tutor', label: 'AI English Tutor', icon: Bot },
+      { href: '/writing-feedback', label: 'Writing Feedback', icon: PenTool },
+      { href: '/placement-test', label: 'Placement Test', icon: Target },
+    ],
     'Games': [
+      { href: '/games/daily-challenge', label: 'Daily Challenge', icon: Zap },
       { href: '/games/grammar-battle', label: 'Grammar Battle' },
       { href: '/games/word-builder', label: 'Word Builder' },
       { href: '/games/sentence-builder', label: 'Sentence Builder' },
@@ -19,10 +25,11 @@ export default function Footer() {
       { href: '/games/hangman', label: 'Hangman' },
     ],
     'Company': [
+      { href: '/dashboard', label: 'Dashboard' },
+      { href: '/leaderboard', label: 'Leaderboard' },
+      { href: '/store', label: 'Store' },
       { href: '/about', label: 'About Us' },
       { href: '/contact', label: 'Contact' },
-      { href: '/privacy', label: 'Privacy Policy' },
-      { href: '/terms', label: 'Terms of Service' },
     ],
   }
 

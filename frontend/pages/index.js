@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
-import { motion, useScroll, useTransform } from 'framer-motion'
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'
 import { useApp } from '../context/AppContext'
 import XPProgressRing from '../components/XPProgressRing'
 import api from '../lib/api'
