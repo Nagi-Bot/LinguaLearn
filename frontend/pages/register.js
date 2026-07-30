@@ -8,6 +8,7 @@ import toast from 'react-hot-toast'
 import { useApp } from '../context/AppContext'
 import { Mail, Lock, Eye, EyeOff, User, Sparkles, UserPlus } from 'lucide-react'
 import api from '../lib/api'
+import SEO from '../components/SEO'
 
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false)
@@ -44,7 +45,15 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-20">
+    <>
+      <SEO
+        title="Register"
+        description="Create your free LinguaLearn account and start mastering English with AI-powered lessons, interactive games, and personalized feedback."
+        keywords="sign up, create account, free english learning"
+        url="/register"
+        noIndex={true}
+      />
+      <div className="min-h-screen flex items-center justify-center px-4 py-20">
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-96 h-96 bg-secondary-500/20 rounded-full blur-3xl" />
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-primary-500/20 rounded-full blur-3xl" />
@@ -155,5 +164,6 @@ export default function RegisterPage() {
         </div>
       </motion.div>
     </div>
+    </>
   )
 }

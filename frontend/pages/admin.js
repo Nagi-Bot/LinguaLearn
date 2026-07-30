@@ -5,6 +5,7 @@ import {
   Settings, Trash2, Edit, Plus, Search, Star,
   Trophy, Activity, TrendingUp
 } from 'lucide-react'
+import SEO from '../components/SEO'
 
 const tabs = [
   { id: 'overview', label: 'Overview', icon: BarChart3 },
@@ -33,7 +34,15 @@ export default function AdminPage() {
 
   if (activeTab === 'overview') {
     return (
-      <div className="min-h-screen py-8 px-4">
+      <>
+        <SEO
+          title="Admin"
+          description="LinguaLearn admin panel."
+          keywords="admin"
+          url="/admin"
+          noIndex={true}
+        />
+        <div className="min-h-screen py-8 px-4">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-between mb-6">
             <div>
@@ -125,11 +134,20 @@ export default function AdminPage() {
           </div>
         </div>
       </div>
+      </>
     )
   }
 
   return (
-    <div className="min-h-screen py-8 px-4">
+    <>
+      <SEO
+        title="Admin"
+        description="LinguaLearn admin panel."
+        keywords="admin"
+        url="/admin"
+        noIndex={true}
+      />
+      <div className="min-h-screen py-8 px-4">
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-3xl font-display font-bold flex items-center">
@@ -158,5 +176,6 @@ export default function AdminPage() {
         </div>
       </div>
     </div>
+    </>
   )
 }

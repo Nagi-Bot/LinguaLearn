@@ -6,6 +6,7 @@ import toast from 'react-hot-toast'
 import RequireAuth from '../../components/RequireAuth'
 import { useApp } from '../../context/AppContext'
 import { getSentenceBuilderPuzzles } from '../../lib/questions'
+import SEO from '../../components/SEO'
 
 const BATCH_SIZE = 15
 
@@ -111,6 +112,7 @@ export default function SentenceBuilderPage() {
   if (gameState === 'done') {
     return (
       <RequireAuth>
+        <SEO title="Sentence Builder Game" description="Arrange words to form correct English sentences. Practice sentence structure and grammar while having fun." keywords="sentence builder, english sentence game, grammar exercise, word order" url="/games/sentence-builder" />
         <div className="min-h-screen flex items-center justify-center px-4">
           <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="glass-card p-12 text-center max-w-md">
             <div className="w-20 h-20 mx-auto mb-6 gradient-bg rounded-full flex items-center justify-center">
@@ -132,6 +134,7 @@ export default function SentenceBuilderPage() {
 
   return (
     <RequireAuth>
+      <SEO title="Sentence Builder Game" description="Arrange words to form correct English sentences. Practice sentence structure and grammar while having fun." keywords="sentence builder, english sentence game, grammar exercise, word order" url="/games/sentence-builder" />
       <div className="min-h-screen py-8 px-4">
         <div className="max-w-3xl mx-auto text-center">
           <div className="flex items-center justify-between mb-6">

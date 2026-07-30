@@ -6,6 +6,7 @@ import toast from 'react-hot-toast'
 import RequireAuth from '../../components/RequireAuth'
 import { useApp } from '../../context/AppContext'
 import { getFillBlankQuestions } from '../../lib/questions'
+import SEO from '../../components/SEO'
 
 const BATCH_SIZE = 15
 
@@ -61,6 +62,7 @@ export default function FillBlankPage() {
 
   if (gameDone) return (
     <RequireAuth>
+      <SEO title="Fill in the Blanks" description="Complete sentences by filling in the correct word. Test your English grammar and vocabulary knowledge." keywords="fill blanks, cloze test, grammar exercise, vocabulary practice" url="/games/fill-blank" />
       <div className="min-h-screen flex items-center justify-center px-4">
         <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="glass-card p-12 text-center max-w-md">
           <div className="w-20 h-20 mx-auto mb-6 gradient-bg rounded-full flex items-center justify-center"><Trophy className="w-10 h-10 text-white" /></div>
@@ -79,6 +81,7 @@ export default function FillBlankPage() {
 
   return (
     <RequireAuth>
+      <SEO title="Fill in the Blanks" description="Complete sentences by filling in the correct word. Test your English grammar and vocabulary knowledge." keywords="fill blanks, cloze test, grammar exercise, vocabulary practice" url="/games/fill-blank" />
       <div className="min-h-screen py-8 px-4">
         <div className="max-w-2xl mx-auto">
           <div className="flex items-center justify-between mb-6">

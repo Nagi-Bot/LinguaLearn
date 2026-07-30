@@ -5,6 +5,7 @@ import { PenTool, Send, Sparkles, AlertCircle, CheckCircle, ArrowLeft, RotateCcw
 import toast from 'react-hot-toast'
 import Link from 'next/link'
 import { useApp } from '../../context/AppContext'
+import SEO from '../../components/SEO'
 
 const prompts = [
   { title: 'Describe Your Dream Vacation', type: 'Paragraph', prompt: 'Write a paragraph describing your ideal vacation destination. Include details about the location, activities, and why you want to go there.' },
@@ -219,6 +220,7 @@ export default function WritingPage() {
 
   return (
     <div className="min-h-screen py-8 px-4">
+      <SEO title="Writing Practice" description="Practice English writing with AI-powered feedback on essays, paragraphs, emails, and creative writing exercises." keywords="english writing, writing practice, essay writing, AI writing feedback" url="/learn/writing" />
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-display font-bold mb-4">

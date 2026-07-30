@@ -6,6 +6,7 @@ import DynamicIcon from '../../components/DynamicIcon'
 import toast from 'react-hot-toast'
 import Link from 'next/link'
 import { useApp } from '../../context/AppContext'
+import SEO from '../../components/SEO'
 
 const iconMap = {
   weather: Sun, restaurant: UtensilsCrossed, travel: Plane, news: Newspaper
@@ -231,6 +232,7 @@ export default function ListeningPage() {
 
   return (
     <div className="min-h-screen py-8 px-4">
+      <SEO title="Listening Practice" description="Enhance your English listening skills with audio exercises, conversations, and dictation practice at various levels." keywords="english listening, listening exercises, audio practice, dictation" url="/learn/listening" />
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-display font-bold mb-4">

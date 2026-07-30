@@ -5,6 +5,7 @@ import { Mic, MicOff, Volume2, ArrowLeft, RotateCcw, Star, CheckCircle } from 'l
 import toast from 'react-hot-toast'
 import Link from 'next/link'
 import { useApp } from '../../context/AppContext'
+import SEO from '../../components/SEO'
 
 const sentences = [
   'The quick brown fox jumps over the lazy dog.',
@@ -182,6 +183,7 @@ export default function SpeakingPage() {
 
   return (
     <div className="min-h-screen py-8 px-4">
+      <SEO title="Speaking &amp; Pronunciation" description="Improve your English speaking and pronunciation with speech recognition technology. Practice conversations and get instant feedback." keywords="english speaking, pronunciation practice, speech recognition, conversation practice" url="/learn/speaking" />
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-display font-bold mb-4">

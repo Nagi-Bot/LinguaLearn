@@ -6,6 +6,7 @@ import DynamicIcon from '../../components/DynamicIcon'
 import toast from 'react-hot-toast'
 import Link from 'next/link'
 import { useApp } from '../../context/AppContext'
+import SEO from '../../components/SEO'
 
 const iconMap = {
   key: Key, work: Briefcase, climate: Globe, museum: Landmark, communication: MessageCircle
@@ -237,6 +238,7 @@ export default function ReadingPage() {
 
   return (
     <div className="min-h-screen py-8 px-4">
+      <SEO title="Reading Comprehension" description="Improve your English reading skills with engaging stories, articles, and comprehension exercises at various difficulty levels." keywords="english reading, reading comprehension, english stories, reading practice" url="/learn/reading" />
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-display font-bold mb-4">

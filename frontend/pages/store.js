@@ -4,6 +4,7 @@ import { useApp } from '../context/AppContext'
 import toast from 'react-hot-toast'
 import { Diamond, Heart, Zap, ShoppingCart, ArrowLeft, Check } from 'lucide-react'
 import Link from 'next/link'
+import SEO from '../components/SEO'
 
 const storeItems = [
   { id: 'heart_1', type: 'hearts', amount: 1, price: 15, icon: Heart, color: 'from-red-400 to-red-500', name: '+1 Heart', desc: 'Get 1 extra heart to keep playing' },
@@ -48,7 +49,15 @@ export default function StorePage() {
   const itemAnim = { hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0 } }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4">
+    <>
+      <SEO
+        title="Store"
+        description="Buy hearts, XP and power-ups in the LinguaLearn store. Spend diamonds to boost your English learning progress."
+        keywords="english learning store, buy hearts, xp, diamonds"
+        url="/store"
+        noIndex={true}
+      />
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4">
       <div className="max-w-4xl mx-auto">
         <motion.div variants={container} initial="hidden" animate="show" className="space-y-6">
 
@@ -136,5 +145,6 @@ export default function StorePage() {
         </motion.div>
       </div>
     </div>
+    </>
   )
 }

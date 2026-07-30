@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Mail, Phone, MapPin, Send, MessageSquare, Clock, CheckCircle } from 'lucide-react'
 import toast from 'react-hot-toast'
+import SEO from '../components/SEO'
 
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false)
@@ -13,7 +14,14 @@ export default function ContactPage() {
   }
 
   return (
-    <div className="min-h-screen py-8 px-4">
+    <>
+      <SEO
+        title="Contact Us"
+        description="Get in touch with the LinguaLearn team. We'd love to hear your feedback, suggestions, or answer any questions."
+        keywords="contact support, help, feedback"
+        url="/contact"
+      />
+      <div className="min-h-screen py-8 px-4">
       <div className="max-w-5xl mx-auto">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-display font-bold mb-4">
@@ -86,5 +94,6 @@ export default function ContactPage() {
         </div>
       </div>
     </div>
+    </>
   )
 }

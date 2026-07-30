@@ -10,6 +10,7 @@ import {
   CheckSquare, Box, GitBranch, MapPin, GitMerge, Type
 } from 'lucide-react'
 import toast from 'react-hot-toast'
+import SEO from '../../components/SEO'
 
 const topicIcons = {
   'parts-of-speech': Library,
@@ -361,6 +362,7 @@ export default function GrammarPage() {
 
   return (
     <div className="min-h-screen py-8 px-4">
+      <SEO title="Grammar Lessons" description="Master English grammar with interactive lessons on tenses, parts of speech, articles, active-passive voice, conditionals, modals, and more." keywords="english grammar lessons, learn tenses, parts of speech, conditionals, modals, grammar exercises" url="/learn/grammar" />
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-display font-bold mb-4">

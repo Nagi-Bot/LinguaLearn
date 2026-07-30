@@ -6,6 +6,7 @@ import toast from 'react-hot-toast'
 import RequireAuth from '../../components/RequireAuth'
 import { useApp } from '../../context/AppContext'
 import { getWordBuilderWords } from '../../lib/questions'
+import SEO from '../../components/SEO'
 
 const BATCH_SIZE = 15
 
@@ -104,6 +105,7 @@ export default function WordBuilderPage() {
   if (gameState === 'done') {
     return (
       <RequireAuth>
+        <SEO title="Word Builder Game" description="Build words from given letters in this fun English word game. Improve your vocabulary and spelling skills while earning XP." keywords="word builder game, spelling game, vocabulary game, word puzzle" url="/games/word-builder" />
         <div className="min-h-screen flex items-center justify-center px-4">
           <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="glass-card p-12 text-center max-w-md">
             <div className="w-20 h-20 mx-auto mb-6 gradient-bg rounded-full flex items-center justify-center">
@@ -129,6 +131,7 @@ export default function WordBuilderPage() {
 
   return (
     <RequireAuth>
+      <SEO title="Word Builder Game" description="Build words from given letters in this fun English word game. Improve your vocabulary and spelling skills while earning XP." keywords="word builder game, spelling game, vocabulary game, word puzzle" url="/games/word-builder" />
       <div className="min-h-screen py-8 px-4">
         <div className="max-w-2xl mx-auto text-center">
           <div className="flex items-center justify-between mb-6">

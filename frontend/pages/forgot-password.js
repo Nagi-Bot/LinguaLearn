@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import { Mail, Sparkles, ArrowLeft, Send } from 'lucide-react'
 import api from '../lib/api'
+import SEO from '../components/SEO'
 
 export default function ForgotPasswordPage() {
   const [loading, setLoading] = useState(false)
@@ -27,7 +28,15 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-20">
+    <>
+      <SEO
+        title="Forgot Password"
+        description="Reset your LinguaLearn password. Enter your email to receive a password reset link."
+        keywords="forgot password, reset password"
+        url="/forgot-password"
+        noIndex={true}
+      />
+      <div className="min-h-screen flex items-center justify-center px-4 py-20">
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-96 h-96 bg-primary-500/20 rounded-full blur-3xl" />
       </div>
@@ -99,5 +108,6 @@ export default function ForgotPasswordPage() {
         </div>
       </motion.div>
     </div>
+    </>
   )
 }

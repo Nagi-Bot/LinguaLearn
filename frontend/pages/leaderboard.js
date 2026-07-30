@@ -4,6 +4,7 @@ import { Trophy, Zap, Flame, BookOpen, Medal, Award, Crown, ArrowLeft, Diamond }
 import Link from 'next/link'
 import { useApp } from '../context/AppContext'
 import api from '../lib/api'
+import SEO from '../components/SEO'
 
 export default function LeaderboardPage() {
   const { user } = useApp()
@@ -70,18 +71,33 @@ export default function LeaderboardPage() {
 
   if (allUsers.length === 0) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <>
+        <SEO
+          title="Leaderboard"
+          description="See the top English learners on LinguaLearn. Compete with others, climb the ranks, and prove your English skills."
+          keywords="english learning leaderboard, top learners, competition"
+          url="/leaderboard"
+        />
+        <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <Trophy className="w-16 h-16 mx-auto mb-4 text-gray-300" />
           <p className="text-gray-500">No players yet. Be the first to play!</p>
           <Link href="/games/grammar-battle" className="btn-primary mt-4 inline-block">Play Now</Link>
         </div>
       </div>
+      </>
     )
   }
 
   return (
-    <div className="min-h-screen py-8 px-4">
+    <>
+      <SEO
+        title="Leaderboard"
+        description="See the top English learners on LinguaLearn. Compete with others, climb the ranks, and prove your English skills."
+        keywords="english learning leaderboard, top learners, competition"
+        url="/leaderboard"
+      />
+      <div className="min-h-screen py-8 px-4">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-display font-bold mb-2">
@@ -156,5 +172,6 @@ export default function LeaderboardPage() {
         </div>
       </div>
     </div>
+    </>
   )
 }

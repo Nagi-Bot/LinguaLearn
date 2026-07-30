@@ -9,6 +9,7 @@ import {
   Settings, Camera, Flame, CheckCircle, Gamepad2,
   Diamond, TrendingUp
 } from 'lucide-react'
+import SEO from '../components/SEO'
 
 const BADGE_INFO = {
   quick_learner: { name: 'Quick Learner', icon: Zap, color: 'text-yellow-500', desc: 'Complete 5 lessons', bg: 'bg-yellow-100 dark:bg-yellow-900/30' },
@@ -88,7 +89,15 @@ export default function ProfilePage() {
   const maxWeeklyXp = Math.max(...stats.weeklyActivity, 1)
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4">
+    <>
+      <SEO
+        title="Profile"
+        description="View your LinguaLearn profile with learning stats, game history, badges, and achievements."
+        keywords="user profile, learning history, achievements"
+        url="/profile"
+        noIndex={true}
+      />
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4">
       <div className="max-w-5xl mx-auto">
 
         <motion.div variants={container} initial="hidden" animate="show" className="space-y-6">
@@ -309,5 +318,6 @@ export default function ProfilePage() {
         </motion.div>
       </div>
     </div>
+    </>
   )
 }

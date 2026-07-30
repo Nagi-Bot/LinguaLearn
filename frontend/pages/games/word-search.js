@@ -6,6 +6,7 @@ import toast from 'react-hot-toast'
 import RequireAuth from '../../components/RequireAuth'
 import { useApp } from '../../context/AppContext'
 import { getSynonymQuestions } from '../../lib/questions'
+import SEO from '../../components/SEO'
 
 const gridSize = 10
 
@@ -119,6 +120,7 @@ export default function WordSearchPage() {
   if (gameState === 'done') {
     return (
       <RequireAuth>
+        <SEO title="Word Search Game" description="Find hidden English words in the puzzle grid. Improve your word recognition and spelling while having fun." keywords="word search, word puzzle, find words, spelling game" url="/games/word-search" />
         <div className="min-h-screen flex items-center justify-center px-4">
           <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="glass-card p-12 text-center max-w-md">
             <div className="w-20 h-20 mx-auto mb-6 gradient-bg rounded-full flex items-center justify-center">
@@ -139,6 +141,7 @@ export default function WordSearchPage() {
 
   return (
     <RequireAuth>
+      <SEO title="Word Search Game" description="Find hidden English words in the puzzle grid. Improve your word recognition and spelling while having fun." keywords="word search, word puzzle, find words, spelling game" url="/games/word-search" />
       <div className="min-h-screen py-8 px-4">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center justify-between mb-6">

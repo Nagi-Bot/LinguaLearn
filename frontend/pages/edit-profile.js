@@ -4,6 +4,7 @@ import { useApp } from '../context/AppContext'
 import { User, Mail, Save, ArrowLeft, Camera } from 'lucide-react'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
+import SEO from '../components/SEO'
 
 export default function EditProfilePage() {
   const { user, updateUser } = useApp()
@@ -39,7 +40,15 @@ export default function EditProfilePage() {
   }
 
   return (
-    <div className="min-h-screen py-8 px-4">
+    <>
+      <SEO
+        title="Edit Profile"
+        description="Update your LinguaLearn profile settings, avatar, and preferences."
+        keywords="edit profile, account settings"
+        url="/edit-profile"
+        noIndex={true}
+      />
+      <div className="min-h-screen py-8 px-4">
       <div className="max-w-2xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <Link href="/profile" className="flex items-center text-gray-500 hover:text-primary-500">
@@ -115,8 +124,8 @@ export default function EditProfilePage() {
               </button>
             </div>
           </div>
-        </motion.div>
-      </div>
+      </motion.div>
     </div>
+    </>
   )
 }

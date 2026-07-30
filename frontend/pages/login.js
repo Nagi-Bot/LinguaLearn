@@ -8,6 +8,7 @@ import { GoogleLogin } from '@react-oauth/google'
 import { useApp } from '../context/AppContext'
 import { Mail, Lock, Eye, EyeOff, LogIn, Sparkles } from 'lucide-react'
 import api from '../lib/api'
+import SEO from '../components/SEO'
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
@@ -44,7 +45,15 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-20">
+    <>
+      <SEO
+        title="Login"
+        description="Log in to your LinguaLearn account to continue your English learning journey. Access your dashboard, games, and lessons."
+        keywords="login, sign in, english learning login"
+        url="/login"
+        noIndex={true}
+      />
+      <div className="min-h-screen flex items-center justify-center px-4 py-20">
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-96 h-96 bg-primary-500/20 rounded-full blur-3xl" />
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-accent-500/20 rounded-full blur-3xl" />
@@ -144,5 +153,6 @@ export default function LoginPage() {
         </div>
       </motion.div>
     </div>
+    </>
   )
 }

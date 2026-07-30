@@ -11,6 +11,7 @@ import {
   MessageSquare, Headphones, PenTool, Mic, Volume2, Play,
   Flame, Diamond
 } from 'lucide-react'
+import SEO from '../components/SEO'
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -74,7 +75,14 @@ export default function HomePage() {
   ]
 
   return (
-    <div className="overflow-hidden">
+    <>
+      <SEO
+        title={null}
+        description="Master English grammar, vocabulary, speaking and writing with AI-powered interactive lessons, fun games, and personalized feedback. Start learning for free today."
+        keywords="learn english, english grammar, vocabulary builder, english speaking, AI english tutor, free english course, english learning app"
+        url="/"
+      />
+      <div className="overflow-hidden">
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center pt-16 pb-20 px-4">
         <div className="absolute inset-0 overflow-hidden">
@@ -360,6 +368,7 @@ export default function HomePage() {
         </div>
       </section>
     </div>
+    </>
   )
 }
 

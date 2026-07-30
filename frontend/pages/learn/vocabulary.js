@@ -9,6 +9,7 @@ import {
 import toast from 'react-hot-toast'
 import Link from 'next/link'
 import { useApp } from '../../context/AppContext'
+import SEO from '../../components/SEO'
 
 const catIcons = {
   'daily': Calendar,
@@ -245,6 +246,7 @@ export default function VocabularyPage() {
 
   return (
     <div className="min-h-screen py-8 px-4">
+      <SEO title="Vocabulary Builder" description="Expand your English vocabulary with daily words, synonyms, antonyms, idioms, phrasal verbs, and collocations." keywords="english vocabulary, learn words, synonyms, antonyms, idioms, phrasal verbs" url="/learn/vocabulary" />
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-display font-bold mb-4">

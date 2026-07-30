@@ -1,10 +1,18 @@
 import { motion } from 'framer-motion'
 import { FileText, Scale, AlertCircle, CheckCircle } from 'lucide-react'
 import Link from 'next/link'
+import SEO from '../components/SEO'
 
 export default function TermsPage() {
   return (
-    <div className="min-h-screen py-8 px-4">
+    <>
+      <SEO
+        title="Terms of Service"
+        description="LinguaLearn terms of service. Read our terms and conditions for using the platform."
+        keywords="terms of service, terms and conditions"
+        url="/terms"
+      />
+      <div className="min-h-screen py-8 px-4">
       <div className="max-w-4xl mx-auto">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-12">
           <div className="w-16 h-16 mx-auto mb-4 gradient-bg rounded-full flex items-center justify-center"><Scale className="w-8 h-8 text-white" /></div>
@@ -52,5 +60,6 @@ export default function TermsPage() {
         </div>
       </div>
     </div>
+    </>
   )
 }

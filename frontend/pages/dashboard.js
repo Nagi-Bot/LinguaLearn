@@ -9,6 +9,7 @@ import {
   CheckCircle, ArrowRight, Medal, Crown,
   Languages, MessageSquare, Diamond
 } from 'lucide-react'
+import SEO from '../components/SEO'
 
 const BADGE_INFO = {
   quick_learner: { name: 'Quick Learner', icon: Zap, color: 'text-yellow-500', desc: '5 lessons done' },
@@ -71,7 +72,15 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4">
+    <>
+      <SEO
+        title="Dashboard"
+        description="Your LinguaLearn dashboard. Track your learning progress, XP, level, streak, badges, and achievements all in one place."
+        keywords="english learning dashboard, track progress, learning stats"
+        url="/dashboard"
+        noIndex={true}
+      />
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4">
       <div className="max-w-6xl mx-auto">
 
         <motion.div variants={container} initial="hidden" animate="show" className="space-y-6">
@@ -282,5 +291,6 @@ export default function DashboardPage() {
         </motion.div>
       </div>
     </div>
+    </>
   )
 }

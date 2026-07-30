@@ -7,6 +7,7 @@ import toast from 'react-hot-toast'
 import { Lock, Sparkles, ArrowLeft, CheckCircle, Eye, EyeOff } from 'lucide-react'
 import api from '../lib/api'
 import Cookies from 'js-cookie'
+import SEO from '../components/SEO'
 
 export default function ResetPasswordPage() {
   const [loading, setLoading] = useState(false)
@@ -37,7 +38,15 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-20">
+    <>
+      <SEO
+        title="Reset Password"
+        description="Set a new password for your LinguaLearn account."
+        keywords="reset password, new password"
+        url="/reset-password"
+        noIndex={true}
+      />
+      <div className="min-h-screen flex items-center justify-center px-4 py-20">
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-96 h-96 bg-primary-500/20 rounded-full blur-3xl" />
       </div>
@@ -101,5 +110,6 @@ export default function ResetPasswordPage() {
         </div>
       </motion.div>
     </div>
+    </>
   )
 }
