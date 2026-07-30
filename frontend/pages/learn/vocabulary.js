@@ -84,13 +84,13 @@ const wordCategories = [
 ]
 
 export default function VocabularyPage() {
-  const { saveLearnProgress, loseHeart, hasHearts, user } = useApp()
+  const { saveLearnProgress, loseHeart, user } = useApp()
   const [activeCategory, setActiveCategory] = useState(null)
   const [currentWord, setCurrentWord] = useState(0)
   const [showMeaning, setShowMeaning] = useState(false)
   const [learnedWords, setLearnedWords] = useState([])
   const [reviewMode, setReviewMode] = useState(false)
-  const [hearts, setHearts] = useState(3)
+  const [hearts, setHearts] = useState(user?.hearts ?? 3)
   const [ended, setEnded] = useState(false)
 
   const startCategory = (cat) => {

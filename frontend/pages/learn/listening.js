@@ -52,7 +52,7 @@ const exercises = [
 ]
 
 export default function ListeningPage() {
-  const { saveLearnProgress, loseHeart, hasHearts, user } = useApp()
+  const { saveLearnProgress, loseHeart, user } = useApp()
   const [activeExercise, setActiveExercise] = useState(null)
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [score, setScore] = useState(0)
@@ -61,7 +61,7 @@ export default function ListeningPage() {
   const [completedExercises, setCompletedExercises] = useState([])
   const [isPlaying, setIsPlaying] = useState(false)
   const [showTranscript, setShowTranscript] = useState(false)
-  const [hearts, setHearts] = useState(3)
+  const [hearts, setHearts] = useState(user?.hearts ?? 3)
   const [ended, setEnded] = useState(false)
   const synth = useRef(null)
 

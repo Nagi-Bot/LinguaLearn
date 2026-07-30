@@ -17,12 +17,12 @@ const prompts = [
 ]
 
 export default function WritingPage() {
-  const { saveLearnProgress, loseHeart, hasHearts, user } = useApp()
+  const { saveLearnProgress, loseHeart, user } = useApp()
   const [activePrompt, setActivePrompt] = useState(null)
   const [text, setText] = useState('')
   const [feedback, setFeedback] = useState(null)
   const [analyzing, setAnalyzing] = useState(false)
-  const [hearts, setHearts] = useState(3)
+  const [hearts, setHearts] = useState(user?.hearts ?? 3)
   const [ended, setEnded] = useState(false)
 
   const analyzeWriting = async () => {

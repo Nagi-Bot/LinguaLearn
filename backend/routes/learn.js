@@ -44,6 +44,7 @@ router.post('/progress', auth, async (req, res) => {
     }
 
     user.lessonsCompleted = (user.lessonsCompleted || 0) + 1
+    user.diamonds = (user.diamonds || 0) + 2
 
     const result = user.addXp(xp)
     const newBadges = user.checkBadges()

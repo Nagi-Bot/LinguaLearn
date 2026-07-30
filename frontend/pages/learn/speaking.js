@@ -21,14 +21,14 @@ const sentences = [
 ]
 
 export default function SpeakingPage() {
-  const { saveLearnProgress, loseHeart, hasHearts, user } = useApp()
+  const { saveLearnProgress, loseHeart, user } = useApp()
   const [currentSentence, setCurrentSentence] = useState(0)
   const [isListening, setIsListening] = useState(false)
   const [spokenText, setSpokenText] = useState('')
   const [scores, setScores] = useState([])
   const [completed, setCompleted] = useState(false)
   const [result, setResult] = useState(null)
-  const [hearts, setHearts] = useState(3)
+  const [hearts, setHearts] = useState(user?.hearts ?? 3)
   const [ended, setEnded] = useState(false)
 
   const speakSentence = (text) => {

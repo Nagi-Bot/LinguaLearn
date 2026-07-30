@@ -68,7 +68,7 @@ export default function ProfilePage() {
     quizzesTaken: user?.quizzesTaken || 0,
     badges: user?.badges || [],
     weeklyActivity: user?.weeklyActivity || [0, 0, 0, 0, 0, 0, 0],
-    joinDate: user?.joinDate || new Date(parseInt(user?.id || Date.now())).toLocaleDateString(),
+    joinDate: user?.joinDate || null,
   }
 
   const tabs = [
@@ -138,7 +138,7 @@ export default function ProfilePage() {
                   </div>
                 </div>
                 <p className="text-xs text-gray-400 mt-2 flex items-center justify-center md:justify-start">
-                  <Calendar className="w-3 h-3 mr-1" /> Joined {new Date(stats.joinDate).toLocaleDateString()} · Best streak: {stats.bestStreak} days
+                  <Calendar className="w-3 h-3 mr-1" /> Joined {stats.joinDate ? new Date(stats.joinDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'Recently'} · Best streak: {stats.bestStreak} days
                 </p>
               </div>
               <Link href="/edit-profile" className="mt-4 md:mt-0 px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all flex items-center">

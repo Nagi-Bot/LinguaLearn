@@ -116,7 +116,7 @@ export default function EditProfilePage() {
 
             <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
               <div className="text-sm text-gray-500">
-                Member since {new Date(parseInt(user?.id || Date.now())).toLocaleDateString()}
+                Member since {user?.joinDate ? new Date(user.joinDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'Recently'}
               </div>
               <button onClick={handleSave} disabled={saving} className="btn-primary">
                 <Save className="w-4 h-4 mr-2 inline" />

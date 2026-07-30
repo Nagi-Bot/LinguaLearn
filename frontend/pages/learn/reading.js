@@ -87,14 +87,14 @@ In the workplace, clear communication can increase productivity, reduce errors, 
 ]
 
 export default function ReadingPage() {
-  const { saveLearnProgress, loseHeart, hasHearts, user } = useApp()
+  const { saveLearnProgress, loseHeart, user } = useApp()
   const [activeReading, setActiveReading] = useState(null)
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [score, setScore] = useState(0)
   const [quizDone, setQuizDone] = useState(false)
   const [selectedAnswer, setSelectedAnswer] = useState(null)
   const [completedReadings, setCompletedReadings] = useState([])
-  const [hearts, setHearts] = useState(3)
+  const [hearts, setHearts] = useState(user?.hearts ?? 3)
   const [ended, setEnded] = useState(false)
 
   const startReading = (reading) => {

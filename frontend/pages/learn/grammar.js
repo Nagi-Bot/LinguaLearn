@@ -104,7 +104,7 @@ const quizQuestions = [
 ]
 
 export default function GrammarPage() {
-  const { saveLearnProgress, loseHeart, hasHearts, user } = useApp()
+  const { saveLearnProgress, loseHeart, user } = useApp()
   const [activeTopic, setActiveTopic] = useState(null)
   const [activeLesson, setActiveLesson] = useState(0)
   const [quizActive, setQuizActive] = useState(false)
@@ -114,7 +114,7 @@ export default function GrammarPage() {
   const [selectedAnswer, setSelectedAnswer] = useState(null)
   const [completedTopics, setCompletedTopics] = useState([])
   const [showQuiz, setShowQuiz] = useState(false)
-  const [hearts, setHearts] = useState(3)
+  const [hearts, setHearts] = useState(user?.hearts ?? 3)
   const [ended, setEnded] = useState(false)
 
   const startTopic = (topic) => {

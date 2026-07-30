@@ -190,11 +190,12 @@ export function AppProvider({ children }) {
     const oldLevel = user?.level || 1
     const newXp = (user?.xp || 0) + score
     const newLevel = Math.floor(newXp / 500) + 1
+    const newDiamonds = (user?.diamonds || 0) + 2 + (newLevel > oldLevel ? 30 : 0)
     const lp = user?.learnProgress || {}
     if (!lp[module]) lp[module] = { completed: [], score: 0, totalXp: 0 }
     if (!lp[module].completed.includes(itemId)) lp[module].completed.push(itemId)
     lp[module].totalXp = (lp[module].totalXp || 0) + score
-    const updated = { ...user, xp: newXp, level: newLevel, lessonsCompleted: (user?.lessonsCompleted || 0) + 1, learnProgress: lp }
+    const updated = { ...user, xp: newXp, level: newLevel, diamonds: newDiamonds, lessonsCompleted: (user?.lessonsCompleted || 0) + 1, learnProgress: lp }
     setUser(updated)
     localStorage.setItem('lingua_user', JSON.stringify(updated))
     return { didLevelUp: newLevel > oldLevel, newLevel, user: updated }
