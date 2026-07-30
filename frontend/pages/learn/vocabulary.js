@@ -84,6 +84,7 @@ const wordCategories = [
 ]
 
 export default function VocabularyPage() {
+  if (typeof window === 'undefined') return null
   const { saveLearnProgress, loseHeart, user } = useApp()
   const [activeCategory, setActiveCategory] = useState(null)
   const [currentWord, setCurrentWord] = useState(0)
