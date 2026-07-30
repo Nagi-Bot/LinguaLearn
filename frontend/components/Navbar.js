@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -6,242 +6,221 @@ import { useApp } from '../context/AppContext'
 import {
   Menu, X, BookOpen, GraduationCap, LogIn, User,
   Sun, Moon, ChevronDown, Trophy, Gamepad2, Home,
-  LayoutDashboard, Sparkles, ShoppingCart, Bot, PenTool, Zap, Target
+  LayoutDashboard, Sparkles, ShoppingCart, Bot, PenTool, Target,
+  Book, Volume2, MessageSquare, Headphones, Globe, Type
 } from 'lucide-react'
+
+const learnItems = [
+  { href: '/learn/grammar', label: 'Grammar', icon: Book },
+  { href: '/learn/vocabulary', label: 'Vocabulary', icon: Type },
+  { href: '/learn/reading', label: 'Reading', icon: BookOpen },
+  { href: '/learn/writing', label: 'Writing', icon: PenTool },
+  { href: '/learn/speaking', label: 'Speaking', icon: Volume2 },
+  { href: '/learn/listening', label: 'Listening', icon: Headphones },
+]
+
+const gameItems = [
+  { href: '/games/daily-challenge', label: 'Daily Challenge', icon: Target },
+  { href: '/games/grammar-battle', label: 'Grammar Battle', icon: GraduationCap },
+  { href: '/games/word-builder', label: 'Word Builder', icon: Type },
+  { href: '/games/sentence-builder', label: 'Sentence Builder', icon: MessageSquare },
+  { href: '/games/hangman', label: 'Hangman', icon: Gamepad2 },
+  { href: '/games/memory-game', label: 'Memory Cards', icon: Sparkles },
+]
+
+const aiItems = [
+  { href: '/ai-tutor', label: 'AI Tutor', icon: Bot, desc: 'Chat with your AI English teacher' },
+  { href: '/writing-feedback', label: 'Writing Feedback', icon: PenTool, desc: 'Get instant grammar & style corrections' },
+  { href: '/placement-test', label: 'Placement Test', icon: Target, desc: 'Find your English level' },
+]
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
-  const [dropdown, setDropdown] = useState(null)
+  const [openDropdown, setOpenDropdown] = useState(null)
   const { user, darkMode, toggleDarkMode, logout } = useApp()
   const router = useRouter()
+  const dropdownRef = useRef(null)
 
-  const navLinks = [
-    { href: '/', label: 'Home', icon: Home },
-    { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, auth: true },
-    { href: '/learn/grammar', label: 'Learn', icon: BookOpen },
-    { href: '/leaderboard', label: 'Leaderboard', icon: Trophy },
-    { href: '/store', label: 'Store', icon: ShoppingCart, auth: true },
-  ]
+  useEffect(() => {
+    const handleClick = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setOpenDropdown(null)
+      }
+    }
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [])
 
-  const learnDropdown = [
-    { href: '/learn/grammar', label: 'Grammar' },
-    { href: '/learn/vocabulary', label: 'Vocabulary' },
-    { href: '/learn/reading', label: 'Reading' },
-    { href: '/learn/writing', label: 'Writing' },
-    { href: '/learn/speaking', label: 'Speaking' },
-    { href: '/learn/listening', label: 'Listening' },
-  ]
-
-  const gameDropdown = [
-    { href: '/games/daily-challenge', label: 'Daily Challenge', icon: Zap },
-    { href: '/games/grammar-battle', label: 'Grammar Battle' },
-    { href: '/games/word-builder', label: 'Word Builder' },
-    { href: '/games/sentence-builder', label: 'Sentence Builder' },
-    { href: '/games/tense-challenge', label: 'Tense Challenge' },
-    { href: '/games/memory-game', label: 'Memory Cards' },
-    { href: '/games/hangman', label: 'Hangman' },
-    { href: '/games/word-search', label: 'Word Search' },
-    { href: '/games/fill-blank', label: 'Fill in Blanks' },
-    { href: '/games/synonym-challenge', label: 'Synonym Challenge' },
-    { href: '/games/antonym-challenge', label: 'Antonym Challenge' },
-  ]
-
-  const aiDropdown = [
-    { href: '/ai-tutor', label: 'AI Tutor', icon: Bot },
-    { href: '/writing-feedback', label: 'Writing Feedback', icon: PenTool },
-    { href: '/placement-test', label: 'Placement Test', icon: Target },
-  ]
+  useEffect(() => {
+    setOpenDropdown(null)
+    setIsOpen(false)
+  }, [router.pathname])
 
   const isActive = (href) => router.pathname === href || router.pathname.startsWith(href + '/')
 
-  return (
-    <nav className="fixed top-0 left-0 right-0 z-50 glass border-b border-gray-200/50 dark:border-gray-700/30">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          <Link href="/" className="flex items-center space-x-2 group">
-            <div className="w-9 h-9 gradient-bg rounded-lg flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all">
-              <Sparkles className="w-5 h-5 text-white" />
+  const DropdownMenu = ({ items, wide }) => (
+    <motion.div
+      initial={{ opacity: 0, y: 8, scale: 0.96 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: 8, scale: 0.96 }}
+      transition={{ duration: 0.15 }}
+      className={`absolute top-full left-1/2 -translate-x-1/2 mt-1 ${wide ? 'w-64' : 'w-48'} bg-white dark:bg-gray-900 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden`}
+    >
+      <div className="py-1">
+        {items.map((item) => (
+          <Link
+            key={item.href}
+            href={item.href}
+            className={`flex items-center gap-3 px-4 py-2.5 text-sm transition-colors ${
+              isActive(item.href)
+                ? 'bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400'
+                : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'
+            }`}
+          >
+            <item.icon className="w-4 h-4 shrink-0" />
+            <div>
+              <div className="font-medium">{item.label}</div>
+              {item.desc && <div className="text-xs text-gray-400 mt-0.5">{item.desc}</div>}
             </div>
-            <span className="text-xl font-display font-bold gradient-text">LinguaLearn</span>
+          </Link>
+        ))}
+      </div>
+    </motion.div>
+  )
+
+  const NavButton = ({ onClick, active, children }) => (
+    <button
+      onClick={onClick}
+      className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+        active
+          ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20'
+          : 'text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-gray-50 dark:hover:bg-gray-800'
+      }`}
+    >
+      {children}
+    </button>
+  )
+
+  const NavLink = ({ href, children, active }) => (
+    <Link
+      href={href}
+      className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+        active
+          ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20'
+          : 'text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-gray-50 dark:hover:bg-gray-800'
+      }`}
+    >
+      {children}
+    </Link>
+  )
+
+  return (
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg border-b border-gray-200 dark:border-gray-800">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+        <div className="flex items-center justify-between h-16">
+          <Link href="/" className="flex items-center gap-2 shrink-0">
+            <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center shadow-sm">
+              <Sparkles className="w-4 h-4 text-white" />
+            </div>
+            <span className="text-lg font-bold bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 bg-clip-text text-transparent">LinguaLearn</span>
           </Link>
 
-          <div className="hidden md:flex items-center space-x-1">
-            {navLinks.map((link) => {
-              if (link.auth && !user) return null
-              const Icon = link.icon
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`flex items-center space-x-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                    isActive(link.href)
-                      ? 'text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20'
-                      : 'text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-800/50'
-                  }`}
-                >
-                  <Icon className="w-4 h-4" />
-                  <span>{link.label}</span>
-                </Link>
-              )
-            })}
-
-            {/* Learn Dropdown */}
+          <div ref={dropdownRef} className="hidden md:flex items-center gap-0.5">
             <div className="relative">
-              <button
-                onClick={() => setDropdown(dropdown === 'learn' ? null : 'learn')}
-                className={`flex items-center space-x-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                  isActive('/learn')
-                    ? 'text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20'
-                    : 'text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-800/50'
-                }`}
+              <NavButton
+                onClick={() => setOpenDropdown(openDropdown === 'learn' ? null : 'learn')}
+                active={isActive('/learn')}
               >
                 <BookOpen className="w-4 h-4" />
-                <span>Learn</span>
-                <ChevronDown className="w-3 h-3" />
-              </button>
+                Learn
+                <ChevronDown className={`w-3 h-3 transition-transform ${openDropdown === 'learn' ? 'rotate-180' : ''}`} />
+              </NavButton>
               <AnimatePresence>
-                {dropdown === 'learn' && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 10 }}
-                    className="absolute top-full left-0 mt-2 w-48 glass rounded-xl shadow-2xl border border-gray-200/50 dark:border-gray-700/30 overflow-hidden"
-                  >
-                    {learnDropdown.map((item) => (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        onClick={() => setDropdown(null)}
-                        className={`block px-4 py-2.5 text-sm hover:bg-primary-50 dark:hover:bg-gray-700/50 ${
-                          isActive(item.href) ? 'text-primary-600 dark:text-primary-400 font-medium' : 'text-gray-700 dark:text-gray-300'
-                        }`}
-                      >
-                        {item.label}
-                      </Link>
-                    ))}
-                  </motion.div>
-                )}
+                {openDropdown === 'learn' && <DropdownMenu items={learnItems} />}
               </AnimatePresence>
             </div>
 
-            {/* Games Dropdown */}
             <div className="relative">
-              <button
-                onClick={() => setDropdown(dropdown === 'games' ? null : 'games')}
-                className={`flex items-center space-x-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                  isActive('/games')
-                    ? 'text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20'
-                    : 'text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-800/50'
-                }`}
+              <NavButton
+                onClick={() => setOpenDropdown(openDropdown === 'games' ? null : 'games')}
+                active={isActive('/games')}
               >
                 <Gamepad2 className="w-4 h-4" />
-                <span>Games</span>
-                <ChevronDown className="w-3 h-3" />
-              </button>
+                Games
+                <ChevronDown className={`w-3 h-3 transition-transform ${openDropdown === 'games' ? 'rotate-180' : ''}`} />
+              </NavButton>
               <AnimatePresence>
-                {dropdown === 'games' && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 10 }}
-                    className="absolute top-full left-0 mt-2 w-48 glass rounded-xl shadow-2xl border border-gray-200/50 dark:border-gray-700/30 overflow-hidden"
-                  >
-                    {gameDropdown.map((item) => (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        onClick={() => setDropdown(null)}
-                        className={`block px-4 py-2.5 text-sm hover:bg-primary-50 dark:hover:bg-gray-700/50 ${
-                          isActive(item.href) ? 'text-primary-600 dark:text-primary-400 font-medium' : 'text-gray-700 dark:text-gray-300'
-                        }`}
-                      >
-                        {item.label}
-                      </Link>
-                    ))}
-                  </motion.div>
-                )}
+                {openDropdown === 'games' && <DropdownMenu items={gameItems} />}
               </AnimatePresence>
             </div>
 
-            {/* AI Tools Dropdown */}
             <div className="relative">
-              <button
-                onClick={() => setDropdown(dropdown === 'ai' ? null : 'ai')}
-                className={`flex items-center space-x-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                  isActive('/ai-tutor') || isActive('/writing-feedback') || isActive('/placement-test')
-                    ? 'text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20'
-                    : 'text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-800/50'
-                }`}
+              <NavButton
+                onClick={() => setOpenDropdown(openDropdown === 'ai' ? null : 'ai')}
+                active={isActive('/ai-tutor') || isActive('/writing-feedback') || isActive('/placement-test')}
               >
                 <Bot className="w-4 h-4" />
-                <span>AI Tools</span>
-                <ChevronDown className="w-3 h-3" />
-              </button>
+                AI Tools
+                <ChevronDown className={`w-3 h-3 transition-transform ${openDropdown === 'ai' ? 'rotate-180' : ''}`} />
+              </NavButton>
               <AnimatePresence>
-                {dropdown === 'ai' && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 10 }}
-                    className="absolute top-full left-0 mt-2 w-48 glass rounded-xl shadow-2xl border border-gray-200/50 dark:border-gray-700/30 overflow-hidden"
-                  >
-                    {aiDropdown.map((item) => (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        onClick={() => setDropdown(null)}
-                        className={`flex items-center space-x-2 px-4 py-2.5 text-sm hover:bg-primary-50 dark:hover:bg-gray-700/50 ${
-                          isActive(item.href) ? 'text-primary-600 dark:text-primary-400 font-medium' : 'text-gray-700 dark:text-gray-300'
-                        }`}
-                      >
-                        <item.icon className="w-3.5 h-3.5" />
-                        <span>{item.label}</span>
-                      </Link>
-                    ))}
-                  </motion.div>
-                )}
+                {openDropdown === 'ai' && <DropdownMenu items={aiItems} wide />}
               </AnimatePresence>
             </div>
+
+            <NavLink href="/leaderboard" active={isActive('/leaderboard')}>
+              <Trophy className="w-4 h-4" />
+              Leaderboard
+            </NavLink>
+
+            {user && (
+              <NavLink href="/store" active={isActive('/store')}>
+                <ShoppingCart className="w-4 h-4" />
+                Store
+              </NavLink>
+            )}
           </div>
 
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center gap-2">
             <button
               onClick={toggleDarkMode}
-              className="p-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all"
+              className="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              aria-label="Toggle theme"
             >
-              {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+              {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
             </button>
 
             {user ? (
-              <div className="hidden md:flex items-center space-x-3">
+              <div className="hidden md:flex items-center gap-2">
                 <Link
                   href="/profile"
-                  className="flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-primary-50 dark:bg-primary-900/20 hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-all"
+                  className="flex items-center gap-2 pl-3 pr-2 py-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                 >
-                  <div className="w-7 h-7 gradient-bg rounded-full flex items-center justify-center text-white text-xs font-bold overflow-hidden">
+                  <div className="w-7 h-7 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white text-xs font-bold overflow-hidden">
                     {user.avatar ? <img src={user.avatar} alt="" className="w-full h-full object-cover" /> : (user.name?.charAt(0)?.toUpperCase() || 'U')}
                   </div>
-                  <span className="text-sm font-medium text-primary-700 dark:text-primary-300">{user.name}</span>
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300 max-w-[100px] truncate">{user.name}</span>
                 </Link>
                 <button
                   onClick={logout}
-                  className="px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all"
+                  className="px-3 py-1.5 text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
                 >
                   Logout
                 </button>
               </div>
             ) : (
-              <div className="hidden md:flex items-center space-x-2">
-                <Link href="/login" className="btn-secondary text-sm py-2 px-4">Login</Link>
-                <Link href="/register" className="btn-primary text-sm py-2 px-4">Get Started</Link>
+              <div className="hidden md:flex items-center gap-2">
+                <Link href="/login" className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Log in</Link>
+                <Link href="/register" className="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 rounded-lg shadow-sm transition-all">Sign up free</Link>
               </div>
             )}
 
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="md:hidden p-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
+              className="md:hidden p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              aria-label="Toggle menu"
             >
-              {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </div>
@@ -253,91 +232,49 @@ export default function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden border-t border-gray-200/50 dark:border-gray-700/30"
+            className="md:hidden border-t border-gray-200 dark:border-gray-800 overflow-hidden"
           >
-            <div className="px-4 py-3 space-y-1 max-h-96 overflow-y-auto">
-              {navLinks.map((link) => {
-                if (link.auth && !user) return null
-                const Icon = link.icon
-                return (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    onClick={() => setIsOpen(false)}
-                    className={`flex items-center space-x-2 px-3 py-2.5 rounded-lg text-sm font-medium ${
-                      isActive(link.href)
-                        ? 'text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20'
-                        : 'text-gray-600 dark:text-gray-400'
-                    }`}
-                  >
-                    <Icon className="w-4 h-4" />
-                    <span>{link.label}</span>
-                  </Link>
-                )
-              })}
-              <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
-                <p className="px-3 py-1 text-xs font-semibold text-gray-400 uppercase tracking-wider">Learn</p>
-                {learnDropdown.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={() => setIsOpen(false)}
-                    className={`block px-3 py-2.5 text-sm rounded-lg ${
-                      isActive(item.href) ? 'text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20' : 'text-gray-600 dark:text-gray-400'
-                    }`}
-                  >
+            <div className="px-4 py-3 space-y-1 max-h-[80vh] overflow-y-auto">
+              <MobileSection title="Learn">
+                {learnItems.map((item) => (
+                  <MobileLink key={item.href} href={item.href} icon={item.icon} active={isActive(item.href)} onClick={() => setIsOpen(false)}>
                     {item.label}
-                  </Link>
+                  </MobileLink>
                 ))}
-              </div>
-              <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
-                <p className="px-3 py-1 text-xs font-semibold text-gray-400 uppercase tracking-wider">Games</p>
-                {gameDropdown.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={() => setIsOpen(false)}
-                    className={`block px-3 py-2.5 text-sm rounded-lg ${
-                      isActive(item.href) ? 'text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20' : 'text-gray-600 dark:text-gray-400'
-                    }`}
-                  >
+              </MobileSection>
+              <MobileSection title="Games">
+                {gameItems.map((item) => (
+                  <MobileLink key={item.href} href={item.href} icon={item.icon} active={isActive(item.href)} onClick={() => setIsOpen(false)}>
                     {item.label}
-                  </Link>
+                  </MobileLink>
                 ))}
-              </div>
-              <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
-                <p className="px-3 py-1 text-xs font-semibold text-gray-400 uppercase tracking-wider">AI Tools</p>
-                {aiDropdown.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={() => setIsOpen(false)}
-                    className={`flex items-center space-x-2 px-3 py-2.5 text-sm rounded-lg ${
-                      isActive(item.href) ? 'text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20' : 'text-gray-600 dark:text-gray-400'
-                    }`}
-                  >
-                    <item.icon className="w-4 h-4" />
-                    <span>{item.label}</span>
-                  </Link>
+              </MobileSection>
+              <MobileSection title="AI Tools">
+                {aiItems.map((item) => (
+                  <MobileLink key={item.href} href={item.href} icon={item.icon} active={isActive(item.href)} onClick={() => setIsOpen(false)}>
+                    <div>
+                      <div>{item.label}</div>
+                      <div className="text-xs text-gray-400">{item.desc}</div>
+                    </div>
+                  </MobileLink>
                 ))}
+              </MobileSection>
+              <div className="pt-2 border-t border-gray-200 dark:border-gray-700 space-y-1">
+                <MobileLink href="/leaderboard" icon={Trophy} active={isActive('/leaderboard')} onClick={() => setIsOpen(false)}>Leaderboard</MobileLink>
+                {user && <MobileLink href="/store" icon={ShoppingCart} active={isActive('/store')} onClick={() => setIsOpen(false)}>Store</MobileLink>}
               </div>
               {user ? (
                 <div className="pt-2 border-t border-gray-200 dark:border-gray-700 space-y-1">
-                  <Link href="/profile" onClick={() => setIsOpen(false)} className="flex items-center space-x-2 px-3 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-400">
-                    <User className="w-4 h-4" /><span>Profile</span>
-                  </Link>
-                  <button onClick={() => { logout(); setIsOpen(false) }} className="w-full text-left px-3 py-2.5 text-sm font-medium text-red-500 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20">
+                  <MobileLink href="/profile" icon={User} onClick={() => setIsOpen(false)}>Profile</MobileLink>
+                  <button onClick={() => { logout(); setIsOpen(false) }} className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-red-500 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                    <LogIn className="w-4 h-4 rotate-180" />
                     Logout
                   </button>
                 </div>
               ) : (
                 <div className="pt-2 border-t border-gray-200 dark:border-gray-700 space-y-2">
-                  <Link href="/login" onClick={() => setIsOpen(false)} className="block w-full text-center px-4 py-2.5 rounded-lg border-2 border-primary-500 text-primary-600 dark:text-primary-400 font-medium text-sm">
-                    Login
-                  </Link>
-                  <Link href="/register" onClick={() => setIsOpen(false)} className="block w-full text-center px-4 py-2.5 rounded-lg gradient-bg text-white font-medium text-sm">
-                    Get Started
-                  </Link>
+                  <Link href="/login" onClick={() => setIsOpen(false)} className="block w-full text-center px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-medium text-sm hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">Log in</Link>
+                  <Link href="/register" onClick={() => setIsOpen(false)} className="block w-full text-center px-4 py-2.5 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium text-sm shadow-sm">Sign up free</Link>
                 </div>
               )}
             </div>
@@ -345,5 +282,31 @@ export default function Navbar() {
         )}
       </AnimatePresence>
     </nav>
+  )
+}
+
+function MobileSection({ title, children }) {
+  return (
+    <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
+      <p className="px-3 py-1 text-xs font-semibold text-gray-400 uppercase tracking-wider">{title}</p>
+      <div className="space-y-0.5 mt-0.5">{children}</div>
+    </div>
+  )
+}
+
+function MobileLink({ href, icon: Icon, children, active, onClick }) {
+  return (
+    <Link
+      href={href}
+      onClick={onClick}
+      className={`flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg transition-colors ${
+        active
+          ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20'
+          : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800'
+      }`}
+    >
+      <Icon className="w-4 h-4 shrink-0" />
+      {children}
+    </Link>
   )
 }
