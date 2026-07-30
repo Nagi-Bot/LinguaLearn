@@ -1,5 +1,5 @@
 import { useState, createElement } from 'react'
-export async function getServerSideProps() { return { props: {} } }
+
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   BookOpen, ChevronRight, ArrowLeft, Sparkles,

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-export async function getServerSideProps() { return { props: {} } }
+
 import { motion } from 'framer-motion'
 import { PenTool, Send, Sparkles, AlertCircle, CheckCircle, ArrowLeft, RotateCcw } from 'lucide-react'
 import toast from 'react-hot-toast'

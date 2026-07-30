@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-export async function getServerSideProps() { return { props: {} } }
+
 import { motion } from 'framer-motion'
 import { Volume2, Headphones, ArrowLeft, CheckCircle, Play, Pause, Sun, UtensilsCrossed, Plane, Newspaper } from 'lucide-react'
 import DynamicIcon from '../../components/DynamicIcon'
