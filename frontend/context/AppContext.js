@@ -155,6 +155,49 @@ export function AppProvider({ children }) {
     return { didLevelUp: newLevel > oldLevel, oldLevel, newLevel }
   }
 
+  const googleAuth = async (credentialResponse) => {
+    try {
+      const res = await api.post('/auth/google', { credential: credentialResponse.credential })
+      const { user: userData, token } = res.data
+      Cookies.set('token', token, { expires: 30 })
+      localStorage.setItem('lingua_user', JSON.stringify(userData))
+      setUser(userData)
+      return { user: userData, token }
+    } catch {
+      const decoded = parseJwt(credentialResponse.credential)
+      if (!decoded) throw { response: { data: { message: 'Google signup failed' } } }
+      const existingUser = localStorage.getItem('lingua_user')
+      const parsed = existingUser ? JSON.parse(existingUser) : null
+      if (parsed && parsed.email === decoded.email) {
+        const userData = { ...parsed, name: decoded.name || parsed.name, avatar: decoded.picture || parsed.avatar }
+        Cookies.set('token', 'local-token', { expires: 7 })
+        localStorage.setItem('lingua_user', JSON.stringify(userData))
+        setUser(userData)
+        return { user: userData, token: 'local-token' }
+      }
+      const userData = {
+        id: decoded.sub || Date.now().toString(),
+        name: decoded.name || decoded.email.split('@')[0],
+        email: decoded.email,
+        avatar: decoded.picture || '',
+        xp: 0, level: 1, streak: 0, coins: 100, bio: ''
+      }
+      localStorage.setItem('lingua_user', JSON.stringify(userData))
+      localStorage.setItem('lingua_user_' + userData.name, JSON.stringify(userData))
+      Cookies.set('token', 'local-token', { expires: 7 })
+      setUser(userData)
+      return { user: userData, token: 'local-token' }
+    }
+  }
+
+  function parseJwt(token) {
+    try {
+      const base64Url = token.split('.')[1]
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
+      return JSON.parse(atob(base64))
+    } catch { return null }
+  }
+
   const logout = () => {
     Cookies.remove('token')
     localStorage.removeItem('lingua_user')
@@ -165,7 +208,7 @@ export function AppProvider({ children }) {
   return (
     <AppContext.Provider value={{
       user, loading, darkMode, theme,
-      login, register, logout, toggleDarkMode, setUser, updateUser, addXp
+      login, register, googleAuth, logout, toggleDarkMode, setUser, updateUser, addXp
     }}>
       {children}
     </AppContext.Provider>

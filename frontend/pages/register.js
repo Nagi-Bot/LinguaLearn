@@ -12,17 +12,14 @@ import api from '../lib/api'
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
-  const { register: registerUser } = useApp()
+  const { register: registerUser, googleAuth } = useApp()
   const router = useRouter()
   const { register, handleSubmit, formState: { errors } } = useForm()
 
   const handleGoogleSuccess = async (credentialResponse) => {
     setLoading(true)
     try {
-      const res = await api.post('/auth/google', { credential: credentialResponse.credential })
-      const { default: Cookies } = await import('js-cookie')
-      Cookies.set('token', res.data.token, { expires: 30 })
-      localStorage.setItem('lingua_user', JSON.stringify(res.data.user))
+      await googleAuth(credentialResponse)
       toast.success('Account created with Google!')
       router.push('/dashboard')
     } catch (err) {
