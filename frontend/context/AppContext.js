@@ -233,4 +233,8 @@ export function AppProvider({ children }) {
   )
 }
 
-export const useApp = () => useContext(AppContext)
+export const useApp = () => {
+  const ctx = useContext(AppContext)
+  if (!ctx) return { user: null, darkMode: false, toggleDarkMode: () => {}, logout: () => {}, syncUser: () => {}, submitGameScore: () => {}, saveLearnProgress: () => {}, loseHeart: () => {}, hasHearts: true, buyHearts: () => {}, buyXp: () => {} }
+  return ctx
+}
