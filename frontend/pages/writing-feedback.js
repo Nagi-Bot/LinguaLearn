@@ -364,11 +364,13 @@ export default function WritingFeedbackPage() {
                       <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
                         <div className="prose prose-sm dark:prose-invert max-w-none">
                           {renderMarkdown(
-                            typeof feedback.content === 'string'
+                            typeof feedback === 'string'
+                              ? feedback
+                              : typeof feedback.content === 'string'
                               ? feedback.content
                               : typeof feedback.feedback === 'string'
                               ? feedback.feedback
-                              : JSON.stringify(feedback.content || feedback.feedback || feedback, null, 2)
+                              : JSON.stringify(feedback, null, 2)
                           )}
                         </div>
                       </div>

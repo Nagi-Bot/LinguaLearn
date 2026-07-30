@@ -37,6 +37,22 @@ function sanitize(str) {
   return (str || '').replace(/<[^>]*>/g, '').replace(/[<>]/g, '').slice(0, 4000)
 }
 
+function stripMarkdown(str) {
+  return (str || '')
+    .replace(/\*\*(.*?)\*\*/g, '$1')
+    .replace(/\*(.*?)\*/g, '$1')
+    .replace(/`(.*?)`/g, '$1')
+    .replace(/~~(.*?)~~/g, '$1')
+    .replace(/_{2}(.*?)_{2}/g, '$1')
+    .replace(/_(.*?)_/g, '$1')
+    .replace(/^#{1,6}\s+/gm, '')
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/^[-*+]\s+/gm, '• ')
+    .replace(/^\d+\.\s+/gm, (m) => m)
+    .replace(/\n{3,}/g, '\n\n')
+    .trim()
+}
+
 async function callGroq(systemPrompt, messages, temperature = 0.7) {
   const controller = new AbortController()
   const timeout = setTimeout(() => controller.abort(), 20000)
@@ -81,16 +97,17 @@ router.post('/chat', auth, async (req, res) => {
       return res.status(400).json({ message: 'Messages required' })
     }
 
-    const defaultPrompt = `You are LinguaLearn AI, a friendly and expert English tutor. You help users learn English by:
-- Explaining grammar rules clearly with examples
-- Teaching vocabulary with definitions, synonyms, and example sentences
-- Correcting mistakes and explaining why something is wrong
-- Giving pronunciation tips
-- Keeping responses concise but educational
-- Using encouraging and supportive tone
-- When correcting, show the wrong version with ❌ and correct version with ✅`
+    const defaultPrompt = `You are LinguaLearn AI, a professional and friendly English tutor. Always respond in clean, plain text with proper grammar and punctuation. Do NOT use any markdown formatting like asterisks, bold, italics, backticks, or special symbols. Use natural language instead:
 
-    const reply = await callGroq(systemPrompt || defaultPrompt, messages.slice(-10), 0.7)
+- Explain grammar rules clearly with examples using plain text
+- When correcting mistakes, write like: "Wrong: [wrong text]. Correct: [correct text]."
+- Use emojis rarely and only when appropriate
+- Format lists with numbers (1. 2. 3.) not asterisks
+- Keep responses concise, educational, and encouraging
+- Write professionally like a polite email or classroom teacher`
+
+    let reply = await callGroq(systemPrompt || defaultPrompt, messages.slice(-10), 0.7)
+    reply = stripMarkdown(reply)
     res.json({ reply })
   } catch (err) {
     console.error('AI chat error:', err.message)
@@ -109,20 +126,20 @@ router.post('/writing-feedback', auth, async (req, res) => {
       return res.status(400).json({ message: 'Please provide at least 10 characters of text to check.' })
     }
 
-    const systemPrompt = `You are an expert English writing teacher. Analyze the user's writing and provide:
+    const systemPrompt = `You are an expert English writing teacher. Analyze the user's writing and provide feedback in clean, professional plain text. Do NOT use any markdown symbols like asterisks, bold, italics, or backticks.
 
-1. **Grammar Corrections**: List each mistake with ❌ wrong → ✅ correct
-2. **Spelling Errors**: If any
-3. **Style Suggestions**: Better word choices or sentence structures
-4. **Vocabulary Score**: Rate vocabulary usage 1-10
-5. **Grammar Score**: Rate grammar accuracy 1-10
-6. **Overall Score**: Rate the writing 1-10
-7. **Summary**: Brief encouraging feedback
+Structure your response with these sections:
+1. Grammar Corrections - List each mistake with "Wrong: ... Right: ..."
+2. Spelling Errors - If any
+3. Style Suggestions - Better word choices or sentence structures
+4. Scores - Vocabulary: X/10, Grammar: X/10, Overall: X/10
+5. Summary - Brief encouraging feedback
 
-Format your response clearly with headers. Be constructive and encouraging.
+Use professional language like a writing consultant. Use number formatting for lists. Be constructive and encouraging.
 Writing type: ${type || 'general'}`
 
-    const reply = await callGroq(systemPrompt, [{ role: 'user', content: text }], 0.5)
+    let reply = await callGroq(systemPrompt, [{ role: 'user', content: text }], 0.5)
+    reply = stripMarkdown(reply)
     res.json({ feedback: reply })
   } catch (err) {
     console.error('Writing feedback error:', err.message)
