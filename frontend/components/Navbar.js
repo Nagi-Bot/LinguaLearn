@@ -168,6 +168,13 @@ export default function Navbar() {
               </AnimatePresence>
             </div>
 
+            {user && (
+              <NavLink href="/dashboard" active={isActive('/dashboard')}>
+                <LayoutDashboard className="w-4 h-4" />
+                Dashboard
+              </NavLink>
+            )}
+
             <NavLink href="/leaderboard" active={isActive('/leaderboard')}>
               <Trophy className="w-4 h-4" />
               Leaderboard
@@ -260,6 +267,7 @@ export default function Navbar() {
                 ))}
               </MobileSection>
               <div className="pt-2 border-t border-gray-200 dark:border-gray-700 space-y-1">
+                {user && <MobileLink href="/dashboard" icon={LayoutDashboard} active={isActive('/dashboard')} onClick={() => setIsOpen(false)}>Dashboard</MobileLink>}
                 <MobileLink href="/leaderboard" icon={Trophy} active={isActive('/leaderboard')} onClick={() => setIsOpen(false)}>Leaderboard</MobileLink>
                 {user && <MobileLink href="/store" icon={ShoppingCart} active={isActive('/store')} onClick={() => setIsOpen(false)}>Store</MobileLink>}
               </div>
