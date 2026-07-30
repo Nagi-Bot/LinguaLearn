@@ -1,16 +1,16 @@
 import Link from 'next/link'
-import { Sparkles, BookOpen, Gamepad2, Mail, Globe, MessageCircle, Bot, Target, PenTool, Zap, ChevronRight, ArrowUpRight } from 'lucide-react'
+import { Sparkles, BookOpen, Gamepad2, Mail, Globe, MessageCircle, Bot, Target, PenTool, Zap, ArrowUpRight, Book, Type, Volume2, MessageSquare, Headphones, GraduationCap, Sword, Puzzle, Brain, LayoutDashboard, Trophy, ShoppingCart, Info, Phone, Library, Languages } from 'lucide-react'
 
 const linkGroups = [
   {
     title: 'Learn',
     links: [
-      { href: '/learn/grammar', label: 'Grammar' },
-      { href: '/learn/vocabulary', label: 'Vocabulary' },
-      { href: '/learn/reading', label: 'Reading' },
-      { href: '/learn/writing', label: 'Writing' },
-      { href: '/learn/speaking', label: 'Speaking' },
-      { href: '/learn/listening', label: 'Listening' },
+      { href: '/learn/grammar', label: 'Grammar', icon: Book },
+      { href: '/learn/vocabulary', label: 'Vocabulary', icon: Languages },
+      { href: '/learn/reading', label: 'Reading', icon: BookOpen },
+      { href: '/learn/writing', label: 'Writing', icon: PenTool },
+      { href: '/learn/speaking', label: 'Speaking', icon: Volume2 },
+      { href: '/learn/listening', label: 'Listening', icon: Headphones },
     ],
   },
   {
@@ -25,20 +25,20 @@ const linkGroups = [
     title: 'Games',
     links: [
       { href: '/games/daily-challenge', label: 'Daily Challenge', icon: Zap },
-      { href: '/games/grammar-battle', label: 'Grammar Battle' },
-      { href: '/games/word-builder', label: 'Word Builder' },
-      { href: '/games/hangman', label: 'Hangman' },
-      { href: '/games/memory-game', label: 'Memory Cards' },
+      { href: '/games/grammar-battle', label: 'Grammar Battle', icon: Sword },
+      { href: '/games/word-builder', label: 'Word Builder', icon: Type },
+      { href: '/games/hangman', label: 'Hangman', icon: Gamepad2 },
+      { href: '/games/memory-game', label: 'Memory Cards', icon: Brain },
     ],
   },
   {
     title: 'Quick Links',
     links: [
-      { href: '/dashboard', label: 'Dashboard' },
-      { href: '/leaderboard', label: 'Leaderboard' },
-      { href: '/store', label: 'Store' },
-      { href: '/about', label: 'About Us' },
-      { href: '/contact', label: 'Contact' },
+      { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+      { href: '/leaderboard', label: 'Leaderboard', icon: Trophy },
+      { href: '/store', label: 'Store', icon: ShoppingCart },
+      { href: '/about', label: 'About Us', icon: Info },
+      { href: '/contact', label: 'Contact', icon: Phone },
     ],
   },
 ]
