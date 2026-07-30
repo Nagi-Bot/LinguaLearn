@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { motion } from 'framer-motion'
-import { Trophy, Zap, Heart, Clock, RotateCcw } from 'lucide-react'
+import { Trophy, Zap, Heart, Clock, RotateCcw, CheckCircle, XCircle, BookOpen, Calendar } from 'lucide-react'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
 import RequireAuth from '../../components/RequireAuth'
@@ -82,7 +82,7 @@ export default function DailyChallengePage() {
     } catch {}
     setQuestions(FALLBACK_QUESTIONS)
     setGameState('playing')
-    toast('Using offline questions', { icon: '📚' })
+    toast('Using offline questions')
   }
 
   const handleTimeUp = () => {
@@ -145,7 +145,7 @@ export default function DailyChallengePage() {
   }, [selectedAnswer, currentQ, questions, streak, bestStreak, nextQuestion, endGame])
 
   const handleRetry = () => {
-    toast('Come back tomorrow for a new challenge!', { icon: '📅' })
+    toast('Come back tomorrow for a new challenge!')
   }
 
   if (gameState === 'loading') {
@@ -166,6 +166,41 @@ export default function DailyChallengePage() {
             <div className="w-16 h-16 mx-auto mb-6 border-4 border-primary-500 border-t-transparent rounded-full animate-spin" />
             <h2 className="text-2xl font-display font-bold mb-2">Daily Challenge</h2>
             <p className="text-gray-600 dark:text-gray-400">Generating your daily challenge...</p>
+          </motion.div>
+        </div>
+      </RequireAuth>
+    )
+  }
+
+  if (gameState === 'done') {
+    const nextMidnight = new Date()
+    nextMidnight.setDate(nextMidnight.getDate() + 1)
+    nextMidnight.setHours(0, 0, 0, 0)
+    const [dh, dm] = [Math.floor((nextMidnight - Date.now()) / 3600000), Math.floor(((nextMidnight - Date.now()) % 3600000) / 60000)]
+    return (
+      <RequireAuth>
+        <SEO title="Daily Challenge" description="Today's challenge completed!" keywords="daily challenge" url="/games/daily-challenge" />
+        <div className="min-h-screen flex items-center justify-center px-4">
+          <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="bg-white dark:bg-gray-800 rounded-2xl p-10 shadow-sm border border-gray-100 dark:border-gray-700 text-center max-w-md">
+            <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-violet-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
+              <CheckCircle className="w-10 h-10 text-white" />
+            </div>
+            <h2 className="text-2xl font-bold mb-2">Today's Challenge Complete!</h2>
+            <p className="text-gray-500 dark:text-gray-400 mb-6">Great job! Come back tomorrow for a new challenge.</p>
+            <div className="flex justify-center gap-6 mb-6">
+              <div className="text-center"><p className="text-2xl font-bold text-green-500">{totalCorrect}</p><p className="text-sm text-gray-500">Correct</p></div>
+              <div className="text-center"><p className="text-2xl font-bold text-red-500">{totalWrong}</p><p className="text-sm text-gray-500">Wrong</p></div>
+              <div className="text-center"><p className="text-2xl font-bold text-amber-500">{bestStreak}</p><p className="text-sm text-gray-500">Best Streak</p></div>
+            </div>
+            <div className="p-4 rounded-xl bg-violet-50 dark:bg-violet-900/20 border border-violet-200 dark:border-violet-800 mb-6">
+              <div className="flex items-center justify-center gap-2 text-violet-700 dark:text-violet-400">
+                <Calendar className="w-5 h-5" />
+                <span className="font-semibold">Next challenge in {dh}h {dm}m</span>
+              </div>
+            </div>
+            <Link href="/dashboard" className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-violet-600 to-purple-600 text-white rounded-xl font-medium hover:shadow-lg transition-all">
+              Go to Dashboard <Zap className="w-4 h-4 ml-2" />
+            </Link>
           </motion.div>
         </div>
       </RequireAuth>

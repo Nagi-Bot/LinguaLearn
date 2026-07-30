@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Brain, Clock, Trophy, RotateCcw, Zap, ChevronRight, CheckCircle, XCircle, Target, ArrowRight, Lock } from 'lucide-react'
+import { Brain, Clock, Trophy, RotateCcw, Zap, ChevronRight, CheckCircle, XCircle, Target, ArrowRight, Lock, Sprout, BookOpen, GraduationCap } from 'lucide-react'
 import toast from 'react-hot-toast'
 import RequireAuth from '../components/RequireAuth'
 import { useApp } from '../context/AppContext'
@@ -64,30 +64,9 @@ const FALLBACK_QUESTIONS = {
 }
 
 const LEVELS = [
-  {
-    id: 'beginner',
-    label: 'Beginner',
-    range: 'A1 - A2',
-    description: 'Basic vocabulary, simple sentences, present tense',
-    color: 'from-green-400 to-emerald-500',
-    icon: '🌱',
-  },
-  {
-    id: 'intermediate',
-    label: 'Intermediate',
-    range: 'B1 - B2',
-    description: 'Complex sentences, past/future tenses, idioms',
-    color: 'from-blue-400 to-indigo-500',
-    icon: '📚',
-  },
-  {
-    id: 'advanced',
-    label: 'Advanced',
-    range: 'C1 - C2',
-    description: 'Nuanced grammar, academic vocabulary, phrasal verbs',
-    color: 'from-purple-400 to-pink-500',
-    icon: '🎓',
-  },
+  { id: 'beginner', label: 'Beginner', range: 'A1 - A2', description: 'Basic vocabulary, simple sentences, present tense', color: 'from-green-400 to-emerald-500', icon: 'Sprout' },
+  { id: 'intermediate', label: 'Intermediate', range: 'B1 - B2', description: 'Complex sentences, past/future tenses, idioms', color: 'from-blue-400 to-indigo-500', icon: 'BookOpen' },
+  { id: 'advanced', label: 'Advanced', range: 'C1 - C2', description: 'Nuanced grammar, academic vocabulary, phrasal verbs', color: 'from-purple-400 to-pink-500', icon: 'GraduationCap' },
 ]
 
 function getCooldownInfo() {
@@ -323,7 +302,11 @@ export default function PlacementTestPage() {
                   disabled={loading}
                   className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-lg transition-all text-left group"
                 >
-                  <div className="text-4xl mb-4">{level.icon}</div>
+                  <div className={`w-14 h-14 mx-auto mb-4 rounded-2xl bg-gradient-to-br ${level.color} flex items-center justify-center shadow-lg`}>
+                    {level.id === 'beginner' && <Sprout className="w-7 h-7 text-white" />}
+                    {level.id === 'intermediate' && <BookOpen className="w-7 h-7 text-white" />}
+                    {level.id === 'advanced' && <GraduationCap className="w-7 h-7 text-white" />}
+                  </div>
                   <div className={`inline-block px-3 py-1 rounded-full text-xs font-semibold text-white bg-gradient-to-r ${level.color} mb-3`}>
                     {level.range}
                   </div>
