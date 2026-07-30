@@ -1,6 +1,6 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Trophy, Zap, Flame, BookOpen, Medal, Award, Crown, ArrowLeft, Diamond } from 'lucide-react'
+import { Trophy, Zap, Flame, BookOpen, Medal, Award, Crown, ArrowLeft, Diamond, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { useApp } from '../context/AppContext'
 import api from '../lib/api'
@@ -9,48 +9,49 @@ import SEO from '../components/SEO'
 export default function LeaderboardPage() {
   const { user } = useApp()
   const [allUsers, setAllUsers] = useState([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    loadCached()
     loadLeaderboard()
   }, [user])
 
-  const loadLeaderboard = async () => {
-    let list = []
-    const localUsers = []
-    if (user?.name && user?.email) {
-      try { await api.post('/auth/sync', { name: user.name, email: user.email, xp: user.xp || 0, level: user.level || 1, streak: user.streak || 0, diamonds: user.diamonds || 0, avatar: user.avatar || '', bio: user.bio || '', badges: user.badges || [], lessonsCompleted: user.lessonsCompleted || 0, wordsLearned: user.wordsLearned || 0, quizzesTaken: user.quizzesTaken || 0, gamesPlayed: user.gamesPlayed || 0, totalGameScore: user.totalGameScore || 0 }) } catch {}
-    }
-    const savedScores = []
+  const loadCached = () => {
     try {
-      const keys = Object.keys(localStorage)
-      for (let i = 0; i < keys.length; i++) {
-        if (keys[i].startsWith('lingua_user_')) {
-          try {
-            const data = JSON.parse(localStorage.getItem(keys[i]))
-            if (data) localUsers.push(data)
-          } catch {}
+      const cached = localStorage.getItem('lb_cache')
+      if (cached) {
+        const parsed = JSON.parse(cached)
+        if (Date.now() - parsed.ts < 120000) {
+          setAllUsers(parsed.data)
+          setLoading(false)
         }
       }
-      const stored = localStorage.getItem('lingua_leaderboard')
-      if (stored) savedScores.push(...JSON.parse(stored))
     } catch {}
+  }
+
+  const loadLeaderboard = async () => {
+    setLoading(true)
+    const localData = []
+    try {
+      const stored = localStorage.getItem('lingua_leaderboard')
+      if (stored) localData.push(...JSON.parse(stored))
+    } catch {}
+
+    let list = []
     try {
       const res = await api.get('/leaderboard')
       res.data.forEach(u => {
         if (!list.find(x => x.name === u.name)) {
-          list.push({ name: u.name, xp: u.xp || 0, level: u.level || 1, streak: u.streak || 0, avatar: u.avatar || '', isYou: user?.name === u.name, color: 'from-primary-500 to-primary-600' })
+          list.push({ name: u.name, xp: u.xp || 0, level: u.level || 1, streak: u.streak || 0, avatar: u.avatar || '', isYou: user?.name === u.name })
         }
       })
     } catch {}
+
     if (user && !list.find(u => u.name === user.name)) {
-      list.push({ name: user.name, xp: user.xp || 0, level: user.level || 1, streak: user.streak || 0, avatar: user.avatar || '', isYou: true, color: 'from-primary-500 to-primary-600' })
+      list.push({ name: user.name, xp: user.xp || 0, level: user.level || 1, streak: user.streak || 0, avatar: user.avatar || '', isYou: true })
     }
-    localUsers.forEach(su => {
-      if (!list.find(u => u.name === su.name)) {
-        list.push({ name: su.name, xp: su.xp || 0, level: su.level || 1, streak: su.streak || 0, avatar: su.avatar || '' })
-      }
-    })
-    savedScores.forEach(s => {
+
+    localData.forEach(s => {
       const existing = list.find(u => u.name === s.name)
       if (existing) {
         if (s.xp > existing.xp) { existing.xp = s.xp; existing.level = s.level; existing.streak = s.streak || existing.streak }
@@ -58,8 +59,12 @@ export default function LeaderboardPage() {
         list.push({ name: s.name, xp: s.xp, level: s.level, streak: s.streak || 0 })
       }
     })
+
     list.sort((a, b) => b.xp - a.xp)
-    setAllUsers(list.slice(0, 15))
+    const top = list.slice(0, 15)
+    setAllUsers(top)
+    setLoading(false)
+    try { localStorage.setItem('lb_cache', JSON.stringify({ data: top, ts: Date.now() })) } catch {}
   }
 
   const getRankIcon = (rank) => {
@@ -67,6 +72,25 @@ export default function LeaderboardPage() {
     if (rank === 1) return <Medal className="w-5 h-5 text-gray-400" />
     if (rank === 2) return <Medal className="w-5 h-5 text-amber-700" />
     return null
+  }
+
+  if (loading) {
+    return (
+      <>
+        <SEO
+          title="Leaderboard"
+          description="See the top English learners on LinguaLearn. Compete with others, climb the ranks, and prove your English skills."
+          keywords="english learning leaderboard, top learners, competition"
+          url="/leaderboard"
+        />
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <Loader2 className="w-10 h-10 mx-auto mb-4 text-primary-500 animate-spin" />
+            <p className="text-gray-500">Loading leaderboard...</p>
+          </div>
+        </div>
+      </>
+    )
   }
 
   if (allUsers.length === 0) {
