@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://lingualearn.up.railway.app/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://lingualearn.up.railway.app/learn/grammar/</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://lingualearn.up.railway.app/learn/vocabulary/</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://lingualearn.up.railway.app/learn/speaking/</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://lingualearn.up.railway.app/learn/listening/</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://lingualearn.up.railway.app/learn/reading/</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://lingualearn.up.railway.app/learn/writing/</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://lingualearn.up.railway.app/games/grammar-battle/</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://lingualearn.up.railway.app/games/daily-challenge/</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://lingualearn.up.railway.app/games/word-search/</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://lingualearn.up.railway.app/games/word-builder/</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://lingualearn.up.railway.app/games/sentence-builder/</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://lingualearn.up.railway.app/games/memory-game/</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://lingualearn.up.railway.app/games/hangman/</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://lingualearn.up.railway.app/games/synonym-challenge/</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://lingualearn.up.railway.app/games/antonym-challenge/</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://lingualearn.up.railway.app/games/tense-challenge/</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://lingualearn.up.railway.app/games/fill-blank/</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://lingualearn.up.railway.app/leaderboard/</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://lingualearn.up.railway.app/placement-test/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://lingualearn.up.railway.app/ai-tutor/</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://lingualearn.up.railway.app/about/</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://lingualearn.up.railway.app/contact/</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://lingualearn.up.railway.app/login/</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>
+  <url><loc>https://lingualearn.up.railway.app/register/</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>
+  <url><loc>https://lingualearn.up.railway.app/privacy/</loc><changefreq>yearly</changefreq><priority>0.2</priority></url>
+  <url><loc>https://lingualearn.up.railway.app/terms/</loc><changefreq>yearly</changefreq><priority>0.2</priority></url>
+</urlset>

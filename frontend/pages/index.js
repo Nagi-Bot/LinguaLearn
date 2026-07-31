@@ -9,6 +9,7 @@ import {
   ChevronRight, ArrowRight, CheckCircle,
   Trophy, MessageSquare, Headphones, PenTool, Mic,
   Play, Flame, Diamond, Zap, Medal, ClipboardCheck,
+  Facebook, Twitter, Linkedin, MessageCircle, Share2,
 } from 'lucide-react'
 import SEO from '../components/SEO'
 
@@ -34,12 +35,71 @@ export default function HomePage() {
   ]
 
   const learningPaths = [
-    { icon: BookOpen, title: 'Grammar', lessons: '10 Topics', color: 'from-violet-500 to-purple-600', href: '/learn/grammar' },
-    { icon: Languages, title: 'Vocabulary', lessons: '250+ Words', color: 'from-blue-500 to-cyan-600', href: '/learn/vocabulary' },
-    { icon: MessageSquare, title: 'Reading', lessons: '20 Stories', color: 'from-emerald-500 to-teal-600', href: '/learn/reading' },
-    { icon: PenTool, title: 'Writing', lessons: '22 Prompts', color: 'from-amber-500 to-orange-600', href: '/learn/writing' },
-    { icon: Mic, title: 'Speaking', lessons: '400+ Sentences', color: 'from-pink-500 to-rose-600', href: '/learn/speaking' },
-    { icon: Headphones, title: 'Listening', lessons: '12 Tracks', color: 'from-sky-500 to-indigo-600', href: '/learn/listening' },
+    { icon: BookOpen, title: 'Grammar', lessons: '10 Topics', color: 'from-violet-500 to-purple-600', href: '/learn/grammar', cta: 'Browse Grammar Lessons' },
+    { icon: Languages, title: 'Vocabulary', lessons: '250+ Words', color: 'from-blue-500 to-cyan-600', href: '/learn/vocabulary', cta: 'Grow Your Vocabulary' },
+    { icon: MessageSquare, title: 'Reading', lessons: '20 Stories', color: 'from-emerald-500 to-teal-600', href: '/learn/reading', cta: 'Read English Stories' },
+    { icon: PenTool, title: 'Writing', lessons: '22 Prompts', color: 'from-amber-500 to-orange-600', href: '/learn/writing', cta: 'Start Writing Practice' },
+    { icon: Mic, title: 'Speaking', lessons: '400+ Sentences', color: 'from-pink-500 to-rose-600', href: '/learn/speaking', cta: 'Practice Speaking Daily' },
+    { icon: Headphones, title: 'Listening', lessons: '12 Tracks', color: 'from-sky-500 to-indigo-600', href: '/learn/listening', cta: 'Train Your Listening' },
+  ]
+
+  const faqs = [
+    { q: 'How does LinguaLearn work?', a: 'LinguaLearn uses interactive lessons, AI-powered grammar correction, and gamified exercises to help you improve English. Start with a placement test, then follow a personalized learning path.' },
+    { q: 'Is LinguaLearn free?', a: 'Yes! We offer a generous free tier with access to basic lessons, daily challenges, and games. Premium unlocks advanced AI features, certificates, and ad-free experience.' },
+    { q: 'How does the AI grammar check work?', a: 'Our AI analyzes your writing in real-time, detecting grammar mistakes, spelling errors, and suggesting improvements with detailed explanations for each correction.' },
+    { q: 'Can I practice speaking?', a: 'Absolutely! Our speaking module uses speech recognition to evaluate pronunciation, fluency, and accuracy, giving you instant feedback and scores.' },
+    { q: 'How long does it take to see results?', a: 'Most users see noticeable improvement within 2-4 weeks of regular practice (15-20 minutes daily). Consistency is key to language learning.' },
+  ]
+
+  const steps = [
+    { icon: ClipboardCheck, step: '01', title: 'Take the Placement Test', desc: 'Answer a few smart questions and find out your exact English level in under 5 minutes.', cta: 'Take the Placement Test', href: '/placement-test', color: 'from-violet-500 to-purple-600' },
+    { icon: Brain, step: '02', title: 'Learn with AI & Games', desc: 'Practice grammar, vocabulary, speaking and writing through AI-powered lessons and 11 fun games.', cta: 'Explore Lessons & Games', href: '/learn/grammar', color: 'from-blue-500 to-cyan-600' },
+    { icon: Trophy, step: '03', title: 'Track Your Progress', desc: 'Earn XP, build daily streaks, climb the leaderboard and watch your level grow every day.', cta: 'Track Your Progress', href: '/dashboard', color: 'from-emerald-500 to-teal-600' },
+  ]
+
+  const shareUrl = 'https://lingualearn.up.railway.app'
+  const shareText = 'Master English with LinguaLearn — free AI-powered lessons, games and speaking practice!'
+  const shareLinks = [
+    { name: 'WhatsApp', icon: MessageCircle, href: `https://wa.me/?text=${encodeURIComponent(shareText + ' ' + shareUrl)}`, color: 'bg-green-500 hover:bg-green-600' },
+    { name: 'Facebook', icon: Facebook, href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, color: 'bg-blue-600 hover:bg-blue-700' },
+    { name: 'X (Twitter)', icon: Twitter, href: `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`, color: 'bg-gray-900 hover:bg-gray-800' },
+    { name: 'LinkedIn', icon: Linkedin, href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`, color: 'bg-sky-700 hover:bg-sky-800' },
+  ]
+
+  const schemaData = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Organization',
+      name: 'LinguaLearn',
+      url: shareUrl,
+      logo: shareUrl + '/logo.svg',
+      description: 'Free AI-powered English learning platform with interactive lessons, games, and personalized feedback.',
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      name: 'LinguaLearn',
+      url: shareUrl,
+      description: 'Master English grammar, vocabulary, speaking and writing with AI-powered interactive lessons and fun games.',
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'SoftwareApplication',
+      name: 'LinguaLearn',
+      operatingSystem: 'Web, Android',
+      applicationCategory: 'EducationalApplication',
+      description: 'Learn English grammar, vocabulary, speaking and writing with AI-powered lessons, games and personalized feedback.',
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: faqs.map(f => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: { '@type': 'Answer', text: f.a },
+      })),
+    },
   ]
 
   const AnimatedCounter = ({ value, label, icon: Icon, color, format }) => {
@@ -79,9 +139,13 @@ export default function HomePage() {
     <>
       <SEO
         title={null}
-        description="Master English grammar, vocabulary, speaking and writing with AI-powered interactive lessons, fun games, and personalized feedback. Start learning for free today."
+        description="Learn English free with AI-powered lessons, grammar exercises, vocabulary games, and speaking practice. Master English faster with LinguaLearn."
         keywords="learn english, english grammar, vocabulary builder, english speaking, AI english tutor, free english course, english learning app"
         url="/"
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }}
       />
       <div className="overflow-hidden">
         {/* Hero */}
@@ -128,7 +192,7 @@ export default function HomePage() {
 
                 <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
                   <Link href={user ? '/dashboard' : '/register'} className="group relative px-8 py-4 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white rounded-2xl font-semibold text-lg shadow-xl shadow-violet-500/25 hover:shadow-violet-500/40 transition-all duration-300">
-                    {user ? 'Go to Dashboard' : 'Start Learning Free'}
+                    {user ? 'Open My Dashboard' : 'Create Free Account'}
                     <ArrowRight className="w-5 h-5 ml-2 inline group-hover:translate-x-1 transition-transform" />
                   </Link>
                   <Link href="/learn/grammar" className="px-8 py-4 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-2xl font-semibold text-lg border border-gray-200 dark:border-gray-700 hover:border-violet-300 dark:hover:border-violet-600 shadow-sm hover:shadow-md transition-all">
@@ -265,7 +329,7 @@ export default function HomePage() {
                           </div>
                         </div>
                         <Link href="/dashboard" className="mt-4 inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-violet-600 to-purple-600 text-white rounded-xl font-medium hover:shadow-lg transition-shadow text-sm">
-                          Go to Dashboard <ArrowRight className="w-4 h-4 ml-2" />
+                          View My Progress <ArrowRight className="w-4 h-4 ml-2" />
                         </Link>
                       </div>
                     </div>
@@ -332,6 +396,34 @@ export default function HomePage() {
           </div>
         </section>
 
+        {/* Why Learn English */}
+        <section className="py-20 px-4 bg-gray-50/50 dark:bg-gray-800/30">
+          <div className="max-w-5xl mx-auto">
+            <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+              <h2 className="text-3xl md:text-4xl font-display font-bold text-center mb-3">Why Learn English with <span className="bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">LinguaLearn</span>?</h2>
+              <p className="text-center text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-12">A modern, free and effective way to master the world's most useful language.</p>
+            </motion.div>
+            <div className="grid md:grid-cols-2 gap-8">
+              <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="space-y-5 text-gray-600 dark:text-gray-400 leading-relaxed">
+                <p>
+                  English is the language of opportunity. From university admissions and IELTS, PTE, and TOEFL preparation to global careers in software, business, and medicine, strong English skills open doors in every direction. Yet traditional learning — heavy grammar books, boring drills, and no feedback — leaves millions of learners stuck. LinguaLearn was built to change that.
+                </p>
+                <p>
+                  Unlike a typical English course, LinguaLearn adapts to you. A short placement test measures your real level, and the app then builds a personalized learning path across grammar, vocabulary, reading, writing, speaking, and listening. Every lesson explains the why behind the rule, so you do not just memorize — you truly understand.
+                </p>
+              </motion.div>
+              <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="space-y-5 text-gray-600 dark:text-gray-400 leading-relaxed">
+                <p>
+                  Practice is what actually moves your English forward, so LinguaLearn makes it addictive. Earn XP for every lesson, keep your daily streak alive, battle friends in Grammar Battle, tackle the Daily Challenge, and watch your name climb the leaderboard. With 11 games, 20 reading stories, and over 250 vocabulary words, there is always something new to do — and every session takes just 5 to 15 minutes.
+                </p>
+                <p>
+                  The best part? LinguaLearn is completely free, with no credit card required. Designed for learners in Pakistan, India, and around the world, it works on any phone, tablet, or computer — and you can even download the Android app for practice on the go. Whether you are a complete beginner preparing for exams or a working professional polishing your fluency, LinguaLearn meets you at your level and takes you further.
+                </p>
+              </motion.div>
+            </div>
+          </div>
+        </section>
+
         {/* How it works */}
         <section className="py-20 px-4 bg-gray-50/50 dark:bg-gray-800/30">
           <div className="max-w-7xl mx-auto">
@@ -340,11 +432,7 @@ export default function HomePage() {
               <p className="text-center text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">From complete beginner to confident speaker — here's how your journey works.</p>
             </motion.div>
             <div className="grid md:grid-cols-3 gap-6 mt-12">
-              {[
-                { icon: ClipboardCheck, step: '01', title: 'Take the Placement Test', desc: 'Answer a few smart questions and find out your exact English level in under 5 minutes.', href: '/placement-test', color: 'from-violet-500 to-purple-600' },
-                { icon: Brain, step: '02', title: 'Learn with AI & Games', desc: 'Practice grammar, vocabulary, speaking and writing through AI-powered lessons and 11 fun games.', href: '/learn/grammar', color: 'from-blue-500 to-cyan-600' },
-                { icon: Trophy, step: '03', title: 'Track Your Progress', desc: 'Earn XP, build daily streaks, climb the leaderboard and watch your level grow every day.', href: '/dashboard', color: 'from-emerald-500 to-teal-600' },
-              ].map((s, i) => (
+              {steps.map((s, i) => (
                 <motion.div
                   key={i}
                   initial={{ opacity: 0, y: 30 }}
@@ -361,7 +449,7 @@ export default function HomePage() {
                     <h3 className="text-xl font-display font-semibold mb-2">{s.title}</h3>
                     <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">{s.desc}</p>
                     <div className="flex items-center text-sm font-medium text-violet-600 dark:text-violet-400 mt-4 group-hover:translate-x-1 transition-transform">
-                      Get Started <ArrowRight className="w-4 h-4 ml-1" />
+                      {s.cta} <ArrowRight className="w-4 h-4 ml-1" />
                     </div>
                   </Link>
                 </motion.div>
@@ -394,7 +482,7 @@ export default function HomePage() {
                     <h3 className="text-lg font-display font-semibold mb-1">{p.title}</h3>
                     <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">{p.lessons}</p>
                     <div className="flex items-center text-sm font-medium text-violet-600 dark:text-violet-400 group-hover:translate-x-1 transition-transform">
-                      Start Learning <ArrowRight className="w-4 h-4 ml-1" />
+                      {p.cta} <ArrowRight className="w-4 h-4 ml-1" />
                     </div>
                   </Link>
                 </motion.div>
@@ -440,7 +528,7 @@ export default function HomePage() {
                 <h3 className="text-lg font-semibold mb-2">Be the First on the Leaderboard</h3>
                 <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">Start learning today and claim the #1 spot!</p>
                 <Link href="/register" className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-violet-600 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg transition-shadow">
-                  Start Learning Free <ArrowRight className="w-4 h-4 ml-2" />
+                  Join the Leaderboard <ArrowRight className="w-4 h-4 ml-2" />
                 </Link>
               </motion.div>
             )}
@@ -460,13 +548,7 @@ export default function HomePage() {
               <p className="text-center text-gray-600 dark:text-gray-400 mb-12">Got questions? We've got answers.</p>
             </motion.div>
             <div className="space-y-3">
-              {[
-                { q: 'How does LinguaLearn work?', a: 'LinguaLearn uses interactive lessons, AI-powered grammar correction, and gamified exercises to help you improve English. Start with a placement test, then follow a personalized learning path.' },
-                { q: 'Is LinguaLearn free?', a: 'Yes! We offer a generous free tier with access to basic lessons, daily challenges, and games. Premium unlocks advanced AI features, certificates, and ad-free experience.' },
-                { q: 'How does the AI grammar check work?', a: 'Our AI analyzes your writing in real-time, detecting grammar mistakes, spelling errors, and suggesting improvements with detailed explanations for each correction.' },
-                { q: 'Can I practice speaking?', a: 'Absolutely! Our speaking module uses speech recognition to evaluate pronunciation, fluency, and accuracy, giving you instant feedback and scores.' },
-                { q: 'How long does it take to see results?', a: 'Most users see noticeable improvement within 2-4 weeks of regular practice (15-20 minutes daily). Consistency is key to language learning.' },
-              ].map((faq, i) => (
+              {faqs.map((faq, i) => (
                 <motion.div
                   key={i}
                   initial={{ opacity: 0, y: 20 }}
@@ -486,6 +568,35 @@ export default function HomePage() {
                 </motion.div>
               ))}
             </div>
+          </div>
+        </section>
+
+        {/* Social Share */}
+        <section className="py-16 px-4">
+          <div className="max-w-3xl mx-auto text-center">
+            <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+              <div className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-violet-600 to-pink-600 flex items-center justify-center shadow-lg">
+                <Share2 className="w-7 h-7 text-white" />
+              </div>
+              <h2 className="text-3xl md:text-4xl font-display font-bold mb-3">Spread the Word &amp; Share LinguaLearn</h2>
+              <p className="text-gray-600 dark:text-gray-400 max-w-xl mx-auto mb-8">
+                Know someone who wants to learn English? Share LinguaLearn with friends, classmates, and family — it's completely free and works on any device.
+              </p>
+              <div className="flex justify-center gap-3 flex-wrap">
+                {shareLinks.map((s) => (
+                  <a
+                    key={s.name}
+                    href={s.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`inline-flex items-center gap-2 px-5 py-3 ${s.color} text-white rounded-xl font-semibold shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5`}
+                  >
+                    <s.icon className="w-5 h-5" />
+                    {s.name}
+                  </a>
+                ))}
+              </div>
+            </motion.div>
           </div>
         </section>
 

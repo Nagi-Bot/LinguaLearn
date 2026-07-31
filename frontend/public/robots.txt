@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /admin
+Disallow: /profile
+Disallow: /edit-profile
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /writing-feedback
+
+Sitemap: https://lingualearn.up.railway.app/sitemap.xml
