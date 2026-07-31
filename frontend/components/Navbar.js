@@ -7,7 +7,7 @@ import {
   Menu, X, BookOpen, GraduationCap, LogIn, User,
   Sun, Moon, ChevronDown, Trophy, Gamepad2, Home,
   LayoutDashboard, Sparkles, ShoppingCart, Bot, PenTool, Target,
-  Book, Volume2, MessageSquare, Headphones, Globe, Type
+  Book, Volume2, MessageSquare, Headphones, Globe, Type, Smartphone
 } from 'lucide-react'
 
 const learnItems = [
@@ -178,6 +178,15 @@ export default function Navbar() {
               Leaderboard
             </NavLink>
 
+            <a
+              href="/LinguaLearn-APK.apk"
+              download="LinguaLearn-APK.apk"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium text-white bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 shadow-sm transition-all"
+            >
+              <Smartphone className="w-4 h-4" />
+              Download App
+            </a>
+
             {user && (
               <NavLink href="/store" active={isActive('/store')}>
                 <ShoppingCart className="w-4 h-4" />
@@ -268,6 +277,14 @@ export default function Navbar() {
                 {user && <MobileLink href="/dashboard" icon={LayoutDashboard} active={isActive('/dashboard')} onClick={() => setIsOpen(false)}>Dashboard</MobileLink>}
                 <MobileLink href="/leaderboard" icon={Trophy} active={isActive('/leaderboard')} onClick={() => setIsOpen(false)}>Leaderboard</MobileLink>
                 {user && <MobileLink href="/store" icon={ShoppingCart} active={isActive('/store')} onClick={() => setIsOpen(false)}>Store</MobileLink>}
+                <a
+                  href="/LinguaLearn-APK.apk"
+                  download="LinguaLearn-APK.apk"
+                  className="flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg shadow-sm"
+                >
+                  <Smartphone className="w-4 h-4 shrink-0" />
+                  Download App
+                </a>
               </div>
               {user ? (
                 <div className="pt-2 border-t border-gray-200 dark:border-gray-700 space-y-1">

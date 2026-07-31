@@ -1,21 +1,20 @@
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
-import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'
+import { motion, useScroll, useTransform } from 'framer-motion'
 import { useApp } from '../context/AppContext'
 import XPProgressRing from '../components/XPProgressRing'
 import api from '../lib/api'
 import {
-  Sparkles, BookOpen, Gamepad2, Brain, Languages, Award,
-  ChevronRight, Star, ArrowRight, CheckCircle, GraduationCap,
-  Trophy, Clock, MessageSquare, Headphones, PenTool, Mic,
-  Play, Flame, Diamond, Zap, Users, Globe, Shield, Medal, ClipboardCheck,
+  Sparkles, BookOpen, Gamepad2, Brain, Languages,
+  ChevronRight, ArrowRight, CheckCircle,
+  Trophy, MessageSquare, Headphones, PenTool, Mic,
+  Play, Flame, Diamond, Zap, Medal, ClipboardCheck,
 } from 'lucide-react'
 import SEO from '../components/SEO'
 
 export default function HomePage() {
   const { user } = useApp()
   const [faqOpen, setFaqOpen] = useState(null)
-  const [testimonialIdx, setTestimonialIdx] = useState(0)
   const [topLearners, setTopLearners] = useState([])
   const heroRef = useRef(null)
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] })
@@ -23,8 +22,6 @@ export default function HomePage() {
 
   useEffect(() => {
     api.get('/leaderboard').then(res => setTopLearners((res.data || []).slice(0, 3))).catch(() => {})
-    const interval = setInterval(() => setTestimonialIdx(i => (i + 1) % 3), 4000)
-    return () => clearInterval(interval)
   }, [])
 
   const features = [
@@ -43,12 +40,6 @@ export default function HomePage() {
     { icon: PenTool, title: 'Writing', lessons: '22 Prompts', color: 'from-amber-500 to-orange-600', href: '/learn/writing' },
     { icon: Mic, title: 'Speaking', lessons: '400+ Sentences', color: 'from-pink-500 to-rose-600', href: '/learn/speaking' },
     { icon: Headphones, title: 'Listening', lessons: '12 Tracks', color: 'from-sky-500 to-indigo-600', href: '/learn/listening' },
-  ]
-
-  const testimonials = [
-    { name: 'Sarah Johnson', role: 'Student', avatar: 'S', text: 'LinguaLearn transformed my English skills! The AI grammar check is incredibly helpful. I improved from B1 to C1 in just 3 months.', rating: 5 },
-    { name: 'Carlos Mendez', role: 'Professional', avatar: 'C', text: 'The games make learning so much fun. I find myself playing Grammar Battle even during breaks at work. Highly recommended!', rating: 5 },
-    { name: 'Yuki Tanaka', role: 'ESL Learner', avatar: 'Y', text: 'The speaking practice with pronunciation scoring helped me reduce my accent significantly. The daily streak keeps me motivated.', rating: 5 },
   ]
 
   const AnimatedCounter = ({ value, label, icon: Icon, color, format }) => {
@@ -457,47 +448,6 @@ export default function HomePage() {
               <Link href="/leaderboard" className="inline-flex items-center gap-2 text-violet-600 dark:text-violet-400 font-semibold hover:underline">
                 View Full Leaderboard <ArrowRight className="w-4 h-4" />
               </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* Testimonials */}
-        <section className="py-20 px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-              <h2 className="text-3xl md:text-4xl font-display font-bold mb-3">What Our <span className="bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">Learners Say</span></h2>
-              <p className="text-gray-600 dark:text-gray-400 mb-12">Join thousands of satisfied learners who improved their English.</p>
-            </motion.div>
-            <div className="relative">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={testimonialIdx}
-                  initial={{ opacity: 0, x: 50 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -50 }}
-                  transition={{ duration: 0.4 }}
-                  className="p-8 md:p-12 rounded-2xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/50 shadow-lg"
-                >
-                  <div className="flex justify-center mb-4">
-                    {Array.from({ length: testimonials[testimonialIdx].rating }).map((_, j) => (
-                      <Star key={j} className="w-5 h-5 fill-amber-400 text-amber-400" />
-                    ))}
-                  </div>
-                  <p className="text-lg md:text-xl text-gray-700 dark:text-gray-300 italic mb-6 leading-relaxed">"{testimonials[testimonialIdx].text}"</p>
-                  <div className="flex items-center justify-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-white font-bold">{testimonials[testimonialIdx].avatar}</div>
-                    <div className="text-left">
-                      <p className="font-semibold">{testimonials[testimonialIdx].name}</p>
-                      <p className="text-sm text-gray-500">{testimonials[testimonialIdx].role}</p>
-                    </div>
-                  </div>
-                </motion.div>
-              </AnimatePresence>
-              <div className="flex justify-center gap-2 mt-6">
-                {testimonials.map((_, i) => (
-                  <button key={i} onClick={() => setTestimonialIdx(i)} className={`w-2.5 h-2.5 rounded-full transition-all ${i === testimonialIdx ? 'bg-violet-500 w-6' : 'bg-gray-300 dark:bg-gray-600'}`} />
-                ))}
-              </div>
             </div>
           </div>
         </section>
