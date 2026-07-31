@@ -197,7 +197,7 @@ export default function GrammarPage() {
             <button onClick={goBack} className="flex items-center text-gray-500 hover:text-primary-500 mb-6">
               <ArrowLeft className="w-4 h-4 mr-1" /> Back to {activeTopic.title}
             </button>
-            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="glass-card text-center p-12">
+            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="glass-card text-center p-6 sm:p-12">
               <div className="w-20 h-20 mx-auto mb-6 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center">
                 <span className="text-4xl">💔</span>
               </div>
@@ -219,7 +219,7 @@ export default function GrammarPage() {
             <ArrowLeft className="w-4 h-4 mr-1" /> Back to {activeTopic.title}
           </button>
           {quizDone ? (
-            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="glass-card text-center p-12">
+            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="glass-card text-center p-6 sm:p-12">
               <div className="w-20 h-20 mx-auto mb-6 gradient-bg rounded-full flex items-center justify-center">
                 <Award className="w-10 h-10 text-white" />
               </div>
@@ -335,11 +335,11 @@ export default function GrammarPage() {
               ))}
             </div>
 
-            <div className="flex items-center justify-between">
-              <button onClick={prevLesson} disabled={activeLesson === 0} className="btn-secondary" disabled={activeLesson === 0}>
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+              <button onClick={prevLesson} disabled={activeLesson === 0} className="btn-secondary">
                 Previous
               </button>
-              <div className="flex space-x-3">
+              <div className="flex flex-wrap gap-3 justify-center">
                 <button onClick={() => setShowQuiz(true)} className="btn-accent">
                   <Zap className="w-4 h-4 mr-2 inline" /> Take Quiz
                 </button>

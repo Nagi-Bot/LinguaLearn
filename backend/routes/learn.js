@@ -11,8 +11,8 @@ router.get('/stats', async (req, res) => {
       users: totalUsers,
       totalXp: totalXp[0]?.total || 0,
       totalGames: totalGames[0]?.total || 0,
-      lessons: 48,
-      games: 10
+      lessons: 82,
+      games: 11
     })
   } catch (err) {
     res.status(500).json({ message: 'Server error' })

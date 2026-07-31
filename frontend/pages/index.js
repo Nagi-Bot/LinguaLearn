@@ -16,7 +16,7 @@ export default function HomePage() {
   const { user } = useApp()
   const [faqOpen, setFaqOpen] = useState(null)
   const [testimonialIdx, setTestimonialIdx] = useState(0)
-  const [siteStats, setSiteStats] = useState({ users: 0, totalXp: 0, totalGames: 0, lessons: 48, games: 10 })
+  const [siteStats, setSiteStats] = useState({ users: 0, totalXp: 0, totalGames: 0, lessons: 0, games: 0 })
   const heroRef = useRef(null)
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] })
   const heroY = useTransform(scrollYProgress, [0, 1], [0, 150])
@@ -30,19 +30,19 @@ export default function HomePage() {
   const features = [
     { icon: Brain, title: 'AI English Tutor', desc: 'Chat with AI tutor for instant grammar help, vocabulary lessons, and writing corrections.', color: 'from-violet-500 to-purple-600' },
     { icon: Languages, title: 'Vocabulary Builder', desc: 'Expand your vocabulary with daily words, synonyms, idioms, and flashcards.', color: 'from-blue-500 to-cyan-600' },
-    { icon: Gamepad2, title: 'Fun Games', desc: 'Learn through 10+ exciting games like Grammar Battle, Daily Challenge, and more.', color: 'from-emerald-500 to-teal-600' },
+    { icon: Gamepad2, title: 'Fun Games', desc: 'Learn through 11 exciting games like Grammar Battle, Daily Challenge, and more.', color: 'from-emerald-500 to-teal-600' },
     { icon: Headphones, title: 'Listening Practice', desc: 'Improve listening with audio conversations, podcasts, and dictation exercises.', color: 'from-amber-500 to-orange-600' },
     { icon: Mic, title: 'Speaking & Pronunciation', desc: 'Practice speaking with speech recognition and get instant pronunciation scores.', color: 'from-pink-500 to-rose-600' },
     { icon: PenTool, title: 'AI Writing Feedback', desc: 'Paste your writing and get instant AI-powered corrections, scores, and style suggestions.', color: 'from-sky-500 to-indigo-600' },
   ]
 
   const learningPaths = [
-    { icon: BookOpen, title: 'Grammar', lessons: '12 Topics', color: 'from-violet-500 to-purple-600', href: '/learn/grammar' },
-    { icon: Languages, title: 'Vocabulary', lessons: '500+ Words', color: 'from-blue-500 to-cyan-600', href: '/learn/vocabulary' },
-    { icon: MessageSquare, title: 'Reading', lessons: '50+ Stories', color: 'from-emerald-500 to-teal-600', href: '/learn/reading' },
-    { icon: PenTool, title: 'Writing', lessons: 'Practice', color: 'from-amber-500 to-orange-600', href: '/learn/writing' },
-    { icon: Mic, title: 'Speaking', lessons: 'Interactive', color: 'from-pink-500 to-rose-600', href: '/learn/speaking' },
-    { icon: Headphones, title: 'Listening', lessons: 'Audio', color: 'from-sky-500 to-indigo-600', href: '/learn/listening' },
+    { icon: BookOpen, title: 'Grammar', lessons: '10 Topics', color: 'from-violet-500 to-purple-600', href: '/learn/grammar' },
+    { icon: Languages, title: 'Vocabulary', lessons: '30 Words', color: 'from-blue-500 to-cyan-600', href: '/learn/vocabulary' },
+    { icon: MessageSquare, title: 'Reading', lessons: '5 Stories', color: 'from-emerald-500 to-teal-600', href: '/learn/reading' },
+    { icon: PenTool, title: 'Writing', lessons: '6 Prompts', color: 'from-amber-500 to-orange-600', href: '/learn/writing' },
+    { icon: Mic, title: 'Speaking', lessons: '10 Sentences', color: 'from-pink-500 to-rose-600', href: '/learn/speaking' },
+    { icon: Headphones, title: 'Listening', lessons: '4 Tracks', color: 'from-sky-500 to-indigo-600', href: '/learn/listening' },
   ]
 
   const testimonials = [
@@ -51,7 +51,7 @@ export default function HomePage() {
     { name: 'Yuki Tanaka', role: 'ESL Learner', avatar: 'Y', text: 'The speaking practice with pronunciation scoring helped me reduce my accent significantly. The daily streak keeps me motivated.', rating: 5 },
   ]
 
-  const AnimatedCounter = ({ value, label, icon: Icon, color }) => {
+  const AnimatedCounter = ({ value, label, icon: Icon, color, format }) => {
     const [count, setCount] = useState(0)
     const ref = useRef(null)
     useEffect(() => {
@@ -59,7 +59,7 @@ export default function HomePage() {
         if (entry.isIntersecting) {
           let start = 0
           const end = typeof value === 'number' ? value : parseInt(value) || 0
-          if (end === 0) return
+          if (end === 0) { setCount(0); return }
           const duration = 1500
           const step = Math.max(1, Math.floor(end / 60))
           const timer = setInterval(() => {
@@ -72,12 +72,13 @@ export default function HomePage() {
       if (ref.current) observer.observe(ref.current)
       return () => observer.disconnect()
     }, [value])
+    const display = format ? format(count) : count.toLocaleString()
     return (
       <motion.div ref={ref} whileHover={{ y: -5 }} className="text-center p-6 rounded-2xl bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border border-gray-100 dark:border-gray-700/50">
         <div className={`w-12 h-12 mx-auto mb-3 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center shadow-lg`}>
           <Icon className="w-6 h-6 text-white" />
         </div>
-        <div className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-400 bg-clip-text text-transparent">{count.toLocaleString()}</div>
+        <div className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-400 bg-clip-text text-transparent">{display}</div>
         <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">{label}</div>
       </motion.div>
     )
@@ -204,10 +205,10 @@ export default function HomePage() {
         {/* Stats */}
         <section className="py-16 px-4 bg-gray-50/50 dark:bg-gray-800/30">
           <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6">
-            <AnimatedCounter icon={Users} value={siteStats.users} label="Active Learners" color="from-violet-500 to-purple-600" />
-            <AnimatedCounter icon={BookOpen} value={siteStats.lessons || 48} label="Lessons" color="from-blue-500 to-cyan-600" />
-            <AnimatedCounter icon={Gamepad2} value={siteStats.games || 10} label="Interactive Games" color="from-emerald-500 to-teal-600" />
-            <AnimatedCounter icon={Award} value={siteStats.totalXp > 0 ? parseInt((siteStats.totalXp / 1000).toFixed(0)) : 0} label="Total XP Earned (K)" color="from-amber-500 to-orange-600" />
+            <AnimatedCounter icon={Users} value={siteStats.users} label="Registered Learners" color="from-violet-500 to-purple-600" />
+            <AnimatedCounter icon={BookOpen} value={siteStats.lessons} label="Lessons & Words" color="from-blue-500 to-cyan-600" />
+            <AnimatedCounter icon={Gamepad2} value={siteStats.games} label="Interactive Games" color="from-emerald-500 to-teal-600" />
+            <AnimatedCounter icon={Award} value={siteStats.totalXp} label="Total XP Earned" color="from-amber-500 to-orange-600" format={(n) => n >= 1000000 ? (n / 1000000).toFixed(1) + 'M' : n >= 1000 ? (n / 1000).toFixed(1) + 'K' : n.toLocaleString()} />
           </div>
         </section>
 
@@ -362,7 +363,7 @@ export default function HomePage() {
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.15),transparent_50%)]" />
             <div className="relative">
               <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">Ready to Start Your English Journey?</h2>
-              <p className="text-lg text-violet-100 mb-8 max-w-xl mx-auto">Join 50,000+ learners and start improving your English today. It's free!</p>
+              <p className="text-lg text-violet-100 mb-8 max-w-xl mx-auto">Join our learners community and start improving your English today. It's free!</p>
               <Link href={user ? '/dashboard' : '/register'} className="inline-flex items-center px-10 py-4 bg-white text-violet-700 rounded-2xl font-semibold text-lg shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300">
                 {user ? 'Go to Dashboard' : 'Get Started Free'}
                 <ArrowRight className="w-5 h-5 ml-2" />

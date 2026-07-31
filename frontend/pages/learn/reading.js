@@ -143,7 +143,7 @@ export default function ReadingPage() {
       return (
         <div className="min-h-screen py-8 px-4">
           <div className="max-w-2xl mx-auto text-center">
-            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="glass-card p-12">
+            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="glass-card p-6 sm:p-12">
               <div className="w-20 h-20 mx-auto mb-6 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center">
                 <span className="text-4xl">💔</span>
               </div>
@@ -162,7 +162,7 @@ export default function ReadingPage() {
       return (
         <div className="min-h-screen py-8 px-4">
           <div className="max-w-2xl mx-auto text-center">
-            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="glass-card p-12">
+            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="glass-card p-6 sm:p-12">
               <div className="w-20 h-20 mx-auto mb-6 gradient-bg rounded-full flex items-center justify-center">
                 <BookOpen className="w-10 h-10 text-white" />
               </div>

@@ -92,7 +92,7 @@ export default function WritingPage() {
       return (
         <div className="min-h-screen py-8 px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="glass-card p-12">
+            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="glass-card p-6 sm:p-12">
               <div className="w-20 h-20 mx-auto mb-6 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center">
                 <span className="text-4xl">💔</span>
               </div>
@@ -131,12 +131,12 @@ export default function WritingPage() {
               rows={10}
               className="input-field resize-none mb-4 text-base"
             />
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+              <div className="flex items-center space-x-3 justify-center sm:justify-start">
                 <span className="text-sm text-gray-500">{text.trim().split(/\s+/).filter(w => w).length} words</span>
                 <span className="text-sm font-semibold">❤️ {hearts}/3</span>
               </div>
-              <div className="flex space-x-3">
+              <div className="flex flex-wrap gap-3 justify-center">
                 <button onClick={() => setText('')} className="btn-secondary"><RotateCcw className="w-4 h-4 mr-2 inline" /> Clear</button>
                 <button onClick={analyzeWriting} disabled={analyzing} className="btn-primary">
                   {analyzing ? (
