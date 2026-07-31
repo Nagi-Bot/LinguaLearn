@@ -11,6 +11,7 @@ import {
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import SEO from '../../components/SEO'
+import { getDailyChallengeQuestions } from '../../lib/questions'
 
 const topicIcons = {
   'parts-of-speech': Library,
@@ -95,16 +96,9 @@ const topics = [
   },
 ]
 
-const quizQuestions = [
-  { question: 'Which is a correct sentence?', options: ['She go to school', 'She goes to school', 'She going school', 'She go school'], correct: 1 },
-  { question: 'Choose the correct article: "___ apple a day keeps the doctor away."', options: ['A', 'An', 'The', 'None'], correct: 1 },
-  { question: 'What is the past tense of "write"?', options: ['Writed', 'Wrote', 'Written', 'Writes'], correct: 1 },
-  { question: 'Which sentence is in passive voice?', options: ['The cat ate the fish', 'The fish was eaten by the cat', 'The cat eats fish', 'The cat is eating'], correct: 1 },
-  { question: 'Choose the correct modal: "You ___ finish your homework before playing."', options: ['can', 'might', 'must', 'could'], correct: 2 },
-]
-
 export default function GrammarPage() {
   const { saveLearnProgress, loseHeart, user } = useApp()
+  const [quizQuestions, setQuizQuestions] = useState(() => getDailyChallengeQuestions(5))
   const [activeTopic, setActiveTopic] = useState(null)
   const [activeLesson, setActiveLesson] = useState(0)
   const [quizActive, setQuizActive] = useState(false)
@@ -171,12 +165,23 @@ export default function GrammarPage() {
   }
 
   const resetQuiz = () => {
+    setQuizQuestions(getDailyChallengeQuestions(5))
     setCurrentQuestion(0)
     setScore(0)
     setQuizDone(false)
     setSelectedAnswer(null)
     setQuizActive(false)
     setShowQuiz(false)
+  }
+
+  const startQuiz = () => {
+    setQuizQuestions(getDailyChallengeQuestions(5))
+    setCurrentQuestion(0)
+    setScore(0)
+    setQuizDone(false)
+    setSelectedAnswer(null)
+    setQuizActive(true)
+    setShowQuiz(true)
   }
 
   const goBack = () => {
@@ -340,7 +345,7 @@ export default function GrammarPage() {
                 Previous
               </button>
               <div className="flex flex-wrap gap-3 justify-center">
-                <button onClick={() => setShowQuiz(true)} className="btn-accent">
+                <button onClick={startQuiz} className="btn-accent">
                   <Zap className="w-4 h-4 mr-2 inline" /> Take Quiz
                 </button>
                 {activeLesson < activeTopic.lessons.length - 1 ? (
@@ -348,7 +353,7 @@ export default function GrammarPage() {
                     Next <ChevronRight className="w-4 h-4 ml-1 inline" />
                   </button>
                 ) : (
-                  <button onClick={() => setShowQuiz(true)} className="btn-primary">
+                  <button onClick={startQuiz} className="btn-primary">
                     Complete <Award className="w-4 h-4 ml-1 inline" />
                   </button>
                 )}

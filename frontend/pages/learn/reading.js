@@ -6,88 +6,16 @@ import DynamicIcon from '../../components/DynamicIcon'
 import toast from 'react-hot-toast'
 import Link from 'next/link'
 import { useApp } from '../../context/AppContext'
+import { getReadings } from '../../lib/learnContent'
 import SEO from '../../components/SEO'
 
 const iconMap = {
   key: Key, work: Briefcase, climate: Globe, museum: Landmark, communication: MessageCircle
 }
 
-const readings = [
-  {
-    id: 1, title: 'The Lost Key', level: 'Beginner', icon: 'key',
-    content: `Sarah was walking home from school when she found a small key on the ground. It was old and rusty. She picked it up and looked around. There was an old house at the end of the street. Sarah wondered if the key belonged to that house.
-
-She walked to the old house and tried the key in the lock. It worked! The door opened slowly. Inside, she found a room full of old books and paintings. There was also a letter on the table. The letter was from a girl who lived there 100 years ago.
-
-Sarah decided to keep the key as a treasure. She visited the old house every week to read the books. She learned many things about the past. The lost key had opened not just a door, but a window to history.`,
-    questions: [
-      { q: 'Where did Sarah find the key?', options: ['In her house', 'On the ground', 'In a book', 'At school'], answer: 1 },
-      { q: 'What did she find inside the house?', options: ['Money', 'Old books and paintings', 'A cat', 'Food'], answer: 1 },
-      { q: 'How old was the letter?', options: ['50 years', '100 years', '10 years', '200 years'], answer: 1 },
-    ]
-  },
-  {
-    id: 2, title: 'The First Day at Work', level: 'Intermediate', icon: 'work',
-    content: `Emma was nervous on her first day at the new company. She had prepared for this moment for weeks. She arrived early, dressed in her best suit. The office was modern and busy. People were walking quickly with coffee cups and files.
-
-Her manager, Mr. Johnson, greeted her warmly. "Welcome to the team, Emma! Let me show you around." He introduced her to colleagues and showed her where everything was. Emma felt more relaxed after meeting everyone.
-
-By lunchtime, Emma had already completed her first task. She was proud of herself. During lunch, some colleagues invited her to join them. They talked about projects and shared stories. Emma realized that she had made the right decision joining this company.
-
-The first day ended with a team meeting. Emma contributed some ideas that impressed her manager. She left the office feeling excited about her new journey.`,
-    questions: [
-      { q: 'How did Emma feel on her first day?', options: ['Confident', 'Nervous', 'Angry', 'Bored'], answer: 1 },
-      { q: 'Who greeted Emma at the office?', options: ['The CEO', 'Her colleague', 'Mr. Johnson', 'The secretary'], answer: 2 },
-      { q: 'What happened during the team meeting?', options: ['Emma was quiet', 'Emma left early', 'Emma shared ideas', 'The meeting was cancelled'], answer: 2 },
-    ]
-  },
-  {
-    id: 3, title: 'Climate Change Explained', level: 'Advanced', icon: 'climate',
-    content: `Climate change is one of the most pressing challenges facing humanity today. Scientists have conclusively demonstrated that human activities, particularly the burning of fossil fuels, have led to a significant increase in greenhouse gas emissions. These gases trap heat in the Earth's atmosphere, causing global temperatures to rise.
-
-The consequences of climate change are far-reaching. Rising sea levels threaten coastal communities, extreme weather events have become more frequent and severe, and biodiversity loss accelerates as ecosystems struggle to adapt. Agricultural patterns are shifting, affecting food security worldwide.
-
-However, there is hope. Renewable energy technologies have become increasingly affordable and efficient. Countries around the world are committing to net-zero emissions targets. Individuals can also contribute by reducing waste, conserving energy, and supporting sustainable practices.
-
-International cooperation remains crucial. The Paris Agreement provides a framework for global action, but implementation requires commitment from all nations. The transition to a sustainable future is not just an environmental necessity but also an economic opportunity.`,
-    questions: [
-      { q: 'What is the main cause of climate change according to the text?', options: ['Natural disasters', 'Human activities burning fossil fuels', 'Volcanic eruptions', 'Solar activity'], answer: 1 },
-      { q: 'What is mentioned as a consequence of climate change?', options: ['More stable weather', 'Rising sea levels', 'Increased biodiversity', 'Lower temperatures'], answer: 1 },
-      { q: 'What provides a framework for global climate action?', options: ['UN Charter', 'Paris Agreement', 'Kyoto Protocol', 'Geneva Convention'], answer: 1 },
-    ]
-  },
-  {
-    id: 4, title: 'A Trip to the Museum', level: 'Beginner', icon: 'museum',
-    content: `Last Saturday, Tom and his family went to the Natural History Museum. Tom was very excited because he loved dinosaurs. When they entered the museum, Tom saw a huge dinosaur skeleton. It was taller than his house!
-
-His favorite part was the fossil room. There were fossils of animals that lived millions of years ago. Tom learned that some dinosaurs were as small as chickens, while others were bigger than buses.
-
-After visiting the museum, Tom told his friends all about what he learned. He decided he wanted to become a paleontologist when he grows up.`,
-    questions: [
-      { q: 'What did Tom love at the museum?', options: ['Paintings', 'Dinosaurs', 'Space', 'Robots'], answer: 1 },
-      { q: 'What did Tom learn about some dinosaurs?', options: ['They could fly', 'They were as small as chickens', 'They lived in water', 'They were all big'], answer: 1 },
-      { q: 'What does Tom want to become?', options: ['Doctor', 'Teacher', 'Paleontologist', 'Engineer'], answer: 2 },
-    ]
-  },
-  {
-    id: 5, title: 'The Art of Communication', level: 'Advanced', icon: 'communication',
-    content: `Effective communication is a fundamental skill in both personal and professional contexts. It involves not just the words we choose, but also our tone of voice, body language, and ability to listen actively. In today's digital age, communication has become more complex, with emails, instant messages, and video calls supplementing face-to-face interactions.
-
-One crucial aspect of communication is active listening. This means fully concentrating on what is being said rather than passively hearing the speaker's words. Active listening requires giving feedback, asking clarifying questions, and showing empathy. Studies show that effective listeners are perceived as more competent and trustworthy.
-
-Non-verbal communication also plays a significant role. Research suggests that over 70% of communication is non-verbal. This includes facial expressions, gestures, posture, and eye contact. Being aware of these signals can help avoid misunderstandings and build stronger relationships.
-
-In the workplace, clear communication can increase productivity, reduce errors, and improve team collaboration. Whether presenting ideas, giving feedback, or resolving conflicts, the ability to communicate effectively is invaluable.`,
-    questions: [
-      { q: 'What percentage of communication is non-verbal?', options: ['Over 50%', 'Over 70%', 'Over 90%', 'Over 30%'], answer: 1 },
-      { q: 'What is active listening?', options: ['Hearing words passively', 'Fully concentrating and responding', 'Writing notes', 'Nodding occasionally'], answer: 1 },
-      { q: 'What is mentioned as a benefit of clear communication?', options: ['More meetings', 'Increased productivity', 'Less work', 'More emails'], answer: 1 },
-    ]
-  },
-]
-
 export default function ReadingPage() {
   const { saveLearnProgress, loseHeart, user } = useApp()
+  const [readings, setReadings] = useState(() => getReadings())
   const [activeReading, setActiveReading] = useState(null)
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [score, setScore] = useState(0)
@@ -103,6 +31,11 @@ export default function ReadingPage() {
     setScore(0)
     setQuizDone(false)
     setSelectedAnswer(null)
+  }
+
+  const nextReading = () => {
+    const others = readings.filter(r => r.id !== activeReading?.id)
+    startReading(others[Math.floor(Math.random() * others.length)])
   }
 
   const handleAnswer = (index) => {
@@ -171,7 +104,12 @@ export default function ReadingPage() {
               <p className="text-gray-600 dark:text-gray-400 mb-6">
                 {score === activeReading.questions.length ? 'Perfect comprehension!' : 'Keep practicing!'}
               </p>
-              <button onClick={() => setActiveReading(null)} className="btn-primary">Back to Readings</button>
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                <button onClick={nextReading} className="btn-primary">
+                  Next Story <ChevronRight className="w-4 h-4 ml-1 inline" />
+                </button>
+                <button onClick={() => setActiveReading(null)} className="btn-secondary">All Stories</button>
+              </div>
             </motion.div>
           </div>
         </div>

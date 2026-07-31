@@ -3,12 +3,13 @@ import { useState, createElement } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   BookOpen, ChevronRight, ArrowLeft, Sparkles,
-  RotateCcw, Star, Volume2, Plus, CheckCircle, Eye,
+  Volume2, CheckCircle, Eye,
   Calendar, RefreshCw, Zap, Lightbulb, Link as LinkIcon, AlignLeft
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import Link from 'next/link'
 import { useApp } from '../../context/AppContext'
+import { getVocabularyCategories } from '../../lib/learnContent'
 import SEO from '../../components/SEO'
 
 const catIcons = {
@@ -20,68 +21,16 @@ const catIcons = {
   'collocations': AlignLeft,
 }
 
-const wordCategories = [
-  {
-    name: 'Daily Words', icon: 'daily',
-    words: [
-      { word: 'Beautiful', meaning: 'Pleasing the senses or mind aesthetically', example: 'The sunset was **beautiful**.' },
-      { word: 'Important', meaning: 'Of great significance or value', example: 'This is an **important** meeting.' },
-      { word: 'Different', meaning: 'Not the same as another or each other', example: 'They have **different** opinions.' },
-      { word: 'Available', meaning: 'Able to be used or obtained', example: 'Is this seat **available**?' },
-      { word: 'Significant', meaning: 'Sufficiently great or important', example: 'A **significant** improvement.' },
-    ]
-  },
-  {
-    name: 'Synonyms', icon: 'synonyms',
-    words: [
-      { word: 'Happy', meaning: 'Joyful, cheerful, delighted', example: 'She felt **happy** about the news.' },
-      { word: 'Big', meaning: 'Large, huge, enormous, massive', example: 'A **big** house on the hill.' },
-      { word: 'Smart', meaning: 'Intelligent, clever, bright, sharp', example: 'He is a **smart** student.' },
-      { word: 'Fast', meaning: 'Quick, rapid, swift, speedy', example: 'A **fast** runner.' },
-      { word: 'Strong', meaning: 'Powerful, mighty, robust, sturdy', example: 'A **strong** building.' },
-    ]
-  },
-  {
-    name: 'Antonyms', icon: 'antonyms',
-    words: [
-      { word: 'Hot', meaning: 'Cold (opposite)', example: 'The coffee is **hot**, but the ice cream is **cold**.' },
-      { word: 'Light', meaning: 'Dark, heavy (opposites)', example: 'A **light** feather vs a **heavy** rock.' },
-      { word: 'Rich', meaning: 'Poor (opposite)', example: 'The **rich** man helped the **poor**.' },
-      { word: 'Easy', meaning: 'Difficult, hard (opposite)', example: 'An **easy** test vs a **difficult** one.' },
-      { word: 'Begin', meaning: 'End, finish (opposite)', example: 'Let\'s **begin** the lesson and **end** with a quiz.' },
-    ]
-  },
-  {
-    name: 'Idioms', icon: 'idioms',
-    words: [
-      { word: 'Piece of cake', meaning: 'Something very easy', example: 'The exam was a **piece of cake**.' },
-      { word: 'Break the ice', meaning: 'To initiate conversation in a social setting', example: 'He told a joke to **break the ice**.' },
-      { word: 'Hit the nail on the head', meaning: 'To be exactly right', example: 'You **hit the nail on the head** with that analysis.' },
-      { word: 'Under the weather', meaning: 'Feeling ill or sick', example: 'I\'m feeling a bit **under the weather** today.' },
-      { word: 'Once in a blue moon', meaning: 'Very rarely', example: 'I visit my hometown **once in a blue moon**.' },
-    ]
-  },
-  {
-    name: 'Phrasal Verbs', icon: 'phrasal',
-    words: [
-      { word: 'Give up', meaning: 'To stop trying or quit', example: 'Don\'t **give up** on your dreams.' },
-      { word: 'Look after', meaning: 'To take care of', example: 'She **looks after** her younger brother.' },
-      { word: 'Put off', meaning: 'To postpone or delay', example: 'Don\'t **put off** your homework.' },
-      { word: 'Run out of', meaning: 'To use up the supply of something', example: 'We\'ve **run out of** milk.' },
-      { word: 'Turn down', meaning: 'To reject an offer', example: 'She **turned down** the job offer.' },
-    ]
-  },
-  {
-    name: 'Collocations', icon: 'collocations',
-    words: [
-      { word: 'Make a decision', meaning: 'To choose or decide', example: 'I need to **make a decision** soon.' },
-      { word: 'Take a break', meaning: 'To rest briefly', example: 'Let\'s **take a break** for 10 minutes.' },
-      { word: 'Do business', meaning: 'To engage in commercial activities', example: 'They **do business** with many countries.' },
-      { word: 'Have a conversation', meaning: 'To talk with someone', example: 'We **had a conversation** about the project.' },
-      { word: 'Pay attention', meaning: 'To focus or concentrate', example: 'Please **pay attention** to the lesson.' },
-    ]
-  },
-]
+function shuffleArr(arr) {
+  const a = [...arr]
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]]
+  }
+  return a
+}
+
+const wordCategories = getVocabularyCategories()
 
 export default function VocabularyPage() {
   if (typeof window === 'undefined') return null
@@ -101,6 +50,15 @@ export default function VocabularyPage() {
     setReviewMode(false)
   }
 
+  const refillCategory = () => {
+    const fresh = getVocabularyCategories().find((c) => c.name === activeCategory.name) || activeCategory
+    setActiveCategory({ ...fresh, words: shuffleArr(fresh.words) })
+    setCurrentWord(0)
+    setShowMeaning(false)
+    setReviewMode(false)
+    toast.success('Fresh set unlocked! Keep going!')
+  }
+
   const nextWord = () => {
     if (currentWord < activeCategory.words.length - 1) {
       const newHearts = hearts - 1
@@ -117,7 +75,7 @@ export default function VocabularyPage() {
       toast.success('Category complete! 🎉')
       saveLearnProgress('vocabulary', activeCategory.name, activeCategory.words.length * 5)
       toast.success('+2 diamonds earned!', { icon: '💎', duration: 3000 })
-      setReviewMode(true)
+      refillCategory()
     }
   }
 
@@ -153,29 +111,6 @@ export default function VocabularyPage() {
               <div className="flex items-center justify-center space-x-4">
                 <Link href="/store" className="btn-primary">Visit Store</Link>
                 <button onClick={() => { setActiveCategory(null); setEnded(false); setHearts(3) }} className="btn-secondary">Back to Categories</button>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      )
-    }
-    if (reviewMode) {
-      return (
-        <div className="min-h-screen py-8 px-4">
-          <div className="max-w-2xl mx-auto text-center">
-            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="glass-card p-6 sm:p-12">
-              <div className="w-20 h-20 mx-auto mb-6 gradient-bg rounded-full flex items-center justify-center">
-                <Star className="w-10 h-10 text-white" />
-              </div>
-              <h2 className="text-2xl font-display font-bold mb-2">{activeCategory.name} Complete!</h2>
-              <p className="text-gray-600 dark:text-gray-400 mb-4">
-                You reviewed {activeCategory.words.length} words. +{activeCategory.words.length * 5} XP earned!
-              </p>
-              <div className="flex items-center justify-center space-x-4">
-                <button onClick={() => { setCurrentWord(0); setShowMeaning(false); setReviewMode(false) }} className="btn-secondary">
-                  <RotateCcw className="w-4 h-4 mr-2 inline" /> Review Again
-                </button>
-                <button onClick={() => setActiveCategory(null)} className="btn-primary">Back to Categories</button>
               </div>
             </motion.div>
           </div>

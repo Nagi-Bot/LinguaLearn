@@ -1,32 +1,20 @@
 import { useState, useCallback } from 'react'
 
 import { motion, AnimatePresence } from 'framer-motion'
-import { Mic, MicOff, Volume2, ArrowLeft, RotateCcw, Star, CheckCircle } from 'lucide-react'
+import { Mic, MicOff, Volume2, ArrowLeft, CheckCircle } from 'lucide-react'
 import toast from 'react-hot-toast'
 import Link from 'next/link'
 import { useApp } from '../../context/AppContext'
+import { getSpeakingSentences } from '../../lib/learnContent'
 import SEO from '../../components/SEO'
-
-const sentences = [
-  'The quick brown fox jumps over the lazy dog.',
-  'I would like to order a cup of coffee, please.',
-  'She enjoys reading books about history and science.',
-  'The weather is beautiful today, perfect for a walk.',
-  'Can you help me with this math problem?',
-  'He has been working at this company for five years.',
-  'They went to the beach last weekend and had a great time.',
-  'Learning a new language opens many doors in life.',
-  'Please send me an email with the details.',
-  'The meeting will start at three o\'clock in the afternoon.',
-]
 
 export default function SpeakingPage() {
   const { saveLearnProgress, loseHeart, user } = useApp()
+  const [sentences, setSentences] = useState(() => getSpeakingSentences(10))
   const [currentSentence, setCurrentSentence] = useState(0)
   const [isListening, setIsListening] = useState(false)
   const [spokenText, setSpokenText] = useState('')
   const [scores, setScores] = useState([])
-  const [completed, setCompleted] = useState(false)
   const [result, setResult] = useState(null)
   const [hearts, setHearts] = useState(user?.hearts ?? 3)
   const [ended, setEnded] = useState(false)
@@ -103,11 +91,16 @@ export default function SpeakingPage() {
           setResult(null)
         }, 2000)
       } else {
-        setCompleted(true)
         const avgScore = Math.round([...scores, newScore].reduce((a, s) => a + s.overallScore, 0) / (scores.length + 1))
         saveLearnProgress('speaking', 'practice-session', avgScore)
-        toast.success('Speaking practice complete! 🎉')
         toast.success('+2 diamonds earned!', { icon: '💎', duration: 3000 })
+        setTimeout(() => {
+          setSentences(getSpeakingSentences(10))
+          setCurrentSentence(0)
+          setSpokenText('')
+          setResult(null)
+          toast.success('New round unlocked! Keep going! 🎉')
+        }, 2000)
       }
     }
 
@@ -120,10 +113,10 @@ export default function SpeakingPage() {
   }, [currentSentence, scores])
 
   const reset = () => {
+    setSentences(getSpeakingSentences(10))
     setCurrentSentence(0)
     setSpokenText('')
     setScores([])
-    setCompleted(false)
     setResult(null)
   }
 
@@ -141,40 +134,6 @@ export default function SpeakingPage() {
               <Link href="/store" className="btn-primary">Visit Store</Link>
               <button onClick={() => { reset(); setEnded(false); setHearts(3) }} className="btn-secondary">Practice Again</button>
             </div>
-          </motion.div>
-        </div>
-      </div>
-    )
-  }
-
-  if (completed) {
-    const avgScore = scores.length > 0 ? Math.round(scores.reduce((a, s) => a + s.overallScore, 0) / scores.length) : 0
-    const avgAccuracy = scores.length > 0 ? Math.round(scores.reduce((a, s) => a + s.accuracy, 0) / scores.length) : 0
-    const avgFluency = scores.length > 0 ? Math.round(scores.reduce((a, s) => a + s.fluency, 0) / scores.length) : 0
-
-    return (
-      <div className="min-h-screen py-8 px-4">
-        <div className="max-w-2xl mx-auto text-center">
-          <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="glass-card p-6 sm:p-12">
-            <div className="w-20 h-20 mx-auto mb-6 gradient-bg rounded-full flex items-center justify-center">
-              <Mic className="w-10 h-10 text-white" />
-            </div>
-            <h2 className="text-3xl font-display font-bold mb-2">Practice Complete!</h2>
-            <div className="grid grid-cols-3 gap-4 my-8">
-              <div className="text-center p-4 rounded-xl bg-primary-50 dark:bg-primary-900/20">
-                <div className="text-3xl font-bold gradient-text">{avgScore}</div>
-                <div className="text-xs text-gray-500">Overall</div>
-              </div>
-              <div className="text-center p-4 rounded-xl bg-secondary-50 dark:bg-secondary-900/20">
-                <div className="text-3xl font-bold text-secondary-500">{avgAccuracy}%</div>
-                <div className="text-xs text-gray-500">Accuracy</div>
-              </div>
-              <div className="text-center p-4 rounded-xl bg-accent-50 dark:bg-accent-900/20">
-                <div className="text-3xl font-bold text-accent-500">{avgFluency}%</div>
-                <div className="text-xs text-gray-500">Fluency</div>
-              </div>
-            </div>
-            <button onClick={reset} className="btn-primary"><RotateCcw className="w-4 h-4 mr-2 inline" /> Practice Again</button>
           </motion.div>
         </div>
       </div>

@@ -6,53 +6,16 @@ import DynamicIcon from '../../components/DynamicIcon'
 import toast from 'react-hot-toast'
 import Link from 'next/link'
 import { useApp } from '../../context/AppContext'
+import { getListeningExercises } from '../../lib/learnContent'
 import SEO from '../../components/SEO'
 
 const iconMap = {
   weather: Sun, restaurant: UtensilsCrossed, travel: Plane, news: Newspaper
 }
 
-const exercises = [
-  {
-    id: 1, title: 'Weather Report', level: 'Beginner', icon: 'weather',
-    transcript: 'Good morning! Today will be sunny and warm. The temperature will reach 25 degrees Celsius. In the afternoon, there might be some clouds, but no rain expected. Perfect weather for outdoor activities!',
-    questions: [
-      { q: 'What will the weather be like?', options: ['Rainy', 'Sunny and warm', 'Snowy', 'Windy'], answer: 1 },
-      { q: 'What is the expected temperature?', options: ['20°C', '25°C', '30°C', '15°C'], answer: 1 },
-      { q: 'What might appear in the afternoon?', options: ['Rain', 'Snow', 'Clouds', 'Fog'], answer: 2 },
-    ]
-  },
-  {
-    id: 2, title: 'Restaurant Conversation', level: 'Intermediate', icon: 'restaurant',
-    transcript: 'Customer: Hello, I\'d like to book a table for two tonight at 7 PM. Waiter: Certainly, sir. Indoor or outdoor seating? Customer: Outdoor, please. Waiter: Perfect. We have a table available on the terrace. May I have your name, please? Customer: Yes, it\'s Mr. Anderson. Waiter: Thank you, Mr. Anderson. We look forward to seeing you tonight.',
-    questions: [
-      { q: 'How many people is the booking for?', options: ['One', 'Two', 'Three', 'Four'], answer: 1 },
-      { q: 'What type of seating do they want?', options: ['Indoor', 'Outdoor', 'Bar', 'Private room'], answer: 1 },
-      { q: 'What is the customer\'s name?', options: ['Mr. Johnson', 'Mr. Anderson', 'Mr. Smith', 'Mr. Brown'], answer: 1 },
-    ]
-  },
-  {
-    id: 3, title: 'Travel Announcement', level: 'Advanced', icon: 'travel',
-    transcript: 'Attention passengers. Flight BA249 to London Heathrow is now boarding at Gate 12. Business class passengers and families with young children may board first. Please have your boarding passes and passports ready. The flight time to London is approximately 7 hours and 30 minutes. We wish you a pleasant journey.',
-    questions: [
-      { q: 'Which flight is boarding?', options: ['BA249', 'BA429', 'BA924', 'BA942'], answer: 0 },
-      { q: 'Who can board first?', options: ['All passengers', 'Business class and families', 'Only business class', 'Only families'], answer: 1 },
-      { q: 'How long is the flight?', options: ['6 hours', '7 hours 30 min', '8 hours', '5 hours 30 min'], answer: 1 },
-    ]
-  },
-  {
-    id: 4, title: 'Daily News Summary', level: 'Intermediate', icon: 'news',
-    transcript: 'In today\'s news: Scientists have discovered a new planet in a distant solar system. The planet is similar in size to Earth and may have liquid water. Meanwhile, the local community center is organizing a free coding workshop for teenagers next Saturday. Finally, the city library has announced extended weekend hours starting next month.',
-    questions: [
-      { q: 'What did scientists discover?', options: ['A new star', 'A new planet', 'A new galaxy', 'A new moon'], answer: 1 },
-      { q: 'Who is the coding workshop for?', options: ['Children', 'Teenagers', 'Adults', 'Seniors'], answer: 1 },
-      { q: 'What did the library announce?', options: ['New books', 'Extended hours', 'Closure', 'Discounts'], answer: 1 },
-    ]
-  },
-]
-
 export default function ListeningPage() {
   const { saveLearnProgress, loseHeart, user } = useApp()
+  const [exercises, setExercises] = useState(() => getListeningExercises())
   const [activeExercise, setActiveExercise] = useState(null)
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [score, setScore] = useState(0)
@@ -88,6 +51,11 @@ export default function ListeningPage() {
     setSelectedAnswer(null)
     setShowTranscript(false)
     speak(ex.transcript, () => {})
+  }
+
+  const nextExercise = () => {
+    const others = exercises.filter(e => e.id !== activeExercise?.id)
+    startExercise(others[Math.floor(Math.random() * others.length)])
   }
 
   const handleAnswer = (index) => {
@@ -152,7 +120,12 @@ export default function ListeningPage() {
               </div>
               <h2 className="text-3xl font-display font-bold mb-2">Listening Complete!</h2>
               <div className="text-5xl font-display font-bold gradient-text my-4">{score}/{activeExercise.questions.length}</div>
-              <button onClick={() => setActiveExercise(null)} className="btn-primary">Back to Exercises</button>
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                <button onClick={nextExercise} className="btn-primary">
+                  Next Exercise <ChevronRight className="w-4 h-4 ml-1 inline" />
+                </button>
+                <button onClick={() => setActiveExercise(null)} className="btn-secondary">All Exercises</button>
+              </div>
             </motion.div>
           </div>
         </div>

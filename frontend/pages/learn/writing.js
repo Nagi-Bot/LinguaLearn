@@ -1,23 +1,16 @@
 import { useState } from 'react'
 
 import { motion } from 'framer-motion'
-import { PenTool, Send, Sparkles, AlertCircle, CheckCircle, ArrowLeft, RotateCcw } from 'lucide-react'
+import { PenTool, Sparkles, AlertCircle, CheckCircle, ArrowLeft, RotateCcw, ChevronRight } from 'lucide-react'
 import toast from 'react-hot-toast'
 import Link from 'next/link'
 import { useApp } from '../../context/AppContext'
+import { getWritingPrompts } from '../../lib/learnContent'
 import SEO from '../../components/SEO'
-
-const prompts = [
-  { title: 'Describe Your Dream Vacation', type: 'Paragraph', prompt: 'Write a paragraph describing your ideal vacation destination. Include details about the location, activities, and why you want to go there.' },
-  { title: 'A Letter to Your Future Self', type: 'Email', prompt: 'Write a letter to yourself 10 years from now. What advice would you give? What do you hope you have achieved?' },
-  { title: 'The Importance of Education', type: 'Essay', prompt: 'Write a short essay on why education is important. Include at least three main points with examples.' },
-  { title: 'A Memorable Experience', type: 'Story', prompt: 'Tell a story about a memorable experience from your life. Describe what happened, how you felt, and what you learned.' },
-  { title: 'Technology in Our Lives', type: 'Paragraph', prompt: 'Discuss how technology has changed the way we live and communicate. Mention both positive and negative aspects.' },
-  { title: 'A Day in the Life', type: 'Story', prompt: 'Describe a typical day in your life from morning to night. Include details about your routines and activities.' },
-]
 
 export default function WritingPage() {
   const { saveLearnProgress, loseHeart, user } = useApp()
+  const [prompts, setPrompts] = useState(() => getWritingPrompts())
   const [activePrompt, setActivePrompt] = useState(null)
   const [text, setText] = useState('')
   const [feedback, setFeedback] = useState(null)
@@ -83,6 +76,13 @@ export default function WritingPage() {
 
   const reset = () => {
     setActivePrompt(null)
+    setText('')
+    setFeedback(null)
+  }
+
+  const nextPrompt = () => {
+    const others = prompts.filter(p => p.title !== activePrompt?.title)
+    setActivePrompt(others[Math.floor(Math.random() * others.length)])
     setText('')
     setFeedback(null)
   }
@@ -211,6 +211,13 @@ export default function WritingPage() {
                   ))}
                 </div>
               )}
+
+              <div className="flex flex-wrap items-center justify-center gap-3 mt-6 pt-4 border-t border-gray-100 dark:border-gray-800">
+                <button onClick={nextPrompt} className="btn-primary">
+                  Next Prompt <ChevronRight className="w-4 h-4 ml-1 inline" />
+                </button>
+                <button onClick={reset} className="btn-secondary">All Prompts</button>
+              </div>
             </motion.div>
           )}
         </div>
