@@ -144,7 +144,7 @@ export default function DashboardPage() {
 
           <motion.div variants={itemAnim} className="grid lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
-              <div className="flex items-center space-x-8">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 sm:space-x-8">
                 <XPProgressRing xp={stats.xp} nextLevelXp={stats.nextLevelXp} level={stats.level} />
                 <div className="flex-1">
                   <h2 className="font-semibold text-gray-900 dark:text-white mb-2">Level Progress</h2>

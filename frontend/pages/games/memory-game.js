@@ -137,7 +137,7 @@ export default function MemoryGamePage() {
                   onClick={() => flipCard(card.id)}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className={`aspect-square rounded-xl text-sm font-bold transition-all ${
+                  className={`aspect-square rounded-xl text-[11px] sm:text-sm font-bold leading-tight flex items-center justify-center text-center p-1 break-words transition-all ${
                     isMatched
                       ? 'bg-secondary-100 dark:bg-secondary-900/30 border-2 border-secondary-500 text-secondary-700 dark:text-secondary-300'
                       : isFlipped

@@ -168,22 +168,22 @@ export default function LeaderboardPage() {
                 i < allUsers.length - 1 ? 'border-b border-gray-100 dark:border-gray-800' : ''
               } ${i < 3 ? 'bg-gradient-to-r from-primary-50/50 dark:from-primary-900/10' : ''} ${u.isYou ? 'bg-primary-500/10 dark:bg-primary-500/20 ring-2 ring-primary-500' : ''} hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors`}
             >
-              <div className="flex items-center space-x-4">
-                <div className="w-8 text-center font-bold text-lg">
+              <div className="flex items-center space-x-4 min-w-0">
+                <div className="w-8 text-center font-bold text-lg shrink-0">
                   {getRankIcon(i) || <span className="text-gray-400">#{i + 1}</span>}
                 </div>
-                <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${u.color || 'from-primary-500 to-primary-600'} flex items-center justify-center text-white font-bold overflow-hidden`}>
+                <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${u.color || 'from-primary-500 to-primary-600'} flex items-center justify-center text-white font-bold overflow-hidden shrink-0`}>
                   {u.avatar ? <img src={u.avatar} alt="" className="w-full h-full object-cover" /> : u.name.charAt(0)}
                 </div>
-                <div>
-                  <p className="font-semibold">{u.name} {u.isYou && <span className="text-primary-500 text-xs">(you)</span>}</p>
+                <div className="min-w-0">
+                  <p className="font-semibold truncate">{u.name} {u.isYou && <span className="text-primary-500 text-xs">(you)</span>}</p>
                   <div className="flex items-center space-x-3 text-xs text-gray-500">
                     <span className="flex items-center"><Zap className="w-3 h-3 mr-1" /> Level {u.level}</span>
                     <span className="flex items-center"><Flame className="w-3 h-3 mr-1" /> {u.streak} days</span>
                   </div>
                 </div>
               </div>
-              <div className="text-right">
+              <div className="text-right shrink-0">
                 <div className="font-bold gradient-text">{u.xp.toLocaleString()}</div>
                 <div className="text-xs text-gray-500">XP</div>
               </div>

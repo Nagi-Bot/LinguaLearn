@@ -143,9 +143,9 @@ export default function WordBuilderPage() {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} key={currentWordIdx} className="glass-card p-8 mb-6">
             <p className="text-lg text-gray-500 mb-6">Hint: {currentWord.hint}</p>
 
-            <div className="flex items-center justify-center space-x-2 mb-8 min-h-[60px]">
+            <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-2 mb-8 min-h-[48px] sm:min-h-[60px]">
               {Array.from({ length: currentWord.word.length }).map((_, i) => (
-                <div key={i} className={`w-10 h-12 rounded-lg border-2 flex items-center justify-center text-xl font-bold transition-all ${
+                <div key={i} className={`w-7 h-9 sm:w-10 sm:h-12 rounded-lg border-2 flex items-center justify-center text-base sm:text-xl font-bold transition-all ${
                   selected[i] !== undefined
                     ? 'bg-primary-100 dark:bg-primary-900/30 border-primary-500 text-primary-700 dark:text-primary-300'
                     : 'border-gray-300 dark:border-gray-600 border-dashed'

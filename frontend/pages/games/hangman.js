@@ -114,9 +114,9 @@ export default function HangmanPage() {
             <p className="text-gray-500 mb-2">Hint: {words[currentIdx]?.hint}</p>
             <p className="text-sm text-gray-500 mb-4">Wrong: {wrong}/{maxWrong}</p>
 
-            <div className="flex items-center justify-center space-x-2 mb-8">
+            <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-2 mb-8">
               {revealed.map((l, i) => (
-                <div key={i} className={`w-10 h-12 rounded-lg border-2 flex items-center justify-center text-xl font-bold ${
+                <div key={i} className={`w-7 h-9 sm:w-10 sm:h-12 rounded-lg border-2 flex items-center justify-center text-base sm:text-xl font-bold ${
                   l !== '_'
                     ? 'bg-primary-100 dark:bg-primary-900/30 border-primary-500 text-primary-700'
                     : 'border-gray-300 dark:border-gray-600'
