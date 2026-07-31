@@ -38,11 +38,11 @@ export default function HomePage() {
 
   const learningPaths = [
     { icon: BookOpen, title: 'Grammar', lessons: '10 Topics', color: 'from-violet-500 to-purple-600', href: '/learn/grammar' },
-    { icon: Languages, title: 'Vocabulary', lessons: '30 Words', color: 'from-blue-500 to-cyan-600', href: '/learn/vocabulary' },
-    { icon: MessageSquare, title: 'Reading', lessons: '5 Stories', color: 'from-emerald-500 to-teal-600', href: '/learn/reading' },
-    { icon: PenTool, title: 'Writing', lessons: '6 Prompts', color: 'from-amber-500 to-orange-600', href: '/learn/writing' },
-    { icon: Mic, title: 'Speaking', lessons: '10 Sentences', color: 'from-pink-500 to-rose-600', href: '/learn/speaking' },
-    { icon: Headphones, title: 'Listening', lessons: '4 Tracks', color: 'from-sky-500 to-indigo-600', href: '/learn/listening' },
+    { icon: Languages, title: 'Vocabulary', lessons: '250+ Words', color: 'from-blue-500 to-cyan-600', href: '/learn/vocabulary' },
+    { icon: MessageSquare, title: 'Reading', lessons: '20 Stories', color: 'from-emerald-500 to-teal-600', href: '/learn/reading' },
+    { icon: PenTool, title: 'Writing', lessons: '22 Prompts', color: 'from-amber-500 to-orange-600', href: '/learn/writing' },
+    { icon: Mic, title: 'Speaking', lessons: '400+ Sentences', color: 'from-pink-500 to-rose-600', href: '/learn/speaking' },
+    { icon: Headphones, title: 'Listening', lessons: '12 Tracks', color: 'from-sky-500 to-indigo-600', href: '/learn/listening' },
   ]
 
   const testimonials = [
