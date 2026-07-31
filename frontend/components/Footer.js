@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Sparkles, BookOpen, Gamepad2, Mail, Globe, MessageCircle, Bot, Target, PenTool, Zap, ArrowUpRight, Book, Type, Volume2, MessageSquare, Headphones, GraduationCap, Sword, Puzzle, Brain, LayoutDashboard, Trophy, ShoppingCart, Info, Phone, Library, Languages } from 'lucide-react'
+import { BookOpen, Gamepad2, Mail, Globe, MessageCircle, Bot, Target, PenTool, Zap, ArrowUpRight, Book, Type, Volume2, MessageSquare, Headphones, GraduationCap, Sword, Puzzle, Brain, LayoutDashboard, Trophy, ShoppingCart, Info, Phone, Library, Languages } from 'lucide-react'
 
 const linkGroups = [
   {
@@ -51,9 +51,7 @@ export default function Footer() {
           <div className="grid grid-cols-2 md:grid-cols-5 gap-8 lg:gap-12">
             <div className="col-span-2 md:col-span-1">
               <Link href="/" className="flex items-center gap-2.5 mb-5 group">
-                <div className="w-10 h-10 bg-gradient-to-br from-violet-600 to-purple-600 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg group-hover:scale-105 transition-all">
-                  <Sparkles className="w-5 h-5 text-white" />
-                </div>
+                <img src="/logo.svg" alt="LinguaLearn" className="w-10 h-10 rounded-xl shadow-md group-hover:shadow-lg group-hover:scale-105 transition-all" />
                 <span className="text-xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">LinguaLearn</span>
               </Link>
               <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 leading-relaxed max-w-xs">
